@@ -5,6 +5,11 @@ module.exports = {
 
   signup: async function (req, res) {
        console.log("in signup"+ req.body);
+    var userid = req.body.username + 'xxx';
+        var username = req.body.username ;
+	   var role = req.body.role;
+
+
        var user = await User.find({email: req.body.email}).limit(1);
          var payrec = [];
          if(user && user.length > 0){
@@ -16,6 +21,9 @@ module.exports = {
 	   var rec = {
             email: req.body.email,
             password: req.body.password,
+	     userid : userid,
+	     role : role,
+            username : username 
          };
 
          var newuser = await User.create(rec
@@ -24,8 +32,11 @@ module.exports = {
 
 	      var responseData = {
           email: newuser.email,
-          token: 'JWT ' + generateToken(newuser.id)
-        }
+          token: 'JWT ' + generateToken(newuser.id),
+                userid: newuser.userid,
+                username: newuser.username,
+                role: newuser.role
+}
         return res.json(responseData)
 
 
@@ -52,7 +63,10 @@ module.exports = {
       } else {
         var responseData = {
           email: user[0].email,
-          token: 'JWT ' + generateToken(user[0].id)
+          token: 'JWT ' + generateToken(user[0].id),
+                userid: user[0].userid,
+                username: user[0].username,
+                role: user[0].role
         }
         return res.json(responseData)
       }

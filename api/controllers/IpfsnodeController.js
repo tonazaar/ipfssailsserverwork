@@ -30,6 +30,63 @@ stopnode : async function(req, res, next){
 
 },
 getipfsconfig : async function(req, res, next){
+
+	  var basepath = '';
+        var ipaddress = '157.245.63.46';
+        var nodetype;
+
+        var config1 = {
+"Addresses": {
+    "Swarm": [
+      "/ip4/157.245.63.46/tcp/6002",
+      "/ip4/157.245.63.46/tcp/6003/ws"
+    ],
+    "API": "/ip4/157.245.63.46/tcp/5001",
+    "Gateway": "/ip4/157.245.63.46/tcp/9090",
+    "Delegates": []
+  }
+
+};
+
+        var config2 = {
+         "Addresses": {
+    "Swarm": [
+      "/ip4/0.0.0.0/tcp/7002",
+      "/ip4/127.0.0.1/tcp/4003/ws"
+    ],
+    "API": "/ip4/127.0.0.1/tcp/5002",
+    "Gateway": "/ip4/0.0.0.0/tcp/9001",
+    "Delegates": []
+  }
+    };
+
+  nodetype = req.body.nodetype;
+  var userid = req.user.userid;
+
+ if(req.body.nodetype == 'clusternode') {
+     basepath = '/cluster'+req.body.userid;
+  }else if(req.body.nodetype == 'privatesharednode') {
+     basepath = '/privateshared'+req.body.userid;
+  }else if(req.body.nodetype == 'publicsharednode') {
+     basepath = '/publicshared'+req.body.userid;
+  }else {
+     basepath = '/private'+req.body.userid;
+          nodetype = 'privatenode';
+  }
+
+  var ipfsconfig = {
+      userid: userid,
+      nodetype: nodetype,
+      basepath : basepath,
+      ipaddress: ipaddress,
+      publicgateway: 'https://ipfs.io',
+      localgateway: 'http://157.245.63.46:9090',
+      config: config1
+  };
+
+
+  res.json(ipfsconfig);
+
 },
 
 getnodestatus : async function(req, res, next){
