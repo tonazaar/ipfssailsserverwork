@@ -1,0 +1,16 @@
+MongoDB shell version v3.6.3
+connecting to: mongodb://127.0.0.1:27017
+MongoDB server version: 3.6.3
+switched to db ipfsmongo
+user
+{
+	"_id" : ObjectId("5e8df279c2340a51debb117a"),
+	"createdAt" : 1586360953586,
+	"updatedAt" : 1586360953586,
+	"email" : "user1@dora.com",
+	"username" : "user1",
+	"userid" : "user1xxx",
+	"role" : "user",
+	"encryptedPassword" : "$2b$10$Ywz0.bYbubccf/oaFnk0huZcka3rQgoEdYVqp7EWI8Ys9mujDQjAK"
+}
+bye
