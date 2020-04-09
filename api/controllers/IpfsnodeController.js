@@ -61,7 +61,7 @@ getipfsconfig : async function(req, res, next){
     };
 
   nodetype = req.body.nodetype;
-  var userid = req.user.userid;
+  var userid = req.body.userid;
 
  if(req.body.nodetype == 'clusternode') {
      basepath = '/cluster'+req.body.userid;

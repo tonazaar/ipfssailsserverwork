@@ -30,13 +30,11 @@ module.exports = {
          ).fetch();
 
 
+      var userInfo = setUserInfo(newuser);
 	      var responseData = {
-          email: newuser.email,
           token: 'JWT ' + generateToken(newuser.id),
-                userid: newuser.userid,
-                username: newuser.username,
-                role: newuser.role
-}
+                user: userInfo,
+     }
         return res.json(responseData)
 
 
@@ -61,12 +59,12 @@ module.exports = {
       if (!valid) {
         return this.invalidEmailOrPassword();
       } else {
+
+      var userInfo = setUserInfo(user[0]);
+
         var responseData = {
-          email: user[0].email,
           token: 'JWT ' + generateToken(user[0].id),
-                userid: user[0].userid,
-                username: user[0].username,
-                role: user[0].role
+		user: userInfo
         }
         return res.json(responseData)
       }
@@ -141,6 +139,16 @@ function verifyParams(res, email, password){
     return ResponseService.json(401, res, "Email and password required")
   }
 };
+
+function setUserInfo(request){
+        return {
+                _id: request._id,
+                email: request.email,
+                userid: request.userid,
+                username: request.username,
+                role: request.role
+        };
+}
 
 
 
