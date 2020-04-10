@@ -13,10 +13,18 @@ getfile : async function(req, res, next){
 
 spendtoken : async function(req, res, next){
 
-//	deduct token and update
-//  var recs = await Tokenuser.find({userid: req.body.userid});
-	//
+  var userwallet = await Userwallet.findOne({userid: req.body.userid});
+  var toaddress = req.body.toaddress;
+  var toamount = req.body.toamount;
+
+
+  var sendstatus = SlptokenService.sendToken(userwallet.slpwallet, toaddress, toamount);
+
+
+  res.json(sendstatus);
 },
+
+
 getusage : async function(req, res, next){
 
 },
