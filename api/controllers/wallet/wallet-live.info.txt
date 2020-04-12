@@ -1,0 +1,19 @@
+BIP44 $BCH Wallet
+
+128 bit english BIP32 Mnemonic:
+liquid exact portion frequent stamp urge brass night loyal army fabric tank
+
+BIP44 Account: "m/44'/145'/0'"
+m/44'/145'/0'/0/0: bitcoincash:qry9vcrdxqhvjdh46vqttc9qpueeead5pgjm5h36qq
+m/44'/145'/0'/0/1: bitcoincash:qrw8vstzeqm9mvwx0gfekqr97mvznqz0dstll6ddsp
+m/44'/145'/0'/0/2: bitcoincash:qz4c6qneaadmul3zygvvtgmmhnm07m9w8sqxkhujwn
+m/44'/145'/0'/0/3: bitcoincash:qzzkwe323d9t3zjzhaqrxpvd79hz4m9yjymulg988q
+m/44'/145'/0'/0/4: bitcoincash:qpuaq3s279vn0qafjeddrfg5j9qllw672ug3k5mv0v
+m/44'/145'/0'/0/5: bitcoincash:qz7fp9ll82qhtwga3es70apjgfgq7t59mcvwmszfxx
+m/44'/145'/0'/0/6: bitcoincash:qpwqh6gpcre34h2kn6vfult9hqevpcxlxy8smr0n30
+m/44'/145'/0'/0/7: bitcoincash:qqu2gkemqk8wp348efn9jpa95q696e0ktymssydmr8
+m/44'/145'/0'/0/8: bitcoincash:qpzztgjfg4zyf2yjvrjpysr5rqk50thhfydlansqcl
+m/44'/145'/0'/0/9: bitcoincash:qqxhvkv5qdvaglzr26y24ze62pmgzmmsqvtcvld9ys
+
+
+
