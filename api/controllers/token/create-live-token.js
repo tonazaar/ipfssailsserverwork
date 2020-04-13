@@ -7,6 +7,8 @@
 const NETWORK = `mainnet`
 
 const SLPSDK = require("slp-sdk")
+const fs = require("fs")
+
 
 // Used for debugging and investigating JS objects.
 const util = require("util")
@@ -21,7 +23,7 @@ else SLP = new SLPSDK({ restURL: `https://trest.bitcoin.com/v2/` })
 // Open the wallet generated with create-wallet.
 let walletInfo
 try {
-  walletInfo = require(`../wallet/wallet.live.json`)
+  walletInfo = require(`../../../.secret/wallet.live.json`)
 } catch (err) {
   console.log(
     `Could not open wallet.live.json. Generate a wallet with create-wallet first.`
@@ -63,11 +65,11 @@ async function createToken() {
       batonReceiverAddress,
       bchChangeReceiverAddress,
       decimals: 8,
-      name: "SLP SDK example using BITBOX",
-      symbol: "SLPSDK",
-      documentUri: "developer.bitcoin.com",
+      name: "PPR Innovation Token",
+      symbol: "PPR101",
+      documentUri: "puppipay01@gmail.com",
       documentHash: null,
-      initialTokenQty: 507
+      initialTokenQty: 5001001001
     }
 
     // Generate, sign, and broadcast a hex-encoded transaction for creating
@@ -79,6 +81,16 @@ async function createToken() {
       `The genesis TxID above is used to uniquely identify your new class of SLP token. Save it and keep it handy.`
     )
     console.log(` `)
+    let outStr = "";
+    outStr += `genesisTxID: ${util.inspect(genesisTxId)}`
+    outStr += `\n\n\n`
+    fs.writeFile("token-live.txt", outStr, function(err) {
+  if (err) return console.error(err)
+
+  console.log(`token-live.txt written successfully.`)
+    })
+
+
     console.log(`View this transaction on the block explorer:`)
     if (NETWORK === `mainnet`)
       console.log(`https://explorer.bitcoin.com/bch/tx/${genesisTxId}`)
