@@ -1,6 +1,9 @@
 var _ = require('lodash');
 const IPFS = require('ipfs');
 
+ipfstoken = require('./ipfstokenmap/slpipfs.json');
+
+  console.log(ipfstoken.usagemultiplier);
 module.exports = {
 
 getfile : async function(req, res, next){
@@ -12,16 +15,18 @@ getfile : async function(req, res, next){
 },
 
 spendtoken : async function(req, res, next){
-
+/*
   var userwallet = await Userwallet.findOne({userid: req.body.userid});
   var toaddress = req.body.toaddress;
   var toamount = req.body.toamount;
 
+  console.log(ipfstoken.usagemultiplier);
 
   var sendstatus = SlptokenService.sendToken(userwallet.slpwallet, toaddress, toamount);
 
 
   res.json(sendstatus);
+  */
 },
 
 

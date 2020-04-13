@@ -3,32 +3,26 @@
 let SLPSDK = require('slp-sdk');
 let slpsdk = new SLPSDK();
 
-module.exports = {
-
-  sendpayment: function (fromwallet,  toaddress, userconfig) {
-
-    await sendToken(
-    // var gdata = serverwith.dashcoinInit(contractinfo,  network, url, driverplans, plans, dashlogger);
-    // return gdata;
-  },
-
-  getDashcoinCompositeAddress: function (creatorstub, uidkey,  network ) {
-
-
-var address = serverwith.getDashcoinCompositeAddress(creatorstub, uidkey,  network );
-
-    return address;
-  }
-
-
-
+let walletInfo
+try {
+  walletInfo = require(`../../.secret/wallet.live.json`)
+} catch (err) {
+  console.log(
+    `Could not open wallet.json. Generate a wallet with create-wallet first.`
+  )
+  process.exit(0)
 }
 
 
+module.exports = {
+
+
 // Send a token from wallet1 to wallet2.
-async function sendToken(wallet1, slpAddress2, sendamount) {
+ sendToken: async function (slpAddress1, slpAddress2, sendamount) {
+
+
   try {
-    const mnemonic = wallet1.mnemonic
+    const mnemonic = walletInfo.mnemonic
 
     // root seed buffer
     const rootSeed = slpsdk.Mnemonic.toSeed(mnemonic)
@@ -45,10 +39,10 @@ async function sendToken(wallet1, slpAddress2, sendamount) {
     //const cashAddress = slpsdk.HDNode.toCashAddress(change)
     //const slpAddress = slpsdk.HDNode.toSLPAddress(change)
 
-    const fundingAddress = wallet1.slpAddress
+    const fundingAddress = slpAddress1;
     const fundingWif = slpsdk.HDNode.toWIF(change) // <-- compressed WIF format
     const tokenReceiverAddress = slpAddress2 ; // wallet2.slpAddress
-    const bchChangeReceiverAddress = wallet1.cashAddress
+    const bchChangeReceiverAddress = walletInfo.cashAddress
 
     // Create a config object for minting
     const sendConfig = {
@@ -68,12 +62,12 @@ async function sendToken(wallet1, slpAddress2, sendamount) {
     //console.log(`sendTxId: ${sendTxId}`)
   } catch (err) {
     console.log(`Error in e2e-util.js/sendToken()`)
-    throw err
+//    reject(sendTxId);
   }
-}
+},
 
 // Returns just the test token balance for a wallet.
-async function getTestTokenBalance(walletData) {
+getTestTokenBalance : async function (walletData) {
   try {
     const tokenBalance = await slpsdk.Util.balancesForAddress(
       walletData.slpAddress
@@ -92,3 +86,4 @@ async function getTestTokenBalance(walletData) {
   }
 }
 
+}
