@@ -15,6 +15,9 @@ getfile : async function(req, res, next){
 },
 
 spendtoken : async function(req, res, next){
+  console.log(ipfstoken.usagemultiplier);
+  var sendstatus = 0;
+  res.json(sendstatus);
 /*
   var userwallet = await Userwallet.findOne({userid: req.body.userid});
   var toaddress = req.body.toaddress;
