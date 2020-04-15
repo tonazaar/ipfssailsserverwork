@@ -38,6 +38,7 @@ module.exports.routes = {
   'POST /api/ipfsusage/deletefile': 'IpfsusageController.deletefile',
 
   'POST /api/ipfsadmin/listusers': 'IpfsadminController.listusers',
+  'POST /api/tokenuser/gettokenbalance': 'TokenuserController.gettokenbalance',
 
 
 };

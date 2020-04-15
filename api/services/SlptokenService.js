@@ -13,6 +13,9 @@ try {
   process.exit(0)
 }
 
+const TOKEN_ID =
+  "f9a2699bee594e45c163ee1f78303c5ded829813a21ca0aadba2291b6cdb6f88"
+
 
 module.exports = {
 
@@ -50,7 +53,7 @@ module.exports = {
       fundingWif,
       tokenReceiverAddress,
       bchChangeReceiverAddress,
-      tokenId: TEST_TOKEN_ID,
+      tokenId: TOKEN_ID,
       amount: sendamount 
     }
 
@@ -67,14 +70,15 @@ module.exports = {
 },
 
 // Returns just the test token balance for a wallet.
-getTestTokenBalance : async function (walletData) {
+getTestTokenBalance : async function () {
+    const walletData = walletInfo;
   try {
     const tokenBalance = await slpsdk.Util.balancesForAddress(
       walletData.slpAddress
     )
     // console.log(`tokenBalance: ${JSON.stringify(tokenBalance, null, 2)}`)
 
-    let testTokens = tokenBalance.filter(x => TEST_TOKEN_ID === x.tokenId)
+    let testTokens = tokenBalance.filter(x => TOKEN_ID === x.tokenId)
 
     // Bootstrap initial state when wallet has no balance yet.
     if (testTokens.length === 0) testTokens = [{ balance: 0 }]

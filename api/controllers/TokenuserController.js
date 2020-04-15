@@ -13,6 +13,13 @@ getfile : async function(req, res, next){
 	res.json(result);
 
 },
+gettokenbalance : async function(req, res, next){
+  console.log(ipfstoken.usagemultiplier);
+  var sendstatus = 0;
+  sendstatus = await SlptokenService.getTestTokenBalance();
+	console.log(sendstatus);
+  res.json(sendstatus);
+},
 
 spendtoken : async function(req, res, next){
   console.log(ipfstoken.usagemultiplier);
