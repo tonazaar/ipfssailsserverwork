@@ -21,22 +21,19 @@ gettokenbalance : async function(req, res, next){
   res.json(sendstatus);
 },
 
-spendtoken : async function(req, res, next){
+sendtoken : async function(req, res, next){
   console.log(ipfstoken.usagemultiplier);
   var sendstatus = 0;
-  res.json(sendstatus);
-/*
+
   var userwallet = await Userwallet.findOne({userid: req.body.userid});
-  var toaddress = req.body.toaddress;
+  var touserwallet = await Userwallet.findOne({userid: req.body.touserid});
   var toamount = req.body.toamount;
 
   console.log(ipfstoken.usagemultiplier);
 
-  var sendstatus = SlptokenService.sendToken(userwallet.slpwallet, toaddress, toamount);
-
-
+  var sendstatus = SlptokenService.sendToken(userwallet.slpwallet, touserwallet.toaddress, toamount);
   res.json(sendstatus);
-  */
+  
 },
 
 
@@ -56,13 +53,11 @@ listfiles : async function(req, res, next){
 	res.json(recs);
 },
 
-savefile : async function(req, res, next){
+createwallet : async function(req, res, next){
 
-  var newrec = await Ipfsusage.create({
-        path : req.body.path,
-        name : req.body.name,
-        hash : req.body.hash,
-        cid : req.body.cid,
+  var slpwallet = SlptokenService.createwallet();
+  var newrec = await Userwallet.create({
+        slpwallet : slpwallet,
         userid: req.body.userid,
          } ).fetch();
 

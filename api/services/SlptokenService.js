@@ -21,11 +21,11 @@ module.exports = {
 
 
 // Send a token from wallet1 to wallet2.
- sendToken: async function (slpAddress1, slpAddress2, sendamount) {
+ sendToken: async function (fromwallet, slpAddress2, sendamount) {
 
 
   try {
-    const mnemonic = walletInfo.mnemonic
+    const mnemonic = fromwallet.mnemonic
 
     // root seed buffer
     const rootSeed = slpsdk.Mnemonic.toSeed(mnemonic)
@@ -45,7 +45,7 @@ module.exports = {
     const fundingAddress = slpAddress1;
     const fundingWif = slpsdk.HDNode.toWIF(change) // <-- compressed WIF format
     const tokenReceiverAddress = slpAddress2 ; // wallet2.slpAddress
-    const bchChangeReceiverAddress = walletInfo.cashAddress
+    const bchChangeReceiverAddress = fromwallet.cashAddress
 
     // Create a config object for minting
     const sendConfig = {
@@ -88,6 +88,38 @@ getTestTokenBalance : async function () {
     console.log(`Error in e2e-util.js/getTestTokenBalance()`)
     throw err
   }
+},
+
+createwallet : function () {
+
+const outObj = {}
+
+// create 128 bit BIP39 mnemonic
+const mnemonic = slpsdk.Mnemonic.generate(128, SLP.Mnemonic.wordLists()[lang])
+console.log("BIP44 $BCH Wallet")
+console.log(`128 bit ${lang} BIP39 Mnemonic: `, mnemonic)
+outObj.mnemonic = mnemonic
+
+// root seed buffer
+const rootSeed = slpsdk.Mnemonic.toSeed(mnemonic)
+
+// master HDNode
+let masterHDNode
+if (NETWORK === `mainnet`) masterHDNode = slpsdk.HDNode.fromSeed(rootSeed)
+else masterHDNode = slpsdk.HDNode.fromSeed(rootSeed, "testnet") // Testnet
+
+// HDNode of BIP44 account
+const account = slpsdk.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
+console.log(`BIP44 Account: "m/44'/145'/0'"`)
+outStr += `BIP44 Account: "m/44'/145'/0'"\n`
+
+ const childNode = masterHDNode.derivePath(`m/44'/145'/0'/0/0`)
+
+ outObj.cashAddress = slpsdk.HDNode.toCashAddress(childNode)
+    outObj.slpAddress = slpsdk.Address.toSLPAddress(outObj.cashAddress)
+    outObj.legacyAddress = slpsdk.Address.toLegacyAddress(outObj.cashAddress)
+
+	 return outObj;
 }
 
 }

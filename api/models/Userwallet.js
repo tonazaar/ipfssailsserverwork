@@ -25,12 +25,10 @@ module.exports = {
       required: true,
     },
     slpwallet: {
-      type: "string",
-      required: true,
+      type: "json",
     },
     tonwallet: {
-      type: "string",
-      required: true,
+      type: "json",
     },
 
 
