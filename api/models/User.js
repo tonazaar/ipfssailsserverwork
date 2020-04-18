@@ -24,6 +24,10 @@ module.exports = {
       type: "string",
       required: true,
     },
+    account: {
+    type: 'number',
+    autoIncrement: true
+    },
     password: {
       type: "string",
       required: true,

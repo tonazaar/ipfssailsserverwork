@@ -24,6 +24,10 @@ module.exports = {
       type: "string",
       required: true,
     },
+    slpderivepath: {
+      type: "string",
+      required: true,
+    },
     slpwallet: {
       type: "json",
     },

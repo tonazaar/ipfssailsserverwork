@@ -39,6 +39,9 @@ module.exports.routes = {
 
   'POST /api/ipfsadmin/listusers': 'IpfsadminController.listusers',
   'POST /api/tokenuser/gettokenbalance': 'TokenuserController.gettokenbalance',
+  'POST /api/tokenuser/updateearnedtoken': 'TokenuserController.updateearnedtoken',
+  'POST /api/tokenuser/sendtoken': 'TokenuserController.sendtoken',
+  'POST /api/tokenuser/redeemtoken': 'TokenuserController.redeemtoken',
 
 
 };
