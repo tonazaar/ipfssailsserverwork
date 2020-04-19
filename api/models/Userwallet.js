@@ -20,6 +20,10 @@ module.exports = {
       type: "string",
       required: true,
     },
+    tokenid: {
+      type: "string",
+      required: true,
+    },
     wallettype: {
       type: "string",
       required: true,

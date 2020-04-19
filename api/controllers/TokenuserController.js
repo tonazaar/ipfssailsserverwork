@@ -26,8 +26,8 @@ updateearnedtokens : async function(req, res, next){
   console.log(ipfstoken.usagemultiplier);
   var sendstatus = 0;
 
-  var userwallet = await Userwallet.findOne({userid: req.body.userid});
-  var touserwallet = await Userwallet.findOne({userid: req.body.touserid});
+  var userwallet = await Userwallet.findOne({userid: req.body.userid, tokenid: ipfstoken.TOKENID});
+  var touserwallet = await Userwallet.findOne({userid: req.body.touserid, tokenid: ipfstoken.TOKENID});
   var toamount = req.body.toamount;
 
   console.log(ipfstoken.usagemultiplier);
@@ -41,8 +41,8 @@ redeemToken : async function(req, res, next){
   console.log(ipfstoken.usagemultiplier);
   var sendstatus = 0;
 
-  var userwallet = await Userwallet.findOne({userid: req.body.userid});
-  var touserwallet = await Userwallet.findOne({userid: req.body.touserid});
+  var userwallet = await Userwallet.findOne({userid: req.body.userid, tokenid: ipfstoken.TOKENID});
+  var touserwallet = await Userwallet.findOne({userid: req.body.touserid, tokenid: ipfstoken.TOKENID});
   var toamount = req.body.toamount;
 
   console.log(ipfstoken.usagemultiplier);
@@ -59,8 +59,8 @@ sendtoken : async function(req, res, next){
   console.log(ipfstoken.usagemultiplier);
   var sendstatus = 0;
 
-  var userwallet = await Userwallet.findOne({userid: req.body.userid});
-  var touserwallet = await Userwallet.findOne({userid: req.body.touserid});
+  var userwallet = await Userwallet.findOne({userid: req.body.userid, tokenid: ipfstoken.TOKENID});
+  var touserwallet = await Userwallet.findOne({userid: req.body.touserid, tokenid: ipfstoken.TOKENID});
   var toamount = req.body.toamount;
 
   console.log(ipfstoken.usagemultiplier);
@@ -92,6 +92,7 @@ createwallet : async function(req, res, next){
   var slpwallet = SlptokenService.createwallet();
   var newrec = await Userwallet.create({
         slpwallet : slpwallet,
+	   tokenid: ipfstoken.TOKENID,
         userid: req.body.userid,
          } ).fetch();
 
