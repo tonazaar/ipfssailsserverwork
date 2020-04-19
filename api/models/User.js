@@ -26,7 +26,7 @@ module.exports = {
     },
     account: {
     type: 'number',
-    autoIncrement: true
+    unique: true,
     },
     password: {
       type: "string",

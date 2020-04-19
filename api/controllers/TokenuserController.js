@@ -16,8 +16,20 @@ getfile : async function(req, res, next){
 
 gettokenbalance : async function(req, res, next){
   console.log(ipfstoken.usagemultiplier);
+
+  if(!req.body.userid) {
+    ResponseService.json(403, res, "Userid not specified  " );  return;
+  }
+
+  var userwallet = await Userwallet.findOne({userid: req.body.userid, tokenid: ipfstoken.TOKENID});
+ if(!userwallet) {
+ResponseService.json(403, res, "No user wallet for token-id :"+ipfstoken.TOKENID);
+          return;
+  }
+
+	
   var sendstatus = 0;
-  sendstatus = await SlptokenService.getTestTokenBalance();
+  sendstatus = await SlptokenService.getTokenBalance(userwallet);
 	console.log(sendstatus);
   res.json(sendstatus);
 },
@@ -57,9 +69,9 @@ redeemtoken : async function(req, res, next){
 
 sendtoken : async function(req, res, next){
   
-  console.log(ipfstoken.usagemultiplier);
   var sendstatus = 0;
   var toamount = req.body.toamount;
+
 
   if(!(toamount || toamount > 0)) {
     ResponseService.json(403, res, "To amount specified not valid : "+ toamount );  return;
@@ -96,16 +108,46 @@ ResponseService.json(403, res, "No user wallet for token-id :"+ipfstoken.TOKENID
     
   }
 
+  var startinfo = {
+	  fromuser: userwallet.userid,
+	  touser: touserwallet.userid,
+	  toamount: toamount
+  };
+	
+  var tranrec = await Transaction.create({
+        tokenid: ipfstoken.TOKENID,
+        userid: req.body.userid,
+        startinfo: startinfo,
+        status: 'started',
+	  }).fetch();
 
   console.log(ipfstoken.usagemultiplier);
 
   var sendstatus = await SlptokenService.sendToken(userwallet, touserwallet, toamount);
-
+  var tranupdate;
+  if(sendstatus.txid) {
+  tranupdate = await Transaction.update({
+                id: tranrec.id,
+                }).set({
+                transactionid: sendstatus.txid,
+                status: 'ended',
+                outcome: 'success'
+    }).fetch();
+  }else if (sendstatus.error) {
+  tranupdate = await Transaction.update({
+                id: tranrec.id,
+                }).set({
+                endinfo: sendstatus.error,
+                status: 'ended',
+                outcome: 'error'
+    }).fetch();
+  }
+ 
+  console.log(JSON.stringify(tranupdate));
   res.json(sendstatus);
 },
 
 tokentoadd : async function(req, res, next){
-  console.log(ipfstoken.usagemultiplier);
   var sendstatus = 0;
   var toamount = req.body.toamount;
 
@@ -149,11 +191,42 @@ ResponseService.json(403, res, "No user wallet for token-id :"+ipfstoken.TOKENID
     
   }
 
+  var startinfo = {
+	  fromuser: userwallet.userid,
+	  touser: touserwallet.userid,
+	  toamount: toamount
+  };
+	
+  var tranrec = await Transaction.create({
+        tokenid: ipfstoken.TOKENID,
+        userid: req.body.userid,
+        startinfo: startinfo,
+        status: 'started',
+	  }).fetch();
 
   console.log(ipfstoken.usagemultiplier);
 
   var sendstatus = await SlptokenService.sendToken(userwallet, touserwallet, toamount);
-
+  var tranupdate;
+  if(sendstatus.txid) {
+  tranupdate = await Transaction.update({
+                id: tranrec.id,
+                }).set({
+                transactionid: sendstatus.txid,
+                status: 'ended',
+                outcome: 'success'
+    }).fetch();
+  }else if (sendstatus.error) {
+  tranupdate = await Transaction.update({
+                id: tranrec.id,
+                }).set({
+                endinfo: sendstatus.error,
+                status: 'ended',
+                outcome: 'error'
+    }).fetch();
+  }
+ 
+  console.log(JSON.stringify(tranupdate));
   res.json(sendstatus);
   
 },

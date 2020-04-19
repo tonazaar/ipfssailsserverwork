@@ -7,10 +7,6 @@ var _ = require('lodash');
 module.exports = {
 
   attributes: {
-    username: {
-      type: "string",
-      required: true,
-    },
     userid: {
       type: "string",
       required: true,
@@ -19,18 +15,20 @@ module.exports = {
       type: "string",
       required: true,
     },
-    wallettype: {
-      type: "string",
+    status: {
+      type: "string", // started, ended
       required: true,
     },
-    slpderivepath: {
-      type: "string",
-      required: true,
+    outcome: {
+      type: "string", // success, error
     },
-    slpwallet: {
+    transactionid: {
+      type: "string",
+    },
+    startinfo: {
       type: "json",
     },
-    tonwallet: {
+    endinfo: {
       type: "json",
     },
 

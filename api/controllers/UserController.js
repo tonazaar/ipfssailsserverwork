@@ -18,11 +18,14 @@ module.exports = {
 
          }
 
+	  var numRecords = await User.count({});
+
 	   var rec = {
             email: req.body.email,
             password: req.body.password,
 	     userid : userid,
 	     role : role,
+	     account: numRecords,
             username : username 
          };
 
