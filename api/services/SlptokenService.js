@@ -15,7 +15,7 @@ try {
 
 const TOKEN_ID =
   "f9a2699bee594e45c163ee1f78303c5ded829813a21ca0aadba2291b6cdb6f88"
-
+const NETWORK = 'mainnet';
 
 module.exports = {
 
@@ -92,12 +92,13 @@ getTestTokenBalance : async function () {
 
 createuserwallet : function (user) {
 
+console.log("user=" + JSON.stringify(user));
+
 const outObj = {}
 
 // create 128 bit BIP39 mnemonic
 const mnemonic = walletInfo.mnemonic;
 console.log("BIP44 $BCH Wallet")
-console.log(`128 bit ${lang} BIP39 Mnemonic: `, mnemonic)
 
 // root seed buffer
 const rootSeed = slpsdk.Mnemonic.toSeed(mnemonic)
@@ -110,13 +111,13 @@ else masterHDNode = slpsdk.HDNode.fromSeed(rootSeed, "testnet") // Testnet
 // HDNode of BIP44 account
 const account = slpsdk.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
 console.log(`BIP44 Account: "m/44'/145'/0'"`)
-outStr += `BIP44 Account: "m/44'/145'/0'"\n`
 
- var count = user.count;
+ var count = user.account;
  var derivePath = `m/44'/145'/0'/0/${count}`;
  const childNode = masterHDNode.derivePath(derivePath);
 
-
+ console.log ("derivePath="+derivePath);
+ outObj.derivePath = derivePath;
  outObj.cashAddress = slpsdk.HDNode.toCashAddress(childNode)
     outObj.slpAddress = slpsdk.Address.toSLPAddress(outObj.cashAddress)
     outObj.legacyAddress = slpsdk.Address.toLegacyAddress(outObj.cashAddress)

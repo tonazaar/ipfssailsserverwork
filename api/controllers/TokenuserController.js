@@ -105,15 +105,19 @@ createuserwallet : async function(req, res, next){
 
   var user = await User.findOne({userid: req.body.userid});
   if(!user) {
-
+    ResponseService.json(403, res, "No user record ");
+	  return;
   }
   if(ipfstoken.WALLETTYPE == 'BCHSLP') {
   var slpwallet = SlptokenService.createuserwallet(user);
   var newrec = await Userwallet.create({
         slpwallet : slpwallet,
         tokenid: ipfstoken.TOKENID,
-        derivepath: slpwallet.derivePath,
-        userid: req.body.userid,
+        email: user.email,
+        username: user.username,
+        slpderivepath: slpwallet.derivePath,
+        wallettype: ipfstoken.WALLETTYPE,
+        userid: user.userid,
          } ).fetch();
 
 	res.json(newrec);
