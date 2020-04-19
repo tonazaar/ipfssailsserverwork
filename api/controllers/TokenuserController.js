@@ -56,24 +56,11 @@ redeemtoken : async function(req, res, next){
 
 
 sendtoken : async function(req, res, next){
-  console.log(ipfstoken.usagemultiplier);
-  var sendstatus = 0;
-
-  var userwallet = await Userwallet.findOne({userid: req.body.userid, tokenid: ipfstoken.TOKENID});
-  var touserwallet = await Userwallet.findOne({userid: req.body.touserid, tokenid: ipfstoken.TOKENID});
-  var toamount = req.body.toamount;
-
-  console.log(ipfstoken.usagemultiplier);
-
-  var sendstatus = SlptokenService.sendToken(userwallet.slpwallet, touserwallet.toaddress, toamount);
-  res.json(sendstatus);
   
-},
-
-tokentoadd : async function(req, res, next){
   console.log(ipfstoken.usagemultiplier);
   var sendstatus = 0;
   var toamount = req.body.toamount;
+
   if(!(toamount || toamount > 0)) {
     ResponseService.json(403, res, "To amount specified not valid : "+ toamount );  return;
 
@@ -86,29 +73,86 @@ tokentoadd : async function(req, res, next){
     ResponseService.json(403, res, "touserid not specified  " );  return;
   }
 
+  if(req.body.userid == req.body.touserid) {
+    ResponseService.json(403, res, "From and to userid same" );  return;
+  }
+
   var userwallet = await Userwallet.findOne({userid: req.body.userid, tokenid: ipfstoken.TOKENID});
   var touserwallet = await Userwallet.findOne({userid: req.body.touserid, tokenid: ipfstoken.TOKENID});
   if(!userwallet) {
-    ResponseService.json(403, res, "No user wallet for token-id :"+ipfstoken.TOKENID");
+ResponseService.json(403, res, "No user wallet for token-id :"+ipfstoken.TOKENID);
 	  return;
   }
 
   if(!touserwallet) {
-    ResponseService.json(403, res, "No touser wallet for token-id :"+ipfstoken.TOKENID");
+    ResponseService.json(403, res, "No touser wallet for token-id :"+ipfstoken.TOKENID);
 	  return;
   }
 
   if(ipfstoken.WALLETTYPE != userwallet.wallettype  || 
      ipfstoken.WALLETTYPE != touserwallet.wallettype ) {
 
-    ResponseService.json(403, res, "Wallettype not matching :"+ipfstoken.WALLETTYPE");
+    ResponseService.json(403, res, "Wallettype not matching :"+ipfstoken.WALLETTYPE);
     
   }
 
 
   console.log(ipfstoken.usagemultiplier);
 
-  var sendstatus = SlptokenService.sendToken(userwallet, touserwallet, toamount);
+  var sendstatus = await SlptokenService.sendToken(userwallet, touserwallet, toamount);
+
+  res.json(sendstatus);
+},
+
+tokentoadd : async function(req, res, next){
+  console.log(ipfstoken.usagemultiplier);
+  var sendstatus = 0;
+  var toamount = req.body.toamount;
+
+  if(req.body.userid != 'user1xxx') {
+    ResponseService.json(403, res, "Only user1 can add amount : ");  return;
+
+  }
+
+  if(!(toamount || toamount > 0)) {
+    ResponseService.json(403, res, "To amount specified not valid : "+ toamount );  return;
+
+  }
+  if(!req.body.userid) {
+    ResponseService.json(403, res, "Userid not specified  " );  return;
+  }
+
+  if(!req.body.touserid) {
+    ResponseService.json(403, res, "touserid not specified  " );  return;
+  }
+
+  if(req.body.userid == req.body.touserid) {
+    ResponseService.json(403, res, "From and to userid same" );  return;
+  }
+
+  var userwallet = await Userwallet.findOne({userid: req.body.userid, tokenid: ipfstoken.TOKENID});
+  var touserwallet = await Userwallet.findOne({userid: req.body.touserid, tokenid: ipfstoken.TOKENID});
+  if(!userwallet) {
+ResponseService.json(403, res, "No user wallet for token-id :"+ipfstoken.TOKENID);
+	  return;
+  }
+
+  if(!touserwallet) {
+    ResponseService.json(403, res, "No touser wallet for token-id :"+ipfstoken.TOKENID);
+	  return;
+  }
+
+  if(ipfstoken.WALLETTYPE != userwallet.wallettype  || 
+     ipfstoken.WALLETTYPE != touserwallet.wallettype ) {
+
+    ResponseService.json(403, res, "Wallettype not matching :"+ipfstoken.WALLETTYPE);
+    
+  }
+
+
+  console.log(ipfstoken.usagemultiplier);
+
+  var sendstatus = await SlptokenService.sendToken(userwallet, touserwallet, toamount);
 
   res.json(sendstatus);
   
@@ -137,6 +181,12 @@ createuserwallet : async function(req, res, next){
     ResponseService.json(403, res, "No user record ");
 	  return;
   }
+  var userwallet = await Userwallet.findOne({userid: req.body.userid, tokenid: ipfstoken.TOKENID});
+  if(userwallet) {
+    ResponseService.json(403, res, "Wallet already exists ");
+	  return;
+  }
+
   if(ipfstoken.WALLETTYPE == 'BCHSLP') {
   var slpwallet = SlptokenService.createuserwallet(user);
   var newrec = await Userwallet.create({

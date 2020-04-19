@@ -38,8 +38,9 @@ module.exports = {
     //const account = slpsdk.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
 
     //const change = slpsdk.HDNode.derivePath(account, "0/0")
-
- var derivePath = fromwallet.derivePath;
+    console.log(JSON.stringify(fromwallet));
+    console.log(JSON.stringify(towallet));
+ var derivePath = fromwallet.slpderivepath;
  var childNode = masterHDNode.derivePath(derivePath);
 
     // get the cash address
@@ -47,10 +48,10 @@ module.exports = {
     //const slpAddress = slpsdk.HDNode.toSLPAddress(change)
 	  //
 
-    const fundingAddress = fromwallet.slpAddress;
+    const fundingAddress = fromwallet.slpwallet.slpAddress;
     const fundingWif = slpsdk.HDNode.toWIF(childNode) // <-- compressed WIF format
-    const tokenReceiverAddress = towallet.slpAddress;
-    const bchChangeReceiverAddress = fromwallet.cashAddress
+    const tokenReceiverAddress = towallet.slpwallet.slpAddress;
+    const bchChangeReceiverAddress = fromwallet.slpwallet.cashAddress
 
     // Create a config object for minting
     const sendConfig = {
@@ -66,10 +67,11 @@ module.exports = {
     // Generate, sign, and broadcast a hex-encoded transaction for sending
     // the tokens.
     const sendTxId = await slpsdk.TokenType1.send(sendConfig)
-
+    return sendTxId;
     //console.log(`sendTxId: ${sendTxId}`)
   } catch (err) {
-    console.log(`Error in e2e-util.js/sendToken()`)
+    console.log("Error sendToken" + err)
+	 return err;
 //    reject(sendTxId);
   }
 },
