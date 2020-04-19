@@ -90,15 +90,14 @@ getTestTokenBalance : async function () {
   }
 },
 
-createwallet : function () {
+createuserwallet : function (user) {
 
 const outObj = {}
 
 // create 128 bit BIP39 mnemonic
-const mnemonic = slpsdk.Mnemonic.generate(128, SLP.Mnemonic.wordLists()[lang])
+const mnemonic = walletInfo.mnemonic;
 console.log("BIP44 $BCH Wallet")
 console.log(`128 bit ${lang} BIP39 Mnemonic: `, mnemonic)
-outObj.mnemonic = mnemonic
 
 // root seed buffer
 const rootSeed = slpsdk.Mnemonic.toSeed(mnemonic)
@@ -113,7 +112,10 @@ const account = slpsdk.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
 console.log(`BIP44 Account: "m/44'/145'/0'"`)
 outStr += `BIP44 Account: "m/44'/145'/0'"\n`
 
- const childNode = masterHDNode.derivePath(`m/44'/145'/0'/0/0`)
+ var count = user.count;
+ var derivePath = `m/44'/145'/0'/0/${count}`;
+ const childNode = masterHDNode.derivePath(derivePath);
+
 
  outObj.cashAddress = slpsdk.HDNode.toCashAddress(childNode)
     outObj.slpAddress = slpsdk.Address.toSLPAddress(outObj.cashAddress)

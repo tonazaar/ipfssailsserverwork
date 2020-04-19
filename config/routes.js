@@ -43,6 +43,7 @@ module.exports.routes = {
   'POST /api/tokenuser/sendtoken': 'TokenuserController.sendtoken',
   'POST /api/tokenuser/tokentoadd': 'TokenuserController.tokentoadd',
   'POST /api/tokenuser/redeemtoken': 'TokenuserController.redeemtoken',
+  'POST /api/tokenuser/createuserwallet': 'TokenuserController.createuserwallet',
 
 
 };

@@ -1,6 +1,7 @@
 {
    "usagemultiplier": 0.001,
    "minusage": 10,
+   "WALLETTYPE": "BCHSLP",
    "TOKENTYPE": "SLPPPR001" ,
    "TOKENDESC": "This is system maintained token offering ",
    "USERFEATURE": "1. Users will not have own private key, 2.Users will receive tokens as earning 3.Users will redeem token for eaxhange to $ or anything, 4. User can buy token",

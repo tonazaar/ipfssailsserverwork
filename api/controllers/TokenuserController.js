@@ -37,7 +37,7 @@ updateearnedtokens : async function(req, res, next){
 
 },
 
-redeemToken : async function(req, res, next){
+redeemtoken : async function(req, res, next){
   console.log(ipfstoken.usagemultiplier);
   var sendstatus = 0;
 
@@ -70,6 +70,20 @@ sendtoken : async function(req, res, next){
   
 },
 
+tokentoadd : async function(req, res, next){
+  console.log(ipfstoken.usagemultiplier);
+  var sendstatus = 0;
+
+  var userwallet = await Userwallet.findOne({userid: req.body.userid, tokenid: ipfstoken.TOKENID});
+  var touserwallet = await Userwallet.findOne({userid: req.body.touserid, tokenid: ipfstoken.TOKENID});
+  var toamount = req.body.toamount;
+
+  console.log(ipfstoken.usagemultiplier);
+
+  var sendstatus = SlptokenService.sendToken(userwallet.slpwallet, touserwallet.toaddress, toamount);
+  res.json(sendstatus);
+  
+},
 
 getusage : async function(req, res, next){
 
@@ -87,16 +101,23 @@ listfiles : async function(req, res, next){
 	res.json(recs);
 },
 
-createwallet : async function(req, res, next){
+createuserwallet : async function(req, res, next){
 
-  var slpwallet = SlptokenService.createwallet();
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+
+  }
+  if(ipfstoken.WALLETTYPE == 'BCHSLP') {
+  var slpwallet = SlptokenService.createuserwallet(user);
   var newrec = await Userwallet.create({
         slpwallet : slpwallet,
-	   tokenid: ipfstoken.TOKENID,
+        tokenid: ipfstoken.TOKENID,
+        derivepath: slpwallet.derivePath,
         userid: req.body.userid,
          } ).fetch();
 
 	res.json(newrec);
+  }
 
 },
 
