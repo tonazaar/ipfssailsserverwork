@@ -21,7 +21,60 @@ module.exports = {
 
 
 // Send a token from wallet1 to wallet2.
- sendToken: async function (fromwallet, slpAddress2, sendamount) {
+ sendToken: async function (fromwallet, towallet, sendamount) {
+
+
+  try {
+
+    const mnemonic = walletInfo.mnemonic;
+
+    // root seed buffer
+    const rootSeed = slpsdk.Mnemonic.toSeed(mnemonic)
+
+    // master HDNode
+    const masterHDNode = slpsdk.HDNode.fromSeed(rootSeed)
+
+    // HDNode of BIP44 account
+    //const account = slpsdk.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
+
+    //const change = slpsdk.HDNode.derivePath(account, "0/0")
+
+ var derivePath = fromwallet.derivePath;
+ var childNode = masterHDNode.derivePath(derivePath);
+
+    // get the cash address
+    //const cashAddress = slpsdk.HDNode.toCashAddress(change)
+    //const slpAddress = slpsdk.HDNode.toSLPAddress(change)
+	  //
+
+    const fundingAddress = fromwallet.slpAddress;
+    const fundingWif = slpsdk.HDNode.toWIF(childNode) // <-- compressed WIF format
+    const tokenReceiverAddress = towallet.slpAddress;
+    const bchChangeReceiverAddress = fromwallet.cashAddress
+
+    // Create a config object for minting
+    const sendConfig = {
+      fundingAddress,
+      fundingWif,
+      tokenReceiverAddress,
+      bchChangeReceiverAddress,
+      tokenId: TOKEN_ID,
+      amount: sendamount 
+    }
+
+
+    // Generate, sign, and broadcast a hex-encoded transaction for sending
+    // the tokens.
+    const sendTxId = await slpsdk.TokenType1.send(sendConfig)
+
+    //console.log(`sendTxId: ${sendTxId}`)
+  } catch (err) {
+    console.log(`Error in e2e-util.js/sendToken()`)
+//    reject(sendTxId);
+  }
+},
+
+ sendTokenbackup: async function (fromwallet, slpAddress2, sendamount) {
 
 
   try {

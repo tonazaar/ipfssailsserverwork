@@ -73,14 +73,43 @@ sendtoken : async function(req, res, next){
 tokentoadd : async function(req, res, next){
   console.log(ipfstoken.usagemultiplier);
   var sendstatus = 0;
+  var toamount = req.body.toamount;
+  if(!(toamount || toamount > 0)) {
+    ResponseService.json(403, res, "To amount specified not valid : "+ toamount );  return;
+
+  }
+  if(!req.body.userid) {
+    ResponseService.json(403, res, "Userid not specified  " );  return;
+  }
+
+  if(!req.body.touserid) {
+    ResponseService.json(403, res, "touserid not specified  " );  return;
+  }
 
   var userwallet = await Userwallet.findOne({userid: req.body.userid, tokenid: ipfstoken.TOKENID});
   var touserwallet = await Userwallet.findOne({userid: req.body.touserid, tokenid: ipfstoken.TOKENID});
-  var toamount = req.body.toamount;
+  if(!userwallet) {
+    ResponseService.json(403, res, "No user wallet for token-id :"+ipfstoken.TOKENID");
+	  return;
+  }
+
+  if(!touserwallet) {
+    ResponseService.json(403, res, "No touser wallet for token-id :"+ipfstoken.TOKENID");
+	  return;
+  }
+
+  if(ipfstoken.WALLETTYPE != userwallet.wallettype  || 
+     ipfstoken.WALLETTYPE != touserwallet.wallettype ) {
+
+    ResponseService.json(403, res, "Wallettype not matching :"+ipfstoken.WALLETTYPE");
+    
+  }
+
 
   console.log(ipfstoken.usagemultiplier);
 
-  var sendstatus = SlptokenService.sendToken(userwallet.slpwallet, touserwallet.toaddress, toamount);
+  var sendstatus = SlptokenService.sendToken(userwallet, touserwallet, toamount);
+
   res.json(sendstatus);
   
 },
