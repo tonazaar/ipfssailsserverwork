@@ -34,35 +34,179 @@ ResponseService.json(403, res, "No user wallet for token-id :"+ipfstoken.TOKENID
   res.json(sendstatus);
 },
 
-updateearnedtokens : async function(req, res, next){
-  console.log(ipfstoken.usagemultiplier);
+updateearnedtoken : async function(req, res, next){
+
   var sendstatus = 0;
+  if(!req.body.usage || req.body.usage == 0) {
+    ResponseService.json(200, res, "Nothing earned ");  return;
+
+  }
+  var toamount = req.body.usage * ipfstoken.usagemultiplier;
+
+  if(req.body.userid != 'user1xxx') {
+    ResponseService.json(403, res, "Only user1 can add amount : ");  return;
+
+  }
+
+  if(!(toamount || toamount > 0)) {
+    ResponseService.json(403, res, "To amount specified not valid : "+ toamount );  return;
+
+  }
+  if(!req.body.userid) {
+    ResponseService.json(403, res, "Userid not specified  " );  return;
+  }
+
+  if(!req.body.touserid) {
+    ResponseService.json(403, res, "touserid not specified  " );  return;
+  }
+
+  if(req.body.userid == req.body.touserid) {
+    ResponseService.json(403, res, "From and to userid same" );  return;
+  }
 
   var userwallet = await Userwallet.findOne({userid: req.body.userid, tokenid: ipfstoken.TOKENID});
   var touserwallet = await Userwallet.findOne({userid: req.body.touserid, tokenid: ipfstoken.TOKENID});
-  var toamount = req.body.toamount;
+  if(!userwallet) {
+ResponseService.json(403, res, "No user wallet for token-id :"+ipfstoken.TOKENID);
+	  return;
+  }
+
+  if(!touserwallet) {
+    ResponseService.json(403, res, "No touser wallet for token-id :"+ipfstoken.TOKENID);
+	  return;
+  }
+
+  if(ipfstoken.WALLETTYPE != userwallet.wallettype  || 
+     ipfstoken.WALLETTYPE != touserwallet.wallettype ) {
+
+    ResponseService.json(403, res, "Wallettype not matching :"+ipfstoken.WALLETTYPE);
+    
+  }
+
+  var startinfo = {
+	  fromuser: userwallet.userid,
+	  touser: touserwallet.userid,
+	  toamount: toamount
+  };
+	
+  var tranrec = await Transaction.create({
+        tokenid: ipfstoken.TOKENID,
+        userid: req.body.userid,
+        startinfo: startinfo,
+        status: 'started',
+	  }).fetch();
 
   console.log(ipfstoken.usagemultiplier);
 
-  var sendstatus = SlptokenService.sendToken(userwallet.slpwallet, touserwallet.toaddress, toamount);
+  var sendstatus = await SlptokenService.sendToken(userwallet, touserwallet, toamount);
+  var tranupdate;
+  if(sendstatus.txid) {
+  tranupdate = await Transaction.update({
+                id: tranrec.id,
+                }).set({
+                transactionid: sendstatus.txid,
+                status: 'ended',
+                outcome: 'success'
+    }).fetch();
+  }else if (sendstatus.error) {
+  tranupdate = await Transaction.update({
+                id: tranrec.id,
+                }).set({
+                endinfo: sendstatus.error,
+                status: 'ended',
+                outcome: 'error'
+    }).fetch();
+  }
+ 
+  console.log(JSON.stringify(tranupdate));
   res.json(sendstatus);
-
+  
 },
 
 redeemtoken : async function(req, res, next){
-  console.log(ipfstoken.usagemultiplier);
+
   var sendstatus = 0;
+  var toamount = req.body.toredeem;
 
-  var userwallet = await Userwallet.findOne({userid: req.body.userid, tokenid: ipfstoken.TOKENID});
+  if(req.body.touserid != 'user1xxx') {
+    ResponseService.json(403, res, "Only user1 can receive redeemed amount  : ");  return;
+
+  }
+
+  if(!(toamount || toamount > 0)) {
+    ResponseService.json(403, res, "To amount specified not valid : "+ toamount );  return;
+
+  }
+  if(!req.body.fromuserid) {
+    ResponseService.json(403, res, "Userid not specified  " );  return;
+  }
+
+  if(!req.body.touserid) {
+    ResponseService.json(403, res, "touserid not specified  " );  return;
+  }
+
+  if(req.body.fromuserid == req.body.touserid) {
+    ResponseService.json(403, res, "From and to userid same" );  return;
+  }
+
+  var userwallet = await Userwallet.findOne({userid: req.body.fromuserid, tokenid: ipfstoken.TOKENID});
   var touserwallet = await Userwallet.findOne({userid: req.body.touserid, tokenid: ipfstoken.TOKENID});
-  var toamount = req.body.toamount;
+  if(!userwallet) {
+ResponseService.json(403, res, "No user wallet for token-id :"+ipfstoken.TOKENID);
+	  return;
+  }
+
+  if(!touserwallet) {
+    ResponseService.json(403, res, "No touser wallet for token-id :"+ipfstoken.TOKENID);
+	  return;
+  }
+
+  if(ipfstoken.WALLETTYPE != userwallet.wallettype  || 
+     ipfstoken.WALLETTYPE != touserwallet.wallettype ) {
+
+    ResponseService.json(403, res, "Wallettype not matching :"+ipfstoken.WALLETTYPE);
+    
+  }
+
+  var startinfo = {
+	  function: "redeemtoken",
+	  fromuser: userwallet.userid,
+	  touser: touserwallet.userid,
+	  toamount: toamount
+  };
+	
+  var tranrec = await Transaction.create({
+        tokenid: ipfstoken.TOKENID,
+        userid: req.body.fromuserid,
+        startinfo: startinfo,
+        status: 'started',
+	  }).fetch();
 
   console.log(ipfstoken.usagemultiplier);
 
-  var sendstatus = SlptokenService.sendToken(userwallet.slpwallet, touserwallet.toaddress, toamount);
-  
+  var sendstatus = await SlptokenService.sendToken(userwallet, touserwallet, toamount);
+  var tranupdate;
+  if(sendstatus.txid) {
+  tranupdate = await Transaction.update({
+                id: tranrec.id,
+                }).set({
+                transactionid: sendstatus.txid,
+                status: 'ended',
+                outcome: 'success'
+    }).fetch();
+  }else if (sendstatus.error) {
+  tranupdate = await Transaction.update({
+                id: tranrec.id,
+                }).set({
+                endinfo: sendstatus.error,
+                status: 'ended',
+                outcome: 'error'
+    }).fetch();
+  }
+ 
+  console.log(JSON.stringify(tranupdate));
   res.json(sendstatus);
-
+  
 },
 
 
@@ -204,7 +348,6 @@ ResponseService.json(403, res, "No user wallet for token-id :"+ipfstoken.TOKENID
         status: 'started',
 	  }).fetch();
 
-  console.log(ipfstoken.usagemultiplier);
 
   var sendstatus = await SlptokenService.sendToken(userwallet, touserwallet, toamount);
   var tranupdate;
@@ -277,13 +420,6 @@ createuserwallet : async function(req, res, next){
 
 },
 
-deletefile : async function(req, res, next){
-  var result = await Ipfsusage.remove({
-        hash : req.body.hash
-	    });
-	res.json(result);
-
-}
 
 }
 

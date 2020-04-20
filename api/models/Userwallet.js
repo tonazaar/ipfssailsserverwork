@@ -30,6 +30,7 @@ module.exports = {
     },
     slpderivepath: {
       type: "string",
+       unique: true,
       required: true,
     },
     slpwallet: {
@@ -38,7 +39,6 @@ module.exports = {
     tonwallet: {
       type: "json",
     },
-
 
   },
 
