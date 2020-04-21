@@ -3,6 +3,9 @@ const request = require('request');
 const promise = require('promise');
 const IPFS = require('ipfs');
 
+userdefault = require("./ipfsusage/userdefault.json");
+
+
 module.exports = {
 
 startnode : async function(req, res, next){
@@ -29,8 +32,10 @@ stopnode : async function(req, res, next){
    });
 
 },
+
 getipfsconfig : async function(req, res, next){
 
+/*
 	  var basepath = '';
         var ipaddress = '157.245.63.46';
         var nodetype;
@@ -78,14 +83,22 @@ getipfsconfig : async function(req, res, next){
       userid: userid,
       nodetype: nodetype,
       basepath : basepath,
+      usagelimit: userdefault.usagelimit,
       ipaddress: ipaddress,
       publicgateway: 'https://ipfs.io',
       localgateway: 'http://157.245.63.46:9090',
       config: config1
   };
+*/
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
 
 
-  res.json(ipfsconfig);
+  res.json(tmpuserconfig.useripfsconfig);
 
 },
 

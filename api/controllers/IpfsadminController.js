@@ -1,5 +1,7 @@
 var _ = require('lodash');
 const IPFS = require('ipfs');
+userdefault = require("./ipfsusage/userdefault.json");
+
 
 module.exports = {
 
@@ -10,6 +12,74 @@ getfile : async function(req, res, next){
 	res.json(result);
 
 },
+
+createuserconfig : async function(req, res, next){
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+   var useripfsconfig = {
+      userid: user.userid,
+      nodetype: userdefault.nodetype,
+      basepath : userdefault.basepath,
+      usagelimit: userdefault.usagelimit,
+      ipaddress: userdefault.ipaddress,
+      publicgateway: userdefault.publicgateway,
+      localgateway: userdefault.localgateway,   
+      config: userdefault.xconfig
+     };
+
+  var newrec = await Userconfig.create({
+        email : user.email,
+        userid : user.userid,   
+        username : user.username,
+        usagelimit : userdefault.usagelimit,
+	useripfsconfig: useripfsconfig,
+         } ).fetch();
+
+        res.json(newrec);
+
+
+},
+
+updateuserconfig : async function(req, res, next){
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+   var useripfsconfig = {
+      userid: user.userid,
+      nodetype: userdefault.nodetype,
+      basepath : userdefault.basepath,
+      usagelimit: userdefault.usagelimit,
+      ipaddress: userdefault.ipaddress,
+      publicgateway: userdefault.publicgateway,
+      localgateway: userdefault.localgateway,
+      config: userdefault.xconfig
+     };
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+  var newrec = await Userconfig.update({
+	id: tmpuserconfig.id}).set({
+        usagelimit : userdefault.usagelimit,
+        useripfsconfig: useripfsconfig,
+         } ).fetch();
+
+        res.json(newrec);
+
+},
+
 
 checkpinning : async function(req, res, next){
 

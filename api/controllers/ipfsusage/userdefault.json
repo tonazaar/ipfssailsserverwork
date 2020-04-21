@@ -1,0 +1,18 @@
+{
+  "usagelimit": "2000",
+  "publicgateway": "https://ipfs.io",
+  "localgateway": "http://157.245.63.46:9090",
+  "basepath": "", 
+  "ipaddress" : "157.245.63.46",
+  "nodetype" : "privatenode",
+   "xconfig": {
+       "Addresses": {
+        "Swarm": [
+          "/ip4/157.245.63.46/tcp/6002",
+          "/ip4/157.245.63.46/tcp/6003/ws"
+        ],
+        "API": "/ip4/157.245.63.46/tcp/5001",
+        "Gateway": "/ip4/157.245.63.46/tcp/9090",
+        "Delegates": []
+      } }
+}
