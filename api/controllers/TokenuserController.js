@@ -31,7 +31,22 @@ ResponseService.json(403, res, "No user wallet for token-id :"+ipfstoken.TOKENID
   var sendstatus = 0;
   sendstatus = await SlptokenService.getTokenBalance(userwallet);
 	console.log(sendstatus);
-  res.json(sendstatus);
+
+  if(sendstatus.balance) {
+  var newbal = await Userwallet.update({
+                id: userwallet.id  ,
+                }).set({
+                slpbalance: sendstatus.balance
+           }).fetch();
+  }
+
+  console.log(JSON.stringify(newbal));
+
+  var balancedata = {
+	  slpbalance: newbal[0].slpbalance,
+	  tonbalance: newbal[0].tonbalance,
+  };
+  res.json(balancedata);
 },
 
 updateearnedtoken : async function(req, res, next){

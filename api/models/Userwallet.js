@@ -39,6 +39,15 @@ module.exports = {
     tonwallet: {
       type: "json",
     },
+     slpbalance: {
+      type: "string", 
+	     defaultsTo: "0.0"
+    },
+    tonbalance: {
+      type: "string",
+	     defaultsTo: "0.0"
+    },
+
 
   },
 

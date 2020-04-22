@@ -86,10 +86,11 @@ module.exports = {
 
 // Returns just the test token balance for a wallet.
 getTokenBalance : async function (walletData) {
+	console.log("getTokenBalance:"+JSON.stringify(walletData));
 	
   try {
     const tokenBalance = await slpsdk.Util.balancesForAddress(
-      walletData.slpAddress
+      walletData.slpwallet.slpAddress
     )
     // console.log(`tokenBalance: ${JSON.stringify(tokenBalance, null, 2)}`)
 
