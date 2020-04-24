@@ -1,0 +1,98 @@
+
+ info: Starting app...
+
+ info: Initializing project hook... (`api/hooks/custom/`)
+ info: Initializing `apianalytics` hook...  (requests to monitored routes will be logged!)
+ info: ·• Auto-migrating...  (alter)
+ info:    Hold tight, this could take a moment.
+ info:  ✓ Auto-migration complete.
+
+0.001
+ warn: ---------------------------------------------------------------------------
+ warn: Files in the `controllers` directory may be traditional controllers or 
+action files.  Traditional controllers are dictionaries of actions, with 
+pascal-cased filenames ending in "Controller" (e.g. MyGreatController.js).
+Action files are kebab-cased (e.g. do-stuff.js) and contain a single action.
+The following files were ignored for not meeting those criteria:
+ warn: - ipfstokenmap/slpipfs.json
+ warn: - ipfsusage/userdefault.json
+ warn: ----------------------------------------------------------------------------
+
+debug: Skipping v0 bootstrap script...  (because it's already been run)
+debug: (last run on this computer: @ Tue Feb 18 2020 15:56:49 GMT+0000 (Coordinated Universal Time))
+ info: 
+ info:                .-..-.
+ info: 
+ info:    Sails              <|    .-..-.
+ info:    v1.2.3              |\
+ info:                       /|.\
+ info:                      / || \
+ info:                    ,'  |'  \
+ info:                 .-'.-==|/_--'
+ info:                 `--'-------' 
+ info:    __---___--___---___--___---___--___
+ info:  ____---___--___---___--___---___--___-__
+ info: 
+ info: Server lifted in `/home/rameshbn/phase2/sailswork/ipfssailsserverwork`
+ info: To shut down Sails, press <CTRL> + C at any time.
+ info: Read more at https://sailsjs.com/support.
+
+debug: -------------------------------------------------------
+debug: :: Wed Apr 22 2020 10:43:07 GMT+0000 (Coordinated Universal Time)
+
+debug: Environment : development
+debug: Port        : 1337
+debug: -------------------------------------------------------
+isAuthorised
+Decoded={"id":"5e8df279c2340a51debb117a","iat":1587474240,"exp":2667474240}
+User={"createdAt":1586360953586,"updatedAt":1586360953586,"id":"5e8df279c2340a51debb117a","email":"user1@dora.com","username":"user1","userid":"user1xxx","role":"user","account":0,"password":"$2b$10$Ywz0.bYbubccf/oaFnk0huZcka3rQgoEdYVqp7EWI8Ys9mujDQjAK"}
+<- POST /api/ipfsnode/getipfsconfig           (23ms 403)
+isAuthorised
+Decoded={"id":"5e8df279c2340a51debb117a","iat":1587474240,"exp":2667474240}
+User={"createdAt":1586360953586,"updatedAt":1586360953586,"id":"5e8df279c2340a51debb117a","email":"user1@dora.com","username":"user1","userid":"user1xxx","role":"user","account":0,"password":"$2b$10$Ywz0.bYbubccf/oaFnk0huZcka3rQgoEdYVqp7EWI8Ys9mujDQjAK"}
+isAuthorised
+Decoded={"id":"5e8df279c2340a51debb117a","iat":1587474240,"exp":2667474240}
+<- POST /api/ipfsnode/getipfsconfig           (16ms 403)
+isAuthorised
+Decoded={"id":"5e8df279c2340a51debb117a","iat":1587474240,"exp":2667474240}
+User={"createdAt":1586360953586,"updatedAt":1586360953586,"id":"5e8df279c2340a51debb117a","email":"user1@dora.com","username":"user1","userid":"user1xxx","role":"user","account":0,"password":"$2b$10$Ywz0.bYbubccf/oaFnk0huZcka3rQgoEdYVqp7EWI8Ys9mujDQjAK"}
+User={"createdAt":1586360953586,"updatedAt":1586360953586,"id":"5e8df279c2340a51debb117a","email":"user1@dora.com","username":"user1","userid":"user1xxx","role":"user","account":0,"password":"$2b$10$Ywz0.bYbubccf/oaFnk0huZcka3rQgoEdYVqp7EWI8Ys9mujDQjAK"}
+in test
+<- GET /api/auth/protected                    (12ms 304)
+<- POST /api/ipfsadmin/listusers              (22ms 200)
+isAuthorised
+Decoded={"id":"5e8df279c2340a51debb117a","iat":1587474240,"exp":2667474240}
+User={"createdAt":1586360953586,"updatedAt":1586360953586,"id":"5e8df279c2340a51debb117a","email":"user1@dora.com","username":"user1","userid":"user1xxx","role":"user","account":0,"password":"$2b$10$Ywz0.bYbubccf/oaFnk0huZcka3rQgoEdYVqp7EWI8Ys9mujDQjAK"}
+<- POST /api/ipfsnode/getipfsconfig           (8ms 200)
+isAuthorised
+Decoded={"id":"5e8df279c2340a51debb117a","iat":1587474240,"exp":2667474240}
+User={"createdAt":1586360953586,"updatedAt":1586360953586,"id":"5e8df279c2340a51debb117a","email":"user1@dora.com","username":"user1","userid":"user1xxx","role":"user","account":0,"password":"$2b$10$Ywz0.bYbubccf/oaFnk0huZcka3rQgoEdYVqp7EWI8Ys9mujDQjAK"}
+<- POST /api/ipfsnode/getipfsconfig           (15ms 403)
+isAuthorised
+Decoded={"id":"5e8df279c2340a51debb117a","iat":1587474240,"exp":2667474240}
+User={"createdAt":1586360953586,"updatedAt":1586360953586,"id":"5e8df279c2340a51debb117a","email":"user1@dora.com","username":"user1","userid":"user1xxx","role":"user","account":0,"password":"$2b$10$Ywz0.bYbubccf/oaFnk0huZcka3rQgoEdYVqp7EWI8Ys9mujDQjAK"}
+in test
+<- GET /api/auth/protected                    (9ms 304)
+isAuthorised
+Decoded={"id":"5e8df279c2340a51debb117a","iat":1587474240,"exp":2667474240}
+User={"createdAt":1586360953586,"updatedAt":1586360953586,"id":"5e8df279c2340a51debb117a","email":"user1@dora.com","username":"user1","userid":"user1xxx","role":"user","account":0,"password":"$2b$10$Ywz0.bYbubccf/oaFnk0huZcka3rQgoEdYVqp7EWI8Ys9mujDQjAK"}
+isAuthorised
+Decoded={"id":"5e8df279c2340a51debb117a","iat":1587474240,"exp":2667474240}
+<- POST /api/ipfsnode/getipfsconfig           (18ms 403)
+User={"createdAt":1586360953586,"updatedAt":1586360953586,"id":"5e8df279c2340a51debb117a","email":"user1@dora.com","username":"user1","userid":"user1xxx","role":"user","account":0,"password":"$2b$10$Ywz0.bYbubccf/oaFnk0huZcka3rQgoEdYVqp7EWI8Ys9mujDQjAK"}
+<- POST /api/ipfsadmin/listusers              (12ms 200)
+isAuthorised
+Decoded={"id":"5e8df279c2340a51debb117a","iat":1587474240,"exp":2667474240}
+User={"createdAt":1586360953586,"updatedAt":1586360953586,"id":"5e8df279c2340a51debb117a","email":"user1@dora.com","username":"user1","userid":"user1xxx","role":"user","account":0,"password":"$2b$10$Ywz0.bYbubccf/oaFnk0huZcka3rQgoEdYVqp7EWI8Ys9mujDQjAK"}
+isAuthorised
+Decoded={"id":"5e8df279c2340a51debb117a","iat":1587474240,"exp":2667474240}
+
+
+
+Wed Apr 22 2020 13:50:59 GMT+0000 (Coordinated Universal Time)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+<- POST /api/ipfsnode/getipfsconfig           (29ms 403)
+User={"createdAt":1586360953586,"updatedAt":1586360953586,"id":"5e8df279c2340a51debb117a","email":"user1@dora.com","username":"user1","userid":"user1xxx","role":"user","account":0,"password":"$2b$10$Ywz0.bYbubccf/oaFnk0huZcka3rQgoEdYVqp7EWI8Ys9mujDQjAK"}
+in test
+<- GET /api/auth/protected                    (17ms 304)

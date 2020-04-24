@@ -37,6 +37,7 @@ createuserconfig : async function(req, res, next){
         userid : user.userid,   
         username : user.username,
         usagelimit : userdefault.usagelimit,
+        useraccess : 'enabled',
 	useripfsconfig: useripfsconfig,
          } ).fetch();
 
@@ -80,6 +81,120 @@ updateuserconfig : async function(req, res, next){
 
 },
 
+
+expandusagelimit : async function(req, res, next){
+
+  var newlimit = req.body.newlimit;
+
+  if(!newlimit || newlimit <= 0) {
+    ResponseService.json(403, res, "New limit not specified ");
+          return;
+  }
+
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+   tmpuserconfig.useripfsconfig.usagelimit = newlimit;
+
+  var newrec = await Userconfig.update({
+	id: tmpuserconfig.id}).set({
+        usagelimit : newlimit,
+        useripfsconfig: useripfsconfig,
+         } ).fetch();
+
+        res.json(newrec);
+
+},
+
+enableuser : async function(req, res, next){
+
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+
+  var newrec = await Userconfig.update({
+	id: tmpuserconfig.id}).set({
+        useraccess : 'enabled',
+         } ).fetch();
+
+        res.json(newrec);
+
+},
+
+disableuser : async function(req, res, next){
+
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+
+  var newrec = await Userconfig.update({
+	id: tmpuserconfig.id}).set({
+        useraccess : 'disabled',
+         } ).fetch();
+
+        res.json(newrec);
+
+},
+
+getuserconfig : async function(req, res, next){
+
+
+  if(!req.body.userid)  {
+    ResponseService.json(403, res, "userid not specified ");
+          return;
+  }
+
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+
+        res.json(tmpuserconfig);
+
+},
 
 checkpinning : async function(req, res, next){
 

@@ -23,6 +23,9 @@ module.exports = {
     usagelimit: {
       type: "string",
     },
+    useraccess: {
+      type: "string",
+    },
     nodetype: {
       type: "string",
     },
