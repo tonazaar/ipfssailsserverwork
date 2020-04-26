@@ -51,6 +51,13 @@ module.exports.routes = {
   'POST /api/tokenuser/tokentoadd': 'TokenuserController.tokentoadd',
   'POST /api/tokenuser/redeemtoken': 'TokenuserController.redeemtoken',
   'POST /api/tokenuser/createuserwallet': 'TokenuserController.createuserwallet',
+  'POST /api/nodeoperation/joinnodeprivate': 'IpfsproviderController.joinnodeprivate',
+  'POST /api/nodeoperation/joinnodepublic': 'IpfsproviderController.joinnodepublic',
+  'POST /api/nodeoperation/joinnodecluster': 'IpfsproviderController.joinnodecluster',
+  'POST /api/nodeoperation/listclusternodes': 'IpfsproviderController.getclusternodes',
+  'POST /api/nodeoperation/listprivatenodes': 'IpfsproviderController.getprivatenodes',
+  'POST /api/nodeoperation/listpublicnodes': 'IpfsproviderController.getpublicnodes',
+
 
 
 };

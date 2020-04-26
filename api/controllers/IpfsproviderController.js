@@ -1,37 +1,218 @@
 var _ = require('lodash');
 const IPFS = require('ipfs');
+ const fs = require('fs')
 
 userdefault = require("./ipfsusage/userdefault.json");
 
 module.exports = {
 
 joinnodecluster : async function(req, res, next){
-  var result = await Ipfsusage.findOne({
-        hash : req.body.hash
-	    });
-	res.json(result);
+
+var nodeid = req.body.nodeid; 
+
+   if(!req.body.nodeid) {
+    ResponseService.json(403, res, "Nodeid not specified");
+          return;
+   }
+
+   if(req.body.nodetype != 'clusternode') {
+
+    ResponseService.json(403, res, "Nodetype is not cluster ");
+          return;
+   }
+
+var jsonData;
+   try {
+    jsonData = JSON.parse(fs.readFileSync('./ipfsusage/"+nodeid+".json', 'utf-8'))
+   } catch (err) {
+    ResponseService.json(403, res, " Json file "+ nodeid +".json not found");
+          return;
+   }
+
+   if(!jsonData.ipfsconfig ) {
+
+    ResponseService.json(403, res, "ipfsconfig not specificed");
+          return;
+   }
+
+
+  var recs = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
+   if(recs) {
+    ResponseService.json(403, res, "Nodeid already exists   ");
+          return;
+
+  }
+ 
+
+  var newrec = await Ipfsprovider.create({
+        nodeid : req.body.nodeid,
+        nodegroup : req.body.nodegroup,
+        nodetype : req.body.nodetype,
+        nodestatus : 'pending' ,
+        nodelocation : 'remote' ,
+        useraccess : 'disabled'  ,
+        usagelimit : jsonData.usagelimit,
+	publicgateway: jsonData.publicgateway,
+        localgateway: jsonData.localgateway,
+        basepath: jsonData.basepath,
+  	ipaddress : jsonData.ipaddress,
+        ipfsconfig : jsonData.ipfsconfig,
+         } ).fetch();
+
+   res.json(newrec);
 
 },
+
 joinnodeprivate : async function(req, res, next){
 
+var nodeid = req.body.nodeid; 
+
+   if(!req.body.nodeid) {
+    ResponseService.json(403, res, "Nodeid not specified");
+          return;
+   }
+
+   if(req.body.nodetype != 'privatenode') {
+
+    ResponseService.json(403, res, "Nodetype is not private ");
+          return;
+   }
+
+var jsonData;
+   try {
+    jsonData = JSON.parse(fs.readFileSync('./ipfsusage/"+nodeid+".json', 'utf-8'))
+   } catch (err) {
+    ResponseService.json(403, res, " Json file "+ nodeid +".json not found");
+          return;
+   }
+
+   if(!jsonData.ipfsconfig ) {
+
+    ResponseService.json(403, res, "ipfsconfig not specificed");
+          return;
+   }
+
+
+  var recs = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
+   if(recs) {
+    ResponseService.json(403, res, "Nodeid already exists   ");
+          return;
+
+  }
+ 
+
+  var newrec = await Ipfsprovider.create({
+        nodeid : req.body.nodeid,
+        nodegroup : req.body.nodegroup,
+        nodetype : req.body.nodetype,
+        nodestatus : 'pending' ,
+        nodelocation : 'remote' ,
+        useraccess : 'disabled'  ,
+        usagelimit : jsonData.usagelimit,
+	publicgateway: jsonData.publicgateway,
+        localgateway: jsonData.localgateway,
+        basepath: jsonData.basepath,
+  	ipaddress : jsonData.ipaddress,
+        ipfsconfig : jsonData.ipfsconfig,
+         } ).fetch();
+
+   res.json(newrec);
+
 },
+
 joinnodepublic : async function(req, res, next){
 
+var nodeid = req.body.nodeid; 
+
+   if(!req.body.nodeid) {
+    ResponseService.json(403, res, "Nodeid not specified");
+          return;
+   }
+
+   if(req.body.nodetype != 'publicnode') {
+
+    ResponseService.json(403, res, "Nodetype is not public ");
+          return;
+   }
+
+var jsonData;
+   try {
+    jsonData = JSON.parse(fs.readFileSync('./ipfsusage/"+nodeid+".json', 'utf-8'))
+   } catch (err) {
+    ResponseService.json(403, res, " Json file "+ nodeid +".json not found");
+          return;
+   }
+
+   if(!jsonData.ipfsconfig ) {
+
+    ResponseService.json(403, res, "ipfsconfig not specificed");
+          return;
+   }
+
+
+  var recs = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
+   if(recs) {
+    ResponseService.json(403, res, "Nodeid already exists   ");
+          return;
+
+  }
+ 
+
+  var newrec = await Ipfsprovider.create({
+        nodeid : req.body.nodeid,
+        nodegroup : req.body.nodegroup,
+        nodetype : req.body.nodetype,
+        nodestatus : 'pending' ,
+        nodelocation : 'remote' ,
+        useraccess : 'disabled'  ,
+        usagelimit : jsonData.usagelimit,
+	publicgateway: jsonData.publicgateway,
+        localgateway: jsonData.localgateway,
+        basepath: jsonData.basepath,
+  	ipaddress : jsonData.ipaddress,
+        ipfsconfig : jsonData.ipfsconfig,
+         } ).fetch();
+
+   res.json(newrec);
 },
 
+
+
 getprivatenodes : async function(req, res, next){
-  var recs = await Ipfsusage.find({userid: req.body.userid});
+
+   if(req.body.nodetype != 'privatenode') {
+
+    ResponseService.json(403, res, "Nodetype is not private ");
+          return;
+   }
+
+  var recs = await Ipfsprovider.find({nodetype: req.body.nodetype});
 	res.json(recs);
 },
 
 getpublicnodes : async function(req, res, next){
-  var recs = await Ipfsusage.find({userid: req.body.userid});
-	res.json(recs);
+   if(req.body.nodetype != 'publicnode') {
+
+    ResponseService.json(403, res, "Nodetype is not public ");
+          return;
+   }
+
+  var recs = await Ipfsprovider.find({nodetype: req.body.nodetype});
+        res.json(recs);
+
 },
 
 getclusternodes : async function(req, res, next){
-  var recs = await Ipfsusage.find({userid: req.body.userid});
-	res.json(recs);
+
+   if(req.body.nodetype != 'clusternode') {
+
+    ResponseService.json(403, res, "Nodetype is not cluster ");
+          return;
+   }
+
+  var recs = await Ipfsprovider.find({nodetype: req.body.nodetype});
+        res.json(recs);
+
 },
 
 
