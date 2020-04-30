@@ -46,6 +46,51 @@ createuserconfig : async function(req, res, next){
 
 },
 
+assignnodetouser : async function(req, res, next){
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+  var nodeconf = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
+   if(!nodeconf) {
+    ResponseService.json(403, res, "Nodeid does not exist   ");
+          return;
+
+  }
+
+
+   var useripfsconfig = {
+      userid: user.userid,
+      nodetype: nodeconf.nodetype,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig
+     };
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+  var newrec = await Userconfig.update({
+	id: tmpuserconfig.id}).set({
+        usagelimit : userdefault.usagelimit,
+        useripfsconfig: useripfsconfig,
+         } ).fetch();
+
+        res.json(newrec);
+
+
+},
+
 updateuserconfig : async function(req, res, next){
 
   var user = await User.findOne({userid: req.body.userid});

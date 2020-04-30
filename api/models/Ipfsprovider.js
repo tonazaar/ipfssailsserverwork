@@ -34,7 +34,7 @@ module.exports = {
     nodestatus: {
       type: "string",
     },
-    ipfsconfig: {
+    xconfig: {
       type: "json",
     },
     publicgateway: {
