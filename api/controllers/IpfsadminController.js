@@ -129,7 +129,7 @@ updateuserconfig : async function(req, res, next){
 
 expandusagelimit : async function(req, res, next){
 
-  var newlimit = req.body.newlimit;
+  var newlimit = req.body.newusagelimit;
 
   if(!newlimit || newlimit <= 0) {
     ResponseService.json(403, res, "New limit not specified ");
@@ -155,7 +155,7 @@ expandusagelimit : async function(req, res, next){
   var newrec = await Userconfig.update({
 	id: tmpuserconfig.id}).set({
         usagelimit : newlimit,
-        useripfsconfig: useripfsconfig,
+        useripfsconfig: tmpuserconfig.useripfsconfig,
          } ).fetch();
 
         res.json(newrec);

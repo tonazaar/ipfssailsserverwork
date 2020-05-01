@@ -44,6 +44,7 @@ module.exports.routes = {
   'POST /api/ipfsadmin/getuserconfig': 'IpfsadminController.getuserconfig',
   'POST /api/ipfsadmin/enableuser': 'IpfsadminController.enableuser',
   'POST /api/ipfsadmin/disableuser': 'IpfsadminController.disableuser',
+  'POST /api/ipfsadmin/assignnodetouser': 'IpfsadminController.assignnodetouser',
 
   'POST /api/tokenuser/gettokenbalance': 'TokenuserController.gettokenbalance',
   'POST /api/tokenuser/updateearnedtoken': 'TokenuserController.updateearnedtoken',
@@ -57,6 +58,7 @@ module.exports.routes = {
   'POST /api/nodeoperation/listclusternodes': 'IpfsproviderController.getclusternodes',
   'POST /api/nodeoperation/listprivatenodes': 'IpfsproviderController.getprivatenodes',
   'POST /api/nodeoperation/listpublicnodes': 'IpfsproviderController.getpublicnodes',
+  'POST /api/nodeoperation/deletenodeid': 'IpfsproviderController.deletenodeid',
 
 
 

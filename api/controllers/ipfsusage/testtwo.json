@@ -1,18 +1,18 @@
 {
-  "usagelimit": "2000",
+  "usagelimit": "200000000",
   "publicgateway": "https://ipfs.io",
-  "localgateway": "http://54.169.47.146:8082",
+  "localgateway": "http://54.169.57.146:8082",
   "basepath": "",
-  "ipaddress": "54.169.47.146",
+  "ipaddress": "54.169.57.146",
   "nodetype": "clusternode",
   "xconfig": {
     "Addresses": {
       "Swarm": [
-        "/ip4/54.169.47.146/tcp/6001",
-        "/ip4/54.169.47.146/tcp/6002/ws"
+        "/ip4/54.169.57.146/tcp/6001",
+        "/ip4/54.169.57.146/tcp/6002/ws"
       ],
-      "API": "/ip4/54.169.47.146/tcp/5002",
-      "Gateway": "/ip4/54.169.47.146/tcp/8082",
+      "API": "/ip4/54.169.57.146/tcp/5002",
+      "Gateway": "/ip4/54.169.57.146/tcp/8082",
       "Delegates": []
     }
   }

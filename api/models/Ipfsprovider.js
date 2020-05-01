@@ -40,7 +40,7 @@ module.exports = {
     publicgateway: {
       type: "string",
     },
-    privategateway: {
+    localgateway: {
       type: "string",
     },
     ipaddress: {
