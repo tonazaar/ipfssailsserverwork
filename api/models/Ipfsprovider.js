@@ -16,7 +16,6 @@ module.exports = {
     nodeid: {
       type: "string",
       required: true,
-      unique: true,
     },
     nodename: {
       type: "string",

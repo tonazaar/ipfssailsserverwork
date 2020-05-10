@@ -1,0 +1,21 @@
+{
+  "usagelimit": "20000000",
+  "publicgateway": "https://ipfs.io",
+  "localgateway": "http://54.169.57.146:8081",
+  "basepath": "",
+  "ipaddress": "54.169.57.146",
+  "nodetype": "privnet",
+  "nodegroup": "gamaprivnet",
+  "nodeid": "QmYXnVMPeoC2rZZVqbqrxMDDDa5odCD8TQethvGgMWgA89",
+  "nodename": "alphaone",
+  "xconfig": {
+    "Addresses": {
+      "Swarm": [
+        "/ip4/54.169.57.146/tcp/6001",
+        "/ip4/54.169.57.146/tcp/6002/ws"
+      ],
+      "API": "/ip4/54.169.57.146/tcp/5001",
+      "Gateway": "/ip4/54.169.57.146/tcp/8081"
+    }
+  }
+}

@@ -13,6 +13,8 @@ getfile : async function(req, res, next){
 
 },
 
+
+
 createuserconfig : async function(req, res, next){
 
   var user = await User.findOne({userid: req.body.userid});
@@ -65,6 +67,9 @@ assignnodetouser : async function(req, res, next){
    var useripfsconfig = {
       userid: user.userid,
       nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
       basepath : nodeconf.basepath,
       usagelimit: nodeconf.usagelimit,
       ipaddress: nodeconf.ipaddress,
@@ -90,7 +95,7 @@ assignnodetouser : async function(req, res, next){
 
 
 },
-
+/*
 updateuserconfig : async function(req, res, next){
 
   var user = await User.findOne({userid: req.body.userid});
@@ -126,6 +131,7 @@ updateuserconfig : async function(req, res, next){
 
 },
 
+*/
 
 expandusagelimit : async function(req, res, next){
 

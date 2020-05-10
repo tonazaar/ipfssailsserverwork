@@ -25,6 +25,19 @@ module.exports = {
     name: {
       type: "string",
     },
+    nodegroup: {
+      type: "string",
+      required: true,
+    },
+    nodeid: {
+      type: "string",
+      required: true,
+    },
+    nodename: {
+      type: "string",
+      required: true,
+    },
+
 
   },
 

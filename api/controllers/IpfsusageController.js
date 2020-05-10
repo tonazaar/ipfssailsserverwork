@@ -25,6 +25,26 @@ listfiles : async function(req, res, next){
 	res.json(recs);
 },
 
+listbasepaths : async function(req, res, next){
+  var recs = await Ipfsusage.find({userid: req.body.userid, path: req.body.path});
+
+	res.json(recs);
+},
+
+createbasepath : async function(req, res, next){
+
+  var newrec = await Ipfsusage.create({
+        path : req.body.path,
+        name : req.body.name,
+        hash : req.body.hash,
+        cid : req.body.cid,
+        userid: req.body.userid,
+         } ).fetch();
+	res.json(newrec);
+
+},
+
+
 savefile : async function(req, res, next){
 
   var newrec = await Ipfsusage.create({
