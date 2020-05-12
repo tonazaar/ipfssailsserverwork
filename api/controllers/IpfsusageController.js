@@ -6,6 +6,9 @@ userdefault = require("./ipfsusage/userdefault.json");
 module.exports = {
 
 getfile : async function(req, res, next){
+    if(!req.body) {
+    return ResponseService.json(401, res, "Data not provided  ")
+    }
   var result = await Ipfsusage.findOne({
         hash : req.body.hash
 	    });
@@ -20,24 +23,37 @@ getusage : async function(req, res, next){
 },
 
 listfiles : async function(req, res, next){
+    if(!req.body) {
+    return ResponseService.json(401, res, "Data not provided  ")
+    }
   var recs = await Ipfsusage.find({userid: req.body.userid});
 
 	res.json(recs);
 },
 
 listbasepaths : async function(req, res, next){
+    if(!req.body) {
+    return ResponseService.json(401, res, "Data not provided  ")
+    }
   var recs = await Ipfsusage.find({userid: req.body.userid, path: req.body.path});
 
 	res.json(recs);
 },
 
 createbasepath : async function(req, res, next){
+    if(!req.body) {
+    return ResponseService.json(401, res, "Data not provided  ")
+    }
 
   var newrec = await Ipfsusage.create({
         path : req.body.path,
         name : req.body.name,
         hash : req.body.hash,
         cid : req.body.cid,
+	nodetype: req.body.nodetype,
+      nodeid: req.body.nodeid,
+      nodegroup: req.body.nodegroup,
+      nodename: req.body.nodename,
         userid: req.body.userid,
          } ).fetch();
 	res.json(newrec);
@@ -46,12 +62,18 @@ createbasepath : async function(req, res, next){
 
 
 savefile : async function(req, res, next){
-
+    if(!req.body) {
+    return ResponseService.json(401, res, "Data not provided  ")
+    }
   var newrec = await Ipfsusage.create({
         path : req.body.path,
         name : req.body.name,
         hash : req.body.hash,
         cid : req.body.cid,
+	nodetype: req.body.nodetype,
+      nodeid: req.body.nodeid,
+      nodegroup: req.body.nodegroup,
+      nodename: req.body.nodename,
         userid: req.body.userid,
          } ).fetch();
 
@@ -60,6 +82,9 @@ savefile : async function(req, res, next){
 },
 
 deletefile : async function(req, res, next){
+    if(!req.body) {
+    return ResponseService.json(401, res, "Data not provided  ")
+    }
   var result = await Ipfsusage.remove({
         hash : req.body.hash
 	    });
