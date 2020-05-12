@@ -17,9 +17,16 @@ getfile : async function(req, res, next){
 
 createuserconfig : async function(req, res, next){
 
+//   ResponseService.json(403, res, "Depreciated , use assignnode");
   var user = await User.findOne({userid: req.body.userid});
   if(!user) {
     ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+  var userc = await Userconfig.findOne({email: user.email});
+  if(userc) {
+    ResponseService.json(403, res, "Config already exists ");
           return;
   }
 
@@ -95,7 +102,7 @@ assignnodetouser : async function(req, res, next){
 
 
 },
-/*
+
 updateuserconfig : async function(req, res, next){
 
   var user = await User.findOne({userid: req.body.userid});
@@ -131,7 +138,7 @@ updateuserconfig : async function(req, res, next){
 
 },
 
-*/
+
 
 expandusagelimit : async function(req, res, next){
 
