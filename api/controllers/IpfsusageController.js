@@ -40,6 +40,21 @@ listbasepaths : async function(req, res, next){
 	res.json(recs);
 },
 
+checkbasepaths : async function(req, res, next){
+    if(!req.body) {
+    return ResponseService.json(401, res, "Data not provided  ")
+    }
+
+    if(!req.body.nodeid) {
+    return ResponseService.json(401, res, "Node id not provided  ")
+    }
+ 
+  var recs = await Ipfsusage.find({userid: req.body.userid, path: req.body.path, nodeid: req.body.nodeid});
+
+        res.json(recs);
+},
+
+
 createbasepath : async function(req, res, next){
     if(!req.body) {
     return ResponseService.json(401, res, "Data not provided  ")
