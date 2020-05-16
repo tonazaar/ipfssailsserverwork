@@ -235,6 +235,31 @@ var nodeid = req.body.nodeid;
    res.json(delrec);
 },
 
+getnodedata : async function(req, res, next){
+
+   if(!req.body.nodetype ) {
+    ResponseService.json(403, res, "Nodetype is not set ");
+          return;
+   }
+
+   if(!req.body.nodeid ) {
+    ResponseService.json(403, res, "Nodeid is not set ");
+          return;
+   }
+
+   if(!req.body.nodegroup ) {
+    ResponseService.json(403, res, "Nodegroup is not set ");
+          return;
+   }
+
+
+  var recs = await Ipfsprovider.findOne({nodetype: req.body.nodetype,
+	   nodeid: req.body.nodeid,
+	  nodegroup: req.bodu.nodegroup
+      });
+        res.json(recs);
+},
+
 
 getprivatenodes : async function(req, res, next){
 
