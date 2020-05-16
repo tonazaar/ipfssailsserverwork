@@ -31,7 +31,6 @@ module.exports.routes = {
   'POST /api/ipfsnode/stopnode': 'IpfsnodeController.stopnode',
   'POST /api/ipfsnode/getipfsconfig': 'IpfsnodeController.getipfsconfig',
   'POST /api/ipfsnode/getnodestatus': 'IpfsnodeController.getnodestatus',
-  'POST /api/ipfsnode/getnodedata': 'IpfsnodeController.getnodedata',
 
   'POST /api/ipfsusage/getusage': 'IpfsusageController.getusage',
   'POST /api/ipfsusage/listfiles': 'IpfsusageController.listfiles',
@@ -63,6 +62,7 @@ module.exports.routes = {
   'POST /api/nodeoperation/listprivatenodes': 'IpfsproviderController.getprivatenodes',
   'POST /api/nodeoperation/listpublicnodes': 'IpfsproviderController.getpublicnodes',
   'POST /api/nodeoperation/deletenodeid': 'IpfsproviderController.deletenodeid',
+  'POST /api/nodeoperation/getnodedata': 'IpfsproviderController.getnodedata',
 
 
 

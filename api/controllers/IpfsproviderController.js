@@ -237,8 +237,8 @@ var nodeid = req.body.nodeid;
 
 getnodedata : async function(req, res, next){
 
-   if(!req.body.nodetype ) {
-    ResponseService.json(403, res, "Nodetype is not set ");
+   if(!req.body.nodename ) {
+    ResponseService.json(403, res, "Nodename is not set ");
           return;
    }
 
@@ -253,9 +253,9 @@ getnodedata : async function(req, res, next){
    }
 
 
-  var recs = await Ipfsprovider.findOne({nodetype: req.body.nodetype,
+  var recs = await Ipfsprovider.findOne({nodename: req.body.nodename,
 	   nodeid: req.body.nodeid,
-	  nodegroup: req.bodu.nodegroup
+	  nodegroup: req.body.nodegroup
       });
         res.json(recs);
 },
