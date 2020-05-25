@@ -39,6 +39,7 @@ module.exports.routes = {
   'POST /api/ipfsusage/listbasepaths': 'IpfsusageController.listbasepaths',
   'POST /api/ipfsusage/checkbasepaths': 'IpfsusageController.checkbasepaths',
   'POST /api/ipfsusage/deletefile': 'IpfsusageController.deletefile',
+  'POST /api/ipfsusage/searchfiles': 'IpfsusageController.searchfiles',
 
   'POST /api/ipfsadmin/listusers': 'IpfsadminController.listusers',
   'POST /api/ipfsadmin/createuserconfig': 'IpfsadminController.createuserconfig',

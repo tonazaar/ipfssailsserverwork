@@ -96,6 +96,38 @@ savefile : async function(req, res, next){
 
 },
 
+searchfiles: async function (req, res) {
+
+    var searchstring = req.body.searchstring;
+
+    if(!req.body.userid) {
+       return ResponseService.json(401, res, "Userid not provided  ")
+    }
+
+    console.log(searchstring);
+
+    var db = Ipfsusage.getDatastore().manager;
+
+    // Now we can do anything we could do with a Mongo `db` instance:
+    var collection = db.collection("ipfsusage");
+
+       collection.find({userid: req.body.userid },  {$or : [
+                {'name': {$regex: searchstring }},
+                {'cid': {$regex: searchstring }},
+                {'nodename': {$regex: searchstring }},
+                {'nodeid': {$regex: searchstring}}
+             ] }, { projection: {'name':1, 'cid':1, 'nodeid':1, 'nodename':1}}
+
+        ).toArray(function (err, results) {
+	 console.log(JSON.stringify(results));
+         if (err) return res.serverError(err);
+         return res.ok(results);
+       });
+
+
+},
+
+
 deletefile : async function(req, res, next){
     if(!req.body) {
     return ResponseService.json(401, res, "Data not provided  ")
