@@ -5,6 +5,87 @@ userdefault = require("./ipfsusage/userdefault.json");
 
 module.exports = {
 
+joinb1nodesuser : async function(req, res, next){
+  var = {
+          "configtype": "a1private",
+          "groupname": "group12", 
+          "privnodekey": "xxx12", // on login give this key
+          "nodelist": []
+  };
+
+},
+
+getb1nodesuser : async function(req, res, next){
+  var = {
+          "configtype": "a1private",
+          "groupname": "group12",
+          "privnodekey": "xxx12", // on login give this key
+          "nodelist": []
+  };
+
+},
+
+
+geta1configuser : async function(req, res, next){
+  var = {
+	  "configtype": "a1private",
+	  "groupname": "group12",
+	  "privnodekey": "xxx12", // on login give this key
+	  "nodelist": []
+  };
+
+},
+
+geta2configuser : async function(req, res, next){
+  var = {
+	  "configtype": "a1public",
+	  "groupname": "group1552",
+	  "publicnodekey": "xxx12", // on login give this key, not used
+	  "nodelist": []
+  };
+},
+
+
+getc1configuser : async function(req, res, next){
+  var = {
+          "configtype": "c1storage", 
+          "groupname": "group1552", 
+          "storagekey": "xxx12", // on login give this key, not used
+          "nodelist": []
+  };
+},
+
+createa1configuser : async function(req, res, next){
+  var = {
+          "configtype": "a1private",
+          "groupname": "group12",
+          "privnodekey": "xxx12", // on login give this key
+          "nodelist": []
+  };
+
+},
+
+createa2configuser : async function(req, res, next){
+  var = {
+          "configtype": "a1public",
+          "groupname": "group1552", 
+          "publicnodekey": "xxx12", // on login give this key, not used
+          "nodelist": []
+  };
+},
+
+
+createc1configuser : async function(req, res, next){
+  var = {
+          "configtype": "c1storage",
+          "groupname": "group1552",
+          "storagekey": "xxx12", // on login give this key, not used
+          "nodelist": []
+  };
+},
+
+
+
 getfile : async function(req, res, next){
     if(!req.body) {
     return ResponseService.json(401, res, "Data not provided  ")
