@@ -41,6 +41,21 @@ module.exports.routes = {
   'POST /api/ipfsusage/deletefile': 'IpfsusageController.deletefile',
   'POST /api/ipfsusage/searchfiles': 'IpfsusageController.searchfiles',
 
+
+  'POST /api/ipfsusage/geta1configuser': 'IpfsusageController.geta1configuser',
+  'POST /api/ipfsusage/geta2configuser': 'IpfsusageController.geta2configuser',
+  'POST /api/ipfsusage/getc1configuser': 'IpfsusageController.getc1configuser',
+  'POST /api/ipfsusage/createa1configuser': 'IpfsusageController.createa1configuser',
+  'POST /api/ipfsusage/createa2configuser': 'IpfsusageController.createa2configuser',
+  'POST /api/ipfsusage/createc1configuser': 'IpfsusageController.createc1configuser',
+  'POST /api/ipfsusage/getb1nodesuser': 'IpfsusageController.getb1nodesuser',
+  'POST /api/ipfsusage/joinb1nodesuser': 'IpfsusageController.joinb1nodesuser',
+  'POST /api/ipfsusage/joina1groupuser': 'IpfsusageController.joina1groupuser',
+  'POST /api/ipfsusage/createa1groupuser': 'IpfsusageController.createa1groupuser',
+  'POST /api/ipfsusage/joina2groupuser': 'IpfsusageController.joina2groupuser',
+  'POST /api/ipfsusage/createa2groupuser': 'IpfsusageController.createa2groupuser',
+
+
   'POST /api/ipfsadmin/listusers': 'IpfsadminController.listusers',
   'POST /api/ipfsadmin/createuserconfig': 'IpfsadminController.createuserconfig',
   'POST /api/ipfsadmin/updateuserconfig': 'IpfsadminController.updateuserconfig',

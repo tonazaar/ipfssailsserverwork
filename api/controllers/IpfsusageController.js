@@ -5,18 +5,66 @@ userdefault = require("./ipfsusage/userdefault.json");
 
 module.exports = {
 
+createa1groupuser : async function(req, res, next){
+  var conf = {
+          "configtype": "a1private",
+          "groupname": "group12",
+          "privnodekey": "xxx12", // on login give this key
+          "nodelist": []
+  };
+        res.json(conf);
+
+},
+
+
+joina1groupuser : async function(req, res, next){
+  var conf = {
+          "configtype": "a1private",
+          "groupname": "group12",
+          "privnodekey": "xxx12", // on login give this key
+          "nodelist": []
+  };
+        res.json(conf);
+
+},
+
+
+createa2groupuser : async function(req, res, next){
+  var conf = {
+          "configtype": "a1private",
+          "groupname": "group12",
+          "privnodekey": "xxx12", // on login give this key
+          "nodelist": []
+  };
+        res.json(conf);
+
+},
+
+
+joina2groupuser : async function(req, res, next){
+  var conf = {
+          "configtype": "a1private",
+          "groupname": "group12",
+          "privnodekey": "xxx12", // on login give this key
+          "nodelist": []
+  };
+        res.json(conf);
+
+},
+
 joinb1nodesuser : async function(req, res, next){
-  var = {
+  var conf = {
           "configtype": "a1private",
           "groupname": "group12", 
           "privnodekey": "xxx12", // on login give this key
           "nodelist": []
   };
+	res.json(conf);
 
 },
 
 getb1nodesuser : async function(req, res, next){
-  var = {
+  var conf = {
           "configtype": "a1private",
           "groupname": "group12",
           "privnodekey": "xxx12", // on login give this key
@@ -27,61 +75,67 @@ getb1nodesuser : async function(req, res, next){
 
 
 geta1configuser : async function(req, res, next){
-  var = {
+  var conf = {
 	  "configtype": "a1private",
 	  "groupname": "group12",
 	  "privnodekey": "xxx12", // on login give this key
 	  "nodelist": []
   };
+	res.json(conf);
 
 },
 
 geta2configuser : async function(req, res, next){
-  var = {
+  var conf = {
 	  "configtype": "a1public",
 	  "groupname": "group1552",
 	  "publicnodekey": "xxx12", // on login give this key, not used
 	  "nodelist": []
   };
+	res.json(conf);
 },
 
 
 getc1configuser : async function(req, res, next){
-  var = {
+  var conf = {
           "configtype": "c1storage", 
           "groupname": "group1552", 
           "storagekey": "xxx12", // on login give this key, not used
           "nodelist": []
   };
+	res.json(conf);
 },
 
 createa1configuser : async function(req, res, next){
-  var = {
+  var conf = {
           "configtype": "a1private",
           "groupname": "group12",
           "privnodekey": "xxx12", // on login give this key
           "nodelist": []
   };
+	res.json(conf);
 
 },
 
 createa2configuser : async function(req, res, next){
-  var = {
+  var conf = {
           "configtype": "a1public",
           "groupname": "group1552", 
           "publicnodekey": "xxx12", // on login give this key, not used
           "nodelist": []
   };
+	res.json(conf);
 },
 
 
 createc1configuser : async function(req, res, next){
-  var = {
+  var conf = {
           "configtype": "c1storage",
           "groupname": "group1552",
           "storagekey": "xxx12", // on login give this key, not used
           "nodelist": []
   };
+	res.json(conf);
 },
 
 
