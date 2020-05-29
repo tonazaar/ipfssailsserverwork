@@ -80,6 +80,10 @@ module.exports.routes = {
   'POST /api/nodeoperation/deletenodeid': 'IpfsproviderController.deletenodeid',
   'POST /api/nodeoperation/getnodedata': 'IpfsproviderController.getnodedata',
 
+  'POST /api/nodeoperation/getprivategroups': 'IpfsproviderController.getprivategroups',
+  'POST /api/nodeoperation/getpublicgroups': 'IpfsproviderController.getpublicgroups',
+
+  'POST /api/nodeoperation/listnodesofgroup': 'IpfsproviderController.listnodesofgroup',
 
 
 };

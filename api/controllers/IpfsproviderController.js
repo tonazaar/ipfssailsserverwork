@@ -273,6 +273,72 @@ getprivatenodes : async function(req, res, next){
 	res.json(recs);
 },
 
+listnodesofgroup : async function(req, res, next){
+
+   if(!req.body.nodetype ) {
+
+    ResponseService.json(403, res, "Nodetype is not set ");
+          return;
+   }
+
+   if(!req.body.nodegroup ){
+
+    ResponseService.json(403, res, "Nodegroup is not set ");
+          return;
+   }
+
+  var recs = await Ipfsprovider.find({nodetype: req.body.nodetype,
+	  nodegroup: req.body.nodegroup });
+
+  res.json(recs);
+
+},
+
+
+getprivategroups : async function(req, res, next){
+
+   if(req.body.nodetype != 'privatenode') {
+
+    ResponseService.json(403, res, "Nodetype is not private ");
+          return;
+   }
+
+  var db = Ipfsprovider.getDatastore().manager;
+
+    // Now we can do anything we could do with a Mongo `db` instance:
+    var collection = db.collection("ipfsprovider");
+
+    collection.distinct("nodegroup", {nodetype: req.body.nodetype}).then(x=> {
+		
+        console.log (x);
+        res.json(x);
+    });
+
+},
+
+
+getpublicgroups : async function(req, res, next){
+
+   if(req.body.nodetype != 'publicnode') {
+
+    ResponseService.json(403, res, "Nodetype is not public ");
+          return;
+   }
+
+  var db = Ipfsprovider.getDatastore().manager;
+
+    // Now we can do anything we could do with a Mongo `db` instance:
+    var collection = db.collection("ipfsprovider");
+
+    collection.distinct("nodegroup", {nodetype: req.body.nodetype}).then(x=> {
+
+        console.log (x);
+        res.json(x);
+    });
+
+},
+
+
 getpublicnodes : async function(req, res, next){
    if(req.body.nodetype != 'publicnode') {
 
