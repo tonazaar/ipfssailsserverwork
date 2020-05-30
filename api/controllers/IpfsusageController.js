@@ -135,6 +135,49 @@ createc1configuser : async function(req, res, next){
           "storagekey": "xxx12", // on login give this key, not used
           "nodelist": []
   };
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+
+  var recs = await Ipfsprovider.findOne({nodetype: 'freenode' });
+
+  var useripfsconfig = {
+      userid: user.userid,
+      nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig
+     };
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid,
+          "configtype": "c1storage"});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+  var newrec = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        usagelimit : userdefault.usagelimit,
+        useripfsconfig: useripfsconfig,
+         } ).fetch();
+
+        res.json(newrec);
+
+
+
+        res.json(recs);
+
 	res.json(conf);
 },
 
