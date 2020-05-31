@@ -66,7 +66,7 @@ createa1groupuser : async function(req, res, next){
       config: noderec.xconfig
      };
 
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid);
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
 
   if(!tmpuserconfig) {
     ResponseService.json(403, res, "No user config record ");
@@ -107,19 +107,13 @@ joina1groupuser : async function(req, res, next){
   var buf = crypto.randomBytes(64);
   var accesssecret = buf.toString('hex');
 
-  var noderec;
-
-  if(req.body.dedicatedorshared === 'shared') {
-     noderec = await Ipfsprovider.findOne({nodetype: 'privatenode', nodeusage: 'shared' });
-  }else {
-     noderec = await Ipfsprovider.findOne({nodetype: 'privatenode', nodeusage: 'dedicated' });
-  }
 
 
   var grouprec = await Usergroup.findOne({
         usergroupname: req.body.usergroup,
          } );
 
+  var noderec = await Ipfsprovider.findOne({nodegroup: grouprec.nodegroup });
 
 
    var useripfsconfig = {
@@ -138,7 +132,7 @@ joina1groupuser : async function(req, res, next){
       config: noderec.xconfig
      };
 
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid);
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
 
   if(!tmpuserconfig) {
     ResponseService.json(403, res, "No user config record ");
@@ -178,28 +172,182 @@ geta1groupuser : async function(req, res, next){
 
 },
 
+
+
+
 createa2groupuser : async function(req, res, next){
-  var conf = {
-          "configtype": "a1private",
-          "groupname": "group12",
-          "privnodekey": "xxx12", // on login give this key
-          "nodelist": []
-  };
-        res.json(conf);
+
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+  }
+
+  if(!req.body.dedicatedorshared) {
+    return ResponseService.json(401, res, "dedicatedorshared not set  ")
+  }
+
+  if(!req.body.usergrouptype !=  "a2public") {
+    return ResponseService.json(401, res, "Usergrouptype wrong ")
+  }
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var buf = crypto.randomBytes(64);
+  var accesssecret = buf.toString('hex');
+
+  var noderec;
+
+  if(req.body.dedicatedorshared === 'shared') {
+     noderec = await Ipfsprovider.findOne({nodetype: 'publicnode', nodeusage: 'shared' });
+  }else {
+     noderec = await Ipfsprovider.findOne({nodetype: 'publicnode', nodeusage: 'dedicated' });
+  }
+
+
+  var grouprec = await Usergroup.create({
+        creatoremail: user.email,
+        creatorname: user.name,
+        creatoruserid: user.userid,
+        usergroupname: req.body.usergroup,
+        usergroupkey: accesssecret,
+        usergrouptype: "a2public",
+        nodetype: noderec.nodetype,
+        nodegroup: noderec.nodegroup,
+         } ).fetch();
+
+
+
+   var useripfsconfig = {
+      userid: user.userid,
+      nodetype: noderec.nodetype,
+      nodeid: noderec.nodeid,
+      nodegroup: noderec.nodegroup,
+        usergroupkey: grouprec.accesssecret,
+        usergrouptype: grouprec.usergrouptype,
+      nodename: noderec.nodename,
+      basepath : noderec.basepath,
+      usagelimit: noderec.usagelimit,
+      ipaddress: noderec.ipaddress,
+      publicgateway: noderec.publicgateway,
+      localgateway: noderec.localgateway,
+      config: noderec.xconfig
+     };
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+   var configrec = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        useripfsconfig: useripfsconfig,
+         } ).fetch();
+
+   res.json(configrec);
+
 
 },
 
 
 joina2groupuser : async function(req, res, next){
-  var conf = {
-          "configtype": "a1private",
-          "groupname": "group12",
-          "privnodekey": "xxx12", // on login give this key
-          "nodelist": []
-  };
-        res.json(conf);
+
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+  }
+
+  if(!req.body.usergrouptype !=  "a2public") {
+    return ResponseService.json(401, res, "Usergrouptype wrong ")
+  }
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var noderec;
+
+
+  var grouprec = await Usergroup.findOne({
+        usergroupname: req.body.usergroup,
+         } );
+
+  var noderec = await Ipfsprovider.findOne({nodegroup: grouprec.nodegroup });
+
+   var useripfsconfig = {
+      userid: user.userid,
+      nodetype: noderec.nodetype,
+      nodeid: noderec.nodeid,
+      nodegroup: noderec.nodegroup,
+        usergroupkey: grouprec.accesssecret,
+        usergrouptype: grouprec.usergrouptype,
+      nodename: noderec.nodename,
+      basepath : noderec.basepath,
+      usagelimit: noderec.usagelimit,
+      ipaddress: noderec.ipaddress,
+      publicgateway: noderec.publicgateway,
+      localgateway: noderec.localgateway,
+      config: noderec.xconfig
+     };
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+   var configrec = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        useripfsconfig: useripfsconfig,
+         } ).fetch();
+
+   res.json(configrec);
 
 },
+
+geta2groupuser : async function(req, res, next){
+
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+  }
+
+  var userconfig = await Userconfig.findOne({userid: req.body.userid);
+
+  if(!userconfig) {
+    return ResponseService.json(401, res, "Userconfig not found  ")
+  }
+
+  if(!userconfig.useripfsconfig) {
+    return ResponseService.json(401, res, "Useripfsconfig not found  ")
+  }
+
+   res.json(userconfig);
+
+},
+
+
+
+
+
+
 
 joinb1nodesuser : async function(req, res, next){
   var conf = {
@@ -223,112 +371,174 @@ getb1nodesuser : async function(req, res, next){
 },
 
 
-geta1configuser : async function(req, res, next){
-  var conf = {
-	  "configtype": "a1private",
-	  "groupname": "group12",
-	  "privnodekey": "xxx12", // on login give this key
-	  "nodelist": []
-  };
-	res.json(conf);
 
-},
+createc1groupuser : async function(req, res, next){
 
-geta2configuser : async function(req, res, next){
-  var conf = {
-	  "configtype": "a1public",
-	  "groupname": "group1552",
-	  "publicnodekey": "xxx12", // on login give this key, not used
-	  "nodelist": []
-  };
-	res.json(conf);
-},
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
 
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+  }
 
-getc1configuser : async function(req, res, next){
-  var conf = {
-          "configtype": "c1storage", 
-          "groupname": "group1552", 
-          "storagekey": "xxx12", // on login give this key, not used
-          "nodelist": []
-  };
-	res.json(conf);
-},
+  if(!req.body.dedicatedorshared) {
+    return ResponseService.json(401, res, "dedicatedorshared not set  ")
+  }
 
-createa1configuser : async function(req, res, next){
-  var conf = {
-          "configtype": "a1private",
-          "groupname": "group12",
-          "privnodekey": "xxx12", // on login give this key
-          "nodelist": []
-  };
-	res.json(conf);
-
-},
-
-createa2configuser : async function(req, res, next){
-  var conf = {
-          "configtype": "a1public",
-          "groupname": "group1552", 
-          "publicnodekey": "xxx12", // on login give this key, not used
-          "nodelist": []
-  };
-	res.json(conf);
-},
-
-
-createc1configuser : async function(req, res, next){
-  var conf = {
-          "configtype": "c1storage",
-          "groupname": "group1552",
-          "storagekey": "xxx12", // on login give this key, not used
-          "nodelist": []
-  };
   var user = await User.findOne({userid: req.body.userid});
   if(!user) {
     ResponseService.json(403, res, "User record not found ");
           return;
   }
 
+  var buf = crypto.randomBytes(64);
+  var accesssecret = buf.toString('hex');
 
-  var recs = await Ipfsprovider.findOne({nodetype: 'freenode' });
+  var noderec;
 
-  var useripfsconfig = {
+  noderec = await Ipfsprovider.findOne({nodetype: 'privatenode', nodeusage: 'dedicated' });
+  }
+
+
+  var grouprec = await Usergroup.create({
+        creatoremail: user.email,
+        creatorname: user.name,
+        creatoruserid: user.userid,
+        usergroupname: req.body.usergroup,
+        usergroupkey: accesssecret,
+        usergrouptype: "c1storage",
+        nodetype: noderec.nodetype,
+        nodegroup: noderec.nodegroup,
+         } ).fetch();
+
+
+
+   var useripfsconfig = {
       userid: user.userid,
-      nodetype: nodeconf.nodetype,
-      nodeid: nodeconf.nodeid,
-      nodegroup: nodeconf.nodegroup,
-      nodename: nodeconf.nodename,
-      basepath : nodeconf.basepath,
-      usagelimit: nodeconf.usagelimit,
-      ipaddress: nodeconf.ipaddress,
-      publicgateway: nodeconf.publicgateway,
-      localgateway: nodeconf.localgateway,
-      config: nodeconf.xconfig
+      nodetype: noderec.nodetype,
+      nodeid: noderec.nodeid,
+      nodegroup: noderec.nodegroup,
+        usergroupkey: grouprec.accesssecret,
+        usergrouptype: grouprec.usergrouptype,
+      nodename: noderec.nodename,
+      basepath : noderec.basepath,
+      usagelimit: noderec.usagelimit,
+      ipaddress: noderec.ipaddress,
+      publicgateway: noderec.publicgateway,
+      localgateway: noderec.localgateway,
+      config: noderec.xconfig
      };
 
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid,
-          "configtype": "c1storage"});
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
 
   if(!tmpuserconfig) {
     ResponseService.json(403, res, "No user config record ");
           return;
   }
 
-  var newrec = await Userconfig.update({
+   var configrec = await Userconfig.update({
         id: tmpuserconfig.id}).set({
-        usagelimit : userdefault.usagelimit,
         useripfsconfig: useripfsconfig,
          } ).fetch();
 
-        res.json(newrec);
+   res.json(configrec);
 
 
-
-        res.json(recs);
-
-	res.json(conf);
 },
+
+
+joinc1groupuser : async function(req, res, next){
+
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+  }
+
+  if(!req.body.usergrouptype !=  "c1storage") {
+    return ResponseService.json(401, res, "Usergrouptype wrong ")
+  }
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var buf = crypto.randomBytes(64);
+  var accesssecret = buf.toString('hex');
+
+
+
+  var grouprec = await Usergroup.findOne({
+        usergroupname: req.body.usergroup,
+         } );
+
+  var noderec = await Ipfsprovider.findOne({nodegroup: grouprec.nodegroup });
+
+
+   var useripfsconfig = {
+      userid: user.userid,
+      nodetype: noderec.nodetype,
+      nodeid: noderec.nodeid,
+      nodegroup: noderec.nodegroup,
+        usergroupkey: grouprec.accesssecret,
+        usergrouptype: grouprec.usergrouptype,
+      nodename: noderec.nodename,
+      basepath : noderec.basepath,
+      usagelimit: noderec.usagelimit,
+      ipaddress: noderec.ipaddress,
+      publicgateway: noderec.publicgateway,
+      localgateway: noderec.localgateway,
+      config: noderec.xconfig
+     };
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+   var configrec = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        useripfsconfig: useripfsconfig,
+         } ).fetch();
+
+   res.json(configrec);
+
+},
+
+getc1groupuser : async function(req, res, next){
+
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+  }
+
+  var userconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!userconfig) {
+    return ResponseService.json(401, res, "Userconfig not found  ")
+  }
+
+  if(!userconfig.useripfsconfig) {
+    return ResponseService.json(401, res, "Useripfsconfig not found  ")
+  }
+
+   res.json(userconfig);
+
+},
+
+
+
+
 
 
 
