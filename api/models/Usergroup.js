@@ -7,48 +7,41 @@ var _ = require('lodash');
 module.exports = {
 
   attributes: {
-    nodelocation: {
+    creatoremail: {
       type: "string",
+      required: true,
+      unique: true,
+    },
+    creatorname: {
+      type: "string",
+      required: true,
+    },
+    creatoruserid: {
+      type: "string",
+      required: true,
+    },
+    usergroupkey: {
+      type: "string",
+    },
+    usergrouptype: {
+      type: "string",   //c1storage, a1private, a2public
     },
     nodegroup: {
       type: "string",
     },
-    nodeid: {
-      type: "string",
-      required: true,
-    },
-    nodename: {
-      type: "string",
-      required: true,
-    },
-    usagelimit: {
+    grouptokenassigned: {
       type: "string",
     },
-    useraccess: {
-      type: "string",
-    },
-    nodetype: {
-      type: "string",
-    },
-    nodestatus: {
-      type: "string",
-    },
-    nodeusage: {
-      type: "string",  // dedicated or shared
-    },
-    xconfig: {
+    oneipfsconfig: {
       type: "json",
     },
-    publicgateway: {
+    grouptonwallet: {
+      type: "json",
+    },
+    groupslpbalance: {
       type: "string",
     },
-    localgateway: {
-      type: "string",
-    },
-    ipaddress: {
-      type: "string",
-    },
-    basepath: {
+    grouptonbalance: {
       type: "string",
     },
 
