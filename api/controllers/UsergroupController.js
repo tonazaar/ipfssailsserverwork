@@ -158,7 +158,7 @@ geta1groupuser : async function(req, res, next){
     return ResponseService.json(401, res, "Usergroup not provided  ")
   }
 
-  var userconfig = await Userconfig.findOne({userid: req.body.userid);
+  var userconfig = await Userconfig.findOne({userid: req.body.userid});
 
   if(!userconfig) {
     return ResponseService.json(401, res, "Userconfig not found  ")
@@ -329,7 +329,7 @@ geta2groupuser : async function(req, res, next){
     return ResponseService.json(401, res, "Usergroup not provided  ")
   }
 
-  var userconfig = await Userconfig.findOne({userid: req.body.userid);
+  var userconfig = await Userconfig.findOne({userid: req.body.userid});
 
   if(!userconfig) {
     return ResponseService.json(401, res, "Userconfig not found  ")
@@ -398,7 +398,6 @@ createc1groupuser : async function(req, res, next){
   var noderec;
 
   noderec = await Ipfsprovider.findOne({nodetype: 'privatenode', nodeusage: 'dedicated' });
-  }
 
 
   var grouprec = await Usergroup.create({
