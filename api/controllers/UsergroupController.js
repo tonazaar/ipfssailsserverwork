@@ -1,4 +1,6 @@
 var _ = require('lodash');
+crypto = require('crypto');
+
 const IPFS = require('ipfs');
 
 userdefault = require("./ipfsusage/userdefault.json");
@@ -36,6 +38,10 @@ createa1groupuser : async function(req, res, next){
      noderec = await Ipfsprovider.findOne({nodetype: 'privatenode', nodeusage: 'dedicated' });
   }
 
+  if(!noderec) {
+    ResponseService.json(403, res, "No nodes found ");
+          return;
+  }
 
   var grouprec = await Usergroup.create({
         creatoremail: user.email,
