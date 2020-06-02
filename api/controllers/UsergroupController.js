@@ -45,7 +45,7 @@ createa1groupuser : async function(req, res, next){
 
   var grouprec = await Usergroup.create({
         creatoremail: user.email,
-        creatorname: user.name,
+        creatorname: user.username,
         creatoruserid: user.userid,
         usergroupname: req.body.usergroup,
         usergroupkey: accesssecret,
@@ -136,8 +136,8 @@ joina1groupuser : async function(req, res, next){
           return;
   }
 
-  var buf = crypto.randomBytes(64);
-  var accesssecret = buf.toString('hex');
+//  var buf = crypto.randomBytes(64);
+//  var accesssecret = buf.toString('hex');
 
 
 
@@ -186,10 +186,12 @@ geta1groupuser : async function(req, res, next){
     return ResponseService.json(401, res, "Userid not provided  ")
   }
 
+	/*
   if(!req.body.usergroup) {
     return ResponseService.json(401, res, "Usergroup not provided  ")
   }
 
+	*/
   var userconfig = await Userconfig.findOne({userid: req.body.userid});
 
   if(!userconfig) {
@@ -245,7 +247,7 @@ createa2groupuser : async function(req, res, next){
 
   var grouprec = await Usergroup.create({
         creatoremail: user.email,
-        creatorname: user.name,
+        creatorname: user.username,
         creatoruserid: user.userid,
         usergroupname: req.body.usergroup,
         usergroupkey: accesssecret,
@@ -434,7 +436,7 @@ createc1groupuser : async function(req, res, next){
 
   var grouprec = await Usergroup.create({
         creatoremail: user.email,
-        creatorname: user.name,
+        creatorname: user.username,
         creatoruserid: user.userid,
         usergroupname: req.body.usergroup,
         usergroupkey: accesssecret,
