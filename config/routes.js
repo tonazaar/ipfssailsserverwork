@@ -54,6 +54,10 @@ module.exports.routes = {
   'POST /api/usergroup/joina2groupuser': 'UsergroupController.joina2groupuser',
   'POST /api/usergroup/createa2groupuser': 'UsergroupController.createa2groupuser',
 
+  'POST /api/usergroup/lista1groups': 'UsergroupController.lista1groups',
+  'POST /api/usergroup/lista2groups': 'UsergroupController.lista2groups',
+  'POST /api/usergroup/listc1groups': 'UsergroupController.listc1groups',
+
 
   'POST /api/ipfsadmin/listusers': 'IpfsadminController.listusers',
   'POST /api/ipfsadmin/createuserconfig': 'IpfsadminController.createuserconfig',
@@ -63,6 +67,7 @@ module.exports.routes = {
   'POST /api/ipfsadmin/enableuser': 'IpfsadminController.enableuser',
   'POST /api/ipfsadmin/disableuser': 'IpfsadminController.disableuser',
   'POST /api/ipfsadmin/assignnodetouser': 'IpfsadminController.assignnodetouser',
+  'POST /api/ipfsadmin/updatenodeusage': 'IpfsadminController.updatenodeusage',
 
   'POST /api/tokenuser/gettokenbalance': 'TokenuserController.gettokenbalance',
   'POST /api/tokenuser/updateearnedtoken': 'TokenuserController.updateearnedtoken',

@@ -55,6 +55,32 @@ createuserconfig : async function(req, res, next){
 
 },
 
+updatenodeusage : async function(req, res, next){
+
+   if(!req.body.nodeusage) {
+    ResponseService.json(403, res, "Node usage not set   ");
+          return;
+
+   }
+
+    var nodeconf = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
+
+   if(!nodeconf) {
+    ResponseService.json(403, res, "Nodeid does not exist   ");
+          return;
+
+   }
+
+
+   var newrec = await Ipfsprovider.update({
+        id: nodeconf.id}).set({
+        nodeusage : req.body.nodeusage,
+         } ).fetch();
+
+   res.json(newrec);
+
+},
+
 assignnodetouser : async function(req, res, next){
 
   var user = await User.findOne({userid: req.body.userid});

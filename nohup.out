@@ -692,3 +692,79 @@ error: Sending 500 ("Server Error") response:
     at processTicksAndRejections (internal/process/task_queues.js:97:5)
 <- POST /api/usergroup/createa1groupuser      (20ms 500)
 (node:27108) [DEP0066] DeprecationWarning: OutgoingMessage.prototype._headers is deprecated
+
+ info: Starting app...
+
+ info: Initializing project hook... (`api/hooks/custom/`)
+ info: Initializing `apianalytics` hook...  (requests to monitored routes will be logged!)
+ info: ·• Auto-migrating...  (alter)
+ info:    Hold tight, this could take a moment.
+ info:  ✓ Auto-migration complete.
+
+0.001
+ warn: ---------------------------------------------------------------------------
+ warn: Files in the `controllers` directory may be traditional controllers or 
+action files.  Traditional controllers are dictionaries of actions, with 
+pascal-cased filenames ending in "Controller" (e.g. MyGreatController.js).
+Action files are kebab-cased (e.g. do-stuff.js) and contain a single action.
+The following files were ignored for not meeting those criteria:
+ warn: - ipfstokenmap/slpipfs.json
+ warn: - ipfsusage/gamaprivnet_alphaone.json
+ warn: - ipfsusage/gamaprivnet_alphathree.json
+ warn: - ipfsusage/gamaprivnet_alphatwo.json
+ warn: - ipfsusage/node1cluster.json
+ warn: - ipfsusage/node1private.json
+ warn: - ipfsusage/node1public.json
+ warn: - ipfsusage/node2cluster.json
+ warn: - ipfsusage/node2private.json
+ warn: - ipfsusage/node2public.json
+ warn: - ipfsusage/nodexcluster.json
+ warn: - ipfsusage/nodexprivate.json
+ warn: - ipfsusage/nodexpublic.json
+ warn: - ipfsusage/testone.json
+ warn: - ipfsusage/testtwo.json
+ warn: - ipfsusage/userdefault.json
+ warn: - ipfsusage/xx.json
+ warn: ----------------------------------------------------------------------------
+
+ warn: Ignored attempt to bind route (/api/usergroup/geta1configuser) to unknown action :: UsergroupController.geta1configuser
+ warn: Ignored attempt to bind route (/api/usergroup/geta2configuser) to unknown action :: UsergroupController.geta2configuser
+ warn: Ignored attempt to bind route (/api/usergroup/getc1configuser) to unknown action :: UsergroupController.getc1configuser
+ warn: Ignored attempt to bind route (/api/usergroup/createa1configuser) to unknown action :: UsergroupController.createa1configuser
+ warn: Ignored attempt to bind route (/api/usergroup/createa2configuser) to unknown action :: UsergroupController.createa2configuser
+ warn: Ignored attempt to bind route (/api/usergroup/createc1configuser) to unknown action :: UsergroupController.createc1configuser
+debug: Skipping v0 bootstrap script...  (because it's already been run)
+debug: (last run on this computer: @ Tue Feb 18 2020 15:56:49 GMT+0000 (Coordinated Universal Time))
+ info: 
+ info:                .-..-.
+ info: 
+ info:    Sails              <|    .-..-.
+ info:    v1.2.3              |\
+ info:                       /|.\
+ info:                      / || \
+ info:                    ,'  |'  \
+ info:                 .-'.-==|/_--'
+ info:                 `--'-------' 
+ info:    __---___--___---___--___---___--___
+ info:  ____---___--___---___--___---___--___-__
+ info: 
+ info: Server lifted in `/home/ubuntu/phase2/sailswork/ipfssailsserverwork`
+ info: To shut down Sails, press <CTRL> + C at any time.
+ info: Read more at https://sailsjs.com/support.
+
+debug: -------------------------------------------------------
+debug: :: Tue Jun 02 2020 11:47:24 GMT+0000 (Coordinated Universal Time)
+
+debug: Environment : development
+debug: Port        : 1337
+debug: -------------------------------------------------------
+isAuthorised
+Decoded={"id":"5ea9a921fe60390c92ad3ad2","iat":1591080646,"exp":2671080646}
+User={"createdAt":1588177185150,"updatedAt":1588177185150,"id":"5ea9a921fe60390c92ad3ad2","email":"user1@dora.com","username":"user1","userid":"user1xxx","role":"user","account":0,"password":"$2b$10$wyHOpVTcUuQXJ5hMisN84OFsgxI0Ri0wvp75HbPc/PEG2T5g1o0ke"}
+
+
+
+3 minutes later...
+
+<- POST /api/usergroup/createa1groupuser      (18ms 403)
+(node:28100) [DEP0066] DeprecationWarning: OutgoingMessage.prototype._headers is deprecated

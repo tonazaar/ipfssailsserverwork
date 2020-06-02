@@ -90,6 +90,32 @@ createa1groupuser : async function(req, res, next){
 },
 
 
+lista1groups : async function(req, res, next){
+  var recs = await Usergroup.find({
+	usergrouptype:'a1private'});
+
+   res.json(recs);
+
+},
+
+lista2groups : async function(req, res, next){
+  var recs = await Usergroup.find({
+	usergrouptype:'a1public'});
+
+   res.json(recs);
+
+},
+
+
+listc1groups : async function(req, res, next){
+  var recs = await Usergroup.find({
+	usergrouptype:'c1storage'});
+
+   res.json(recs);
+
+},
+
+
 joina1groupuser : async function(req, res, next){
 
   if(!req.body.userid) {
