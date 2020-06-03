@@ -29,6 +29,12 @@ module.exports = {
     nodetype: {
       type: "string",
     },
+    usergroupname: {
+      type: "string",
+    },
+    usergrouptype: {
+      type: "string",
+    },
     tokenassigned: {
       type: "string",
     },

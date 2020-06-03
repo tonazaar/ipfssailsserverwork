@@ -82,6 +82,8 @@ createa1groupuser : async function(req, res, next){
    var configrec = await Userconfig.update({
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
+	 usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
          } ).fetch();
 
    res.json(configrec);
@@ -174,11 +176,51 @@ joina1groupuser : async function(req, res, next){
    var configrec = await Userconfig.update({
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
+	 usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
          } ).fetch();
 
    res.json(configrec);
 
 },
+
+geta1groupowner : async function(req, res, next){
+   if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+  }
+
+  var grouprec = await Usergroup.findOne({
+        usergroupname: req.body.usergroup,
+         } );
+
+  if(!grouprec) {
+    ResponseService.json(403, res, "Group not found ");
+          return;
+  }
+
+  res.json(grouprec);
+
+},
+
+geta1groupusers : async function(req, res, next){
+   if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+  }
+
+  var configrecs = await Userconfig.find({
+         usergroupname: req.body.usergroup });
+
+  res.json(configrecs);
+},
+
 
 geta1groupuser : async function(req, res, next){
 
@@ -284,6 +326,8 @@ createa2groupuser : async function(req, res, next){
    var configrec = await Userconfig.update({
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
+	 usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
          } ).fetch();
 
    res.json(configrec);
@@ -347,6 +391,8 @@ joina2groupuser : async function(req, res, next){
    var configrec = await Userconfig.update({
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
+	 usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
          } ).fetch();
 
    res.json(configrec);
@@ -473,6 +519,8 @@ createc1groupuser : async function(req, res, next){
    var configrec = await Userconfig.update({
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
+	 usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
          } ).fetch();
 
    res.json(configrec);
@@ -539,6 +587,8 @@ joinc1groupuser : async function(req, res, next){
    var configrec = await Userconfig.update({
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
+	 usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
          } ).fetch();
 
    res.json(configrec);
@@ -572,20 +622,30 @@ getc1groupuser : async function(req, res, next){
 
 
 
-
-
-
 removefromgroup : async function(req, res, next){
-    if(!req.body) {
+
+  if(!req.body.userid) {
     return ResponseService.json(401, res, "Data not provided  ")
-    }
-  var result = await Usergroup.remove({
-        hash : req.body.hash
-	    });
-	res.json(result);
+   }
+
+   var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+   var configrec = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        useripfsconfig: null,
+         usergroupname: '',
+        usergrouptype: ''
+         } ).fetch();
+
+   res.json(configrec);
+
 
 }
-
 }
 
 function generateToken(user_id) {
