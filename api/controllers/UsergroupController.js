@@ -43,6 +43,13 @@ createa1groupuser : async function(req, res, next){
           return;
   }
 
+  var usergroup = await Usergroup.findOne({creatoremail: user.email});
+
+  if(usergroup) {
+    ResponseService.json(403, res, "Only one group allowed");
+          return;
+  }
+
   var grouprec = await Usergroup.create({
         creatoremail: user.email,
         creatorname: user.username,
@@ -100,14 +107,131 @@ lista1groups : async function(req, res, next){
 
 },
 
-lista2groups : async function(req, res, next){
+listmya1groups : async function(req, res, next){
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
   var recs = await Usergroup.find({
-	usergrouptype:'a1public'});
+	  creatoremail: user.email,
+        usergrouptype:'a1private'});
 
    res.json(recs);
 
 },
 
+listjoineda1groups : async function(req, res, next){
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var db = Ipfsprovider.getDatastore().manager;
+
+    // Now we can do anything we could do with a Mongo `db` instance:
+    var collection = db.collection("userconfig");
+
+    collection.distinct("usergroupname", {usergrouptype: 'a1private', userid: req.body.userid}).then(x=> {
+
+        console.log (x);
+        res.json(x);
+    });
+
+
+
+},
+
+
+listjoineda2groups : async function(req, res, next){
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var db = Ipfsprovider.getDatastore().manager;
+
+    // Now we can do anything we could do with a Mongo `db` instance:
+    var collection = db.collection("userconfig");
+
+    collection.distinct("usergroupname", {usergrouptype: 'a2public', userid: req.body.userid}).then(x=> {
+
+        console.log (x);
+        res.json(x);
+    });
+
+
+
+},
+
+listjoinedc1groups : async function(req, res, next){
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var db = Ipfsprovider.getDatastore().manager;
+
+    // Now we can do anything we could do with a Mongo `db` instance:
+    var collection = db.collection("userconfig");
+
+    collection.distinct("usergroupname", {usergrouptype: 'c1storage', userid: req.body.userid}).then(x=> {
+
+        console.log (x);
+        res.json(x);
+    });
+
+
+
+},
+
+
+lista2groups : async function(req, res, next){
+  var recs = await Usergroup.find({
+	usergrouptype:'a2public'});
+
+   res.json(recs);
+
+},
+
+listmya2groups : async function(req, res, next){
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+  
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var recs = await Usergroup.find({
+          creatoremail: user.email,
+        usergrouptype:'a1public'});
+
+   res.json(recs);
+
+},
 
 listc1groups : async function(req, res, next){
   var recs = await Usergroup.find({
@@ -116,6 +240,26 @@ listc1groups : async function(req, res, next){
    res.json(recs);
 
 },
+
+listmyc1groups : async function(req, res, next){
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+  
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var recs = await Usergroup.find({
+          creatoremail: user.email,
+        usergrouptype:'c1storage'});
+
+   res.json(recs);
+
+},
+
 
 
 joina1groupuser : async function(req, res, next){
@@ -128,9 +272,6 @@ joina1groupuser : async function(req, res, next){
     return ResponseService.json(401, res, "Usergroup not provided  ")
   }
 
-  if(!req.body.usergrouptype !=  "a1private") {
-    return ResponseService.json(401, res, "Usergrouptype wrong ")
-  }
 
   var user = await User.findOne({userid: req.body.userid});
   if(!user) {
@@ -147,24 +288,21 @@ joina1groupuser : async function(req, res, next){
         usergroupname: req.body.usergroup,
          } );
 
-  var noderec = await Ipfsprovider.findOne({nodegroup: grouprec.nodegroup });
 
 
-   var useripfsconfig = {
-      userid: user.userid,
-      nodetype: noderec.nodetype,
-      nodeid: noderec.nodeid,
-      nodegroup: noderec.nodegroup,
-        usergroupkey: grouprec.accesssecret,
-        usergrouptype: grouprec.usergrouptype,
-      nodename: noderec.nodename,
-      basepath : noderec.basepath,
-      usagelimit: noderec.usagelimit,
-      ipaddress: noderec.ipaddress,
-      publicgateway: noderec.publicgateway,
-      localgateway: noderec.localgateway,
-      config: noderec.xconfig
-     };
+
+ var leaderconfig = await Userconfig.findOne({usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype});
+
+
+  if(!leaderconfig) {
+    ResponseService.json(403, res, "Leaderconfig not found ");
+          return;
+  }
+
+   var useripfsconfig =  leaderconfig;
+   useripfsconfig.userid = user.userid;
+
 
   var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
 
@@ -646,20 +784,30 @@ deletemygroup : async function(req, res, next){
 
    }
 
-   var groupusers = await Userconfig.find({usergroupname: req.body.req.body.usergroup});
+   var groupusers = await Userconfig.find({usergroupname: req.body.usergroup});
 
-   if(groupusers.length != 0){
+   if(groupusers.length != 1){
           ResponseService.json(403, res, "Others using this group ");
           return;
     }
 
-   var configrec = await Usergroup.remove({
-        creatormail: user.email});
+   var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid, usergroupname: req.body.usergroup});
+
+   var removing = await Usergroup.destroyOne({ creatoremail: user.email});
+
+
+   var configrec = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        useripfsconfig: null,
+         usergroupname: '',
+        usergrouptype: ''
+         } ).fetch();
 
    res.json(configrec);
 
 
-}
+
+},
 
 
 removefromgroup : async function(req, res, next){
@@ -680,13 +828,20 @@ removefromgroup : async function(req, res, next){
   }
    var tmpusergroup = await Usergroup.findOne({userid: req.body.userid});
 
-   var configrec = await Usergroup.remove({
+  if(tmpusergroup.creatoremail === tmpuserconfig.email) {
+    ResponseService.json(403, res, "You cannot exit your own group");
+          return;
+  }
+ 
+  var configrec = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
         useripfsconfig: null,
          usergroupname: '',
         usergrouptype: ''
          } ).fetch();
 
    res.json(configrec);
+
 
 
 }
