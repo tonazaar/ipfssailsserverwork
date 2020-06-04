@@ -54,6 +54,7 @@ module.exports.routes = {
   'POST /api/usergroup/removefromgroup': 'UsergroupController.removefromgroup',
   'POST /api/usergroup/geta1groupowner': 'UsergroupController.geta1groupowner',
   'POST /api/usergroup/geta1groupusers': 'UsergroupController.geta1groupusers',
+  'POST /api/usergroup/deletemygroup': 'UsergroupController.deletemygroup',
 
 
 

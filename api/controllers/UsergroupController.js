@@ -620,6 +620,46 @@ getc1groupuser : async function(req, res, next){
 },
 
 
+deletemygroup : async function(req, res, next){
+
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Data not provided  ")
+   }
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+   }
+
+   var user= await User.findOne({userid: req.body.userid});
+
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+
+   var tmpusergroup = await Usergroup.findOne({creatoremail: user.email});
+   if(tmpusergroup.usergroupname != req.body.usergroup) {
+	   
+    ResponseService.json(403, res, "Not owner of group to delete ");
+          return;
+
+   }
+
+   var groupusers = await Userconfig.find({usergroupname: req.body.req.body.usergroup});
+
+   if(groupusers.length != 0){
+          ResponseService.json(403, res, "Others using this group ");
+          return;
+    }
+
+   var configrec = await Usergroup.remove({
+        creatormail: user.email});
+
+   res.json(configrec);
+
+
+}
 
 
 removefromgroup : async function(req, res, next){
@@ -628,15 +668,19 @@ removefromgroup : async function(req, res, next){
     return ResponseService.json(401, res, "Data not provided  ")
    }
 
-   var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+   }
+
+   var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid, usergroupname: req.body.usergroup});
 
   if(!tmpuserconfig) {
-    ResponseService.json(403, res, "No user config record ");
+    ResponseService.json(403, res, "User not in group ");
           return;
   }
+   var tmpusergroup = await Usergroup.findOne({userid: req.body.userid});
 
-   var configrec = await Userconfig.update({
-        id: tmpuserconfig.id}).set({
+   var configrec = await Usergroup.remove({
         useripfsconfig: null,
          usergroupname: '',
         usergrouptype: ''

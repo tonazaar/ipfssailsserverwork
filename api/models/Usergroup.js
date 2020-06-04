@@ -23,6 +23,9 @@ module.exports = {
     usergroupkey: {
       type: "string",
     },
+    usergroupname: {
+      type: "string",
+    },
     usergrouptype: {
       type: "string",   //c1storage, a1private, a2public
     },
@@ -32,7 +35,7 @@ module.exports = {
     grouptokenassigned: {
       type: "string",
     },
-    oneipfsconfig: {
+    oneipfsconfig: {   // not sure
       type: "json",
     },
     grouptonwallet: {
