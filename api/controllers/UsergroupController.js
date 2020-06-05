@@ -109,6 +109,7 @@ createa1groupuser : async function(req, res, next){
 },
 
 
+
 lista1groups : async function(req, res, next){
   var recs = await Usergroup.find({
 	usergrouptype:'a1private'});
