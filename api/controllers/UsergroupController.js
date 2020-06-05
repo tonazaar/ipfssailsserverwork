@@ -82,18 +82,28 @@ createa1groupuser : async function(req, res, next){
   var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
 
   if(!tmpuserconfig) {
-    ResponseService.json(403, res, "No user config record ");
-          return;
-  }
 
-   var configrec = await Userconfig.update({
+     tmpuserconfig = await Userconfig.create({
+        email : user.email,
+        userid : user.userid,
+        username : user.username,
+        usagelimit : userdefault.usagelimit,
+	 usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
+        useraccess : 'enabled',
+        useripfsconfig: useripfsconfig,
+         } ).fetch();
+
+  }else {
+     tmpuserconfig = await Userconfig.update({
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
 	 usergroupname: grouprec.usergroupname,
         usergrouptype: grouprec.usergrouptype,
          } ).fetch();
+  }
 
-   res.json(configrec);
+   res.json(tmpuserconfig);
 
 
 },
@@ -311,14 +321,32 @@ joina1groupuser : async function(req, res, next){
           return;
   }
 
-   var configrec = await Userconfig.update({
-        id: tmpuserconfig.id}).set({
-        useripfsconfig: useripfsconfig,
-	 usergroupname: grouprec.usergroupname,
+  if(!tmpuserconfig) {
+
+     tmpuserconfig = await Userconfig.create({
+        email : user.email,
+        userid : user.userid,
+        username : user.username,
+        usagelimit : userdefault.usagelimit,
+         usergroupname: grouprec.usergroupname,
         usergrouptype: grouprec.usergrouptype,
+        useraccess : 'enabled',
+        useripfsconfig: useripfsconfig,
          } ).fetch();
 
-   res.json(configrec);
+  }else {
+     tmpuserconfig = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        useripfsconfig: useripfsconfig,
+         usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
+         } ).fetch();
+  }
+
+   res.json(tmpuserconfig);
+
+
+
 
 },
 
@@ -454,21 +482,36 @@ createa2groupuser : async function(req, res, next){
       config: noderec.xconfig
      };
 
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+   var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
 
   if(!tmpuserconfig) {
     ResponseService.json(403, res, "No user config record ");
           return;
   }
 
-   var configrec = await Userconfig.update({
-        id: tmpuserconfig.id}).set({
-        useripfsconfig: useripfsconfig,
-	 usergroupname: grouprec.usergroupname,
+  if(!tmpuserconfig) {
+
+     tmpuserconfig = await Userconfig.create({
+        email : user.email,
+        userid : user.userid,
+        username : user.username,
+        usagelimit : userdefault.usagelimit,
+         usergroupname: grouprec.usergroupname,
         usergrouptype: grouprec.usergrouptype,
+        useraccess : 'enabled',
+        useripfsconfig: useripfsconfig,
          } ).fetch();
 
-   res.json(configrec);
+  }else {
+     tmpuserconfig = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        useripfsconfig: useripfsconfig,
+         usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
+         } ).fetch();
+  }
+
+   res.json(tmpuserconfig);
 
 
 },
@@ -501,39 +544,50 @@ joina2groupuser : async function(req, res, next){
         usergroupname: req.body.usergroup,
          } );
 
-  var noderec = await Ipfsprovider.findOne({nodegroup: grouprec.nodegroup });
+  var leaderconfig = await Userconfig.findOne({usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype});
 
-   var useripfsconfig = {
-      userid: user.userid,
-      nodetype: noderec.nodetype,
-      nodeid: noderec.nodeid,
-      nodegroup: noderec.nodegroup,
-        usergroupkey: grouprec.accesssecret,
-        usergrouptype: grouprec.usergrouptype,
-      nodename: noderec.nodename,
-      basepath : noderec.basepath,
-      usagelimit: noderec.usagelimit,
-      ipaddress: noderec.ipaddress,
-      publicgateway: noderec.publicgateway,
-      localgateway: noderec.localgateway,
-      config: noderec.xconfig
-     };
 
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+  if(!leaderconfig) {
+    ResponseService.json(403, res, "Leaderconfig not found ");
+          return;
+  }
+
+   var useripfsconfig =  leaderconfig;
+   useripfsconfig.userid = user.userid;
+
+
+
+    var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
 
   if(!tmpuserconfig) {
     ResponseService.json(403, res, "No user config record ");
           return;
   }
 
-   var configrec = await Userconfig.update({
-        id: tmpuserconfig.id}).set({
-        useripfsconfig: useripfsconfig,
-	 usergroupname: grouprec.usergroupname,
+  if(!tmpuserconfig) {
+
+     tmpuserconfig = await Userconfig.create({
+        email : user.email,
+        userid : user.userid,
+        username : user.username,
+        usagelimit : userdefault.usagelimit,
+         usergroupname: grouprec.usergroupname,
         usergrouptype: grouprec.usergrouptype,
+        useraccess : 'enabled',
+        useripfsconfig: useripfsconfig,
          } ).fetch();
 
-   res.json(configrec);
+  }else {
+     tmpuserconfig = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        useripfsconfig: useripfsconfig,
+         usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
+         } ).fetch();
+  }
+
+   res.json(tmpuserconfig);
 
 },
 
@@ -647,21 +701,36 @@ createc1groupuser : async function(req, res, next){
       config: noderec.xconfig
      };
 
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+    var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
 
   if(!tmpuserconfig) {
     ResponseService.json(403, res, "No user config record ");
           return;
   }
 
-   var configrec = await Userconfig.update({
-        id: tmpuserconfig.id}).set({
-        useripfsconfig: useripfsconfig,
-	 usergroupname: grouprec.usergroupname,
+  if(!tmpuserconfig) {
+
+     tmpuserconfig = await Userconfig.create({
+        email : user.email,
+        userid : user.userid,
+        username : user.username,
+        usagelimit : userdefault.usagelimit,
+         usergroupname: grouprec.usergroupname,
         usergrouptype: grouprec.usergrouptype,
+        useraccess : 'enabled',
+        useripfsconfig: useripfsconfig,
          } ).fetch();
 
-   res.json(configrec);
+  }else {
+     tmpuserconfig = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        useripfsconfig: useripfsconfig,
+         usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
+         } ).fetch();
+  }
+
+   res.json(tmpuserconfig);
 
 
 },
@@ -696,40 +765,48 @@ joinc1groupuser : async function(req, res, next){
         usergroupname: req.body.usergroup,
          } );
 
-  var noderec = await Ipfsprovider.findOne({nodegroup: grouprec.nodegroup });
+  var leaderconfig = await Userconfig.findOne({usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype});
 
 
-   var useripfsconfig = {
-      userid: user.userid,
-      nodetype: noderec.nodetype,
-      nodeid: noderec.nodeid,
-      nodegroup: noderec.nodegroup,
-        usergroupkey: grouprec.accesssecret,
-        usergrouptype: grouprec.usergrouptype,
-      nodename: noderec.nodename,
-      basepath : noderec.basepath,
-      usagelimit: noderec.usagelimit,
-      ipaddress: noderec.ipaddress,
-      publicgateway: noderec.publicgateway,
-      localgateway: noderec.localgateway,
-      config: noderec.xconfig
-     };
+  if(!leaderconfig) {
+    ResponseService.json(403, res, "Leaderconfig not found ");
+          return;
+  }
 
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+   var useripfsconfig =  leaderconfig;
+   useripfsconfig.userid = user.userid;
+
+    var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
 
   if(!tmpuserconfig) {
     ResponseService.json(403, res, "No user config record ");
           return;
   }
 
-   var configrec = await Userconfig.update({
-        id: tmpuserconfig.id}).set({
-        useripfsconfig: useripfsconfig,
-	 usergroupname: grouprec.usergroupname,
+  if(!tmpuserconfig) {
+
+     tmpuserconfig = await Userconfig.create({
+        email : user.email,
+        userid : user.userid,
+        username : user.username,
+        usagelimit : userdefault.usagelimit,
+         usergroupname: grouprec.usergroupname,
         usergrouptype: grouprec.usergrouptype,
+        useraccess : 'enabled',
+        useripfsconfig: useripfsconfig,
          } ).fetch();
 
-   res.json(configrec);
+  }else {
+     tmpuserconfig = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        useripfsconfig: useripfsconfig,
+         usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
+         } ).fetch();
+  }
+
+   res.json(tmpuserconfig);
 
 },
 
