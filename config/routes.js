@@ -67,7 +67,9 @@ module.exports.routes = {
   'POST /api/usergroup/listjoineda1groups': 'UsergroupController.listjoineda1groups',
   'POST /api/usergroup/listjoineda2groups': 'UsergroupController.listjoineda2groups',
   'POST /api/usergroup/listjoinedc1groups': 'UsergroupController.listjoinedc1groups',
- 
+  'POST /api/usergroup/getusersofgroup': 'UsergroupController.getusersofgroup',
+  'POST /api/usergroup/getcreatorofgroup': 'UsergroupController.getcreatorofgroup',
+
 
   'POST /api/ipfsadmin/listusers': 'IpfsadminController.listusers',
   'POST /api/ipfsadmin/createuserconfig': 'IpfsadminController.createuserconfig',

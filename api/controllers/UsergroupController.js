@@ -108,6 +108,38 @@ createa1groupuser : async function(req, res, next){
 
 },
 
+getusersofgroup: async function(req, res, next){
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Group name not provided  ")
+  }
+
+  var recs = await Userconfig.find({
+	 usergroupname: req.body.usergroup }
+    );
+
+   res.json(recs);
+
+},
+
+getcreatorofgroup: async function(req, res, next){
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Group name not provided  ")
+  }
+
+  var userec = await Usergroup.findOne({
+        usergroupname:req.body.usergroup});
+
+  if(!userec) {
+    return ResponseService.json(401, res, "Group not found  ")
+  }
+
+  var recs = await Userconfig.findOne({
+         email: userec.creatoremail }
+    );
+
+   res.json(recs);
+
+},
 
 
 lista1groups : async function(req, res, next){
