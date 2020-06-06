@@ -275,11 +275,6 @@ getprivatenodes : async function(req, res, next){
 
 listnodesofgroup : async function(req, res, next){
 
-   if(!req.body.nodetype ) {
-
-    ResponseService.json(403, res, "Nodetype is not set ");
-          return;
-   }
 
    if(!req.body.nodegroup ){
 
@@ -287,8 +282,7 @@ listnodesofgroup : async function(req, res, next){
           return;
    }
 
-  var recs = await Ipfsprovider.find({nodetype: req.body.nodetype,
-	  nodegroup: req.body.nodegroup });
+  var recs = await Ipfsprovider.find({ nodegroup: req.body.nodegroup });
 
   res.json(recs);
 
