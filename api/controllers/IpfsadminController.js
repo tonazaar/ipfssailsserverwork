@@ -57,11 +57,19 @@ createuserconfig : async function(req, res, next){
 
 updatenodeusage : async function(req, res, next){
 
-   if(!req.body.nodeusage) {
+   if(!req.body.nodeitem.nodeusage) {
     ResponseService.json(403, res, "Node usage not set   ");
           return;
 
    }
+
+  if(req.body.nodeitem.nodeid != req.body.nodeid) {
+    ResponseService.json(403, res, "Node id mismatch ");
+          return;
+
+   }
+
+
 
     var nodeconf = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
 
@@ -74,7 +82,9 @@ updatenodeusage : async function(req, res, next){
 
    var newrec = await Ipfsprovider.update({
         id: nodeconf.id}).set({
-        nodeusage : req.body.nodeusage,
+        nodeusage : req.body.nodeitem.nodeusage,
+        nodegroup : req.body.nodeitem.nodegroup,
+        nodetype : req.body.nodeitem.nodetype,
          } ).fetch();
 
    res.json(newrec);

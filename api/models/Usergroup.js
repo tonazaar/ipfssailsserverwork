@@ -47,6 +47,10 @@ module.exports = {
     grouptonbalance: {
       type: "string",
     },
+    userconfigs: {
+	    collection: 'Userconfig',
+	    via: 'usergroupptr'
+    },
 
   },
 

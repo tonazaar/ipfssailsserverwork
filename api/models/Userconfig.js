@@ -32,6 +32,12 @@ module.exports = {
     usergroupname: {
       type: "string",
     },
+    usergroupptr: {
+      model: 'Usergroup',
+    },
+    userptr: {
+      model: 'User',
+    },
     usergrouptype: {
       type: "string",
     },

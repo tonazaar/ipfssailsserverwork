@@ -20,6 +20,10 @@ module.exports = {
       type: "string",
       required: true,
     },
+	  userconfig: {
+		  collection: 'Userconfig',
+		  via : 'userptr'
+	  },
     role: {
       type: "string",
       required: true,
