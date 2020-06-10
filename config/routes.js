@@ -42,6 +42,7 @@ module.exports.routes = {
   'POST /api/ipfsusage/searchfiles': 'IpfsusageController.searchfiles',
 
   'POST /api/usergroup/geta1groupuser': 'UsergroupController.geta1groupuser',
+  'POST /api/usergroup/getb1groupuser': 'UsergroupController.getb1groupuser',
   'POST /api/usergroup/geta2groupuser': 'UsergroupController.geta2groupuser',
   'POST /api/usergroup/getc1groupuser': 'UsergroupController.getc1groupuser',
   'POST /api/usergroup/getb1nodesuser': 'UsergroupController.getb1nodesuser',
@@ -50,18 +51,23 @@ module.exports.routes = {
   'POST /api/usergroup/createa1groupuser': 'UsergroupController.createa1groupuser',
   'POST /api/usergroup/joina2groupuser': 'UsergroupController.joina2groupuser',
   'POST /api/usergroup/createa2groupuser': 'UsergroupController.createa2groupuser',
+  'POST /api/usergroup/createb1groupuser': 'UsergroupController.createb1groupuser',
 
   'POST /api/usergroup/removefromgroup': 'UsergroupController.removefromgroup',
   'POST /api/usergroup/geta1groupowner': 'UsergroupController.geta1groupowner',
+  'POST /api/usergroup/getb1groupowner': 'UsergroupController.getb1groupowner',
   'POST /api/usergroup/geta1groupusers': 'UsergroupController.geta1groupusers',
+  'POST /api/usergroup/getb1groupusers': 'UsergroupController.getb1groupusers',
   'POST /api/usergroup/deletemygroup': 'UsergroupController.deletemygroup',
 
 
 
   'POST /api/usergroup/lista1groups': 'UsergroupController.lista1groups',
+  'POST /api/usergroup/listb1groups': 'UsergroupController.listb1groups',
   'POST /api/usergroup/lista2groups': 'UsergroupController.lista2groups',
   'POST /api/usergroup/listc1groups': 'UsergroupController.listc1groups',
   'POST /api/usergroup/listmya1groups': 'UsergroupController.listmya1groups',
+  'POST /api/usergroup/listmyb1groups': 'UsergroupController.listmyb1groups',
   'POST /api/usergroup/listmya2groups': 'UsergroupController.listmya2groups',
   'POST /api/usergroup/listmyc1groups': 'UsergroupController.listmyc1groups',
   'POST /api/usergroup/listjoineda1groups': 'UsergroupController.listjoineda1groups',

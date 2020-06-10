@@ -108,6 +108,107 @@ createa1groupuser : async function(req, res, next){
 
 },
 
+createb1groupuser : async function(req, res, next){
+
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+  }
+
+  if(!req.body.dedicatedorshared) {
+    return ResponseService.json(401, res, "dedicatedorshared not set  ")
+  }
+
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var buf = crypto.randomBytes(64);
+  var accesssecret = buf.toString('hex');
+
+  var noderec;
+
+  if(req.body.dedicatedorshared === 'shared') {
+     noderec = await Ipfsprovider.findOne({nodetype: 'privatenode', nodeusage: 'shared' });
+  }else {
+     noderec = await Ipfsprovider.findOne({nodetype: 'privatenode', nodeusage: 'dedicated' });
+  }
+
+  if(!noderec) {
+    ResponseService.json(403, res, "No nodes found ");
+          return;
+  }
+
+  var usergroup = await Usergroup.findOne({creatoremail: user.email});
+
+  if(usergroup) {
+    ResponseService.json(403, res, "Only one group allowed");
+          return;
+  }
+
+  var grouprec = await Usergroup.create({
+        creatoremail: user.email,
+        creatorname: user.username,
+        creatoruserid: user.userid,
+        usergroupname: req.body.usergroup,
+        usergroupkey: accesssecret,
+        usergrouptype: "b1earn",
+        nodetype: noderec.nodetype,
+        nodegroup: noderec.nodegroup,
+         } ).fetch();
+
+
+
+   var useripfsconfig = {
+      userid: user.userid,
+      nodetype: noderec.nodetype,
+      nodeid: noderec.nodeid,
+      nodegroup: noderec.nodegroup,
+        usergroupkey: grouprec.accesssecret,
+        usergrouptype: grouprec.usergrouptype,
+      nodename: noderec.nodename,
+      basepath : noderec.basepath,
+      usagelimit: noderec.usagelimit,
+      ipaddress: noderec.ipaddress,
+      publicgateway: noderec.publicgateway,
+      localgateway: noderec.localgateway,
+      config: noderec.xconfig
+     };
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+
+     tmpuserconfig = await Userconfig.create({
+        email : user.email,
+        userid : user.userid,
+        username : user.username,
+        usagelimit : userdefault.usagelimit,
+	 usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
+        useraccess : 'enabled',
+        useripfsconfig: useripfsconfig,
+         } ).fetch();
+
+  }else {
+     tmpuserconfig = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        useripfsconfig: useripfsconfig,
+	 usergroupname: grouprec.usergroupname,
+        usergrouptype: grouprec.usergrouptype,
+         } ).fetch();
+  }
+
+   res.json(tmpuserconfig);
+
+
+},
 getusersofgroup: async function(req, res, next){
   if(!req.body.usergroup) {
     return ResponseService.json(401, res, "Group name not provided  ")
@@ -164,6 +265,33 @@ listmya1groups : async function(req, res, next){
   var recs = await Usergroup.find({
 	  creatoremail: user.email,
         usergrouptype:'a1private'});
+
+   res.json(recs);
+
+},
+
+listb1groups : async function(req, res, next){
+  var recs = await Usergroup.find({
+        usergrouptype:'b1earn'});
+
+   res.json(recs);
+
+},
+
+listmyb1groups : async function(req, res, next){
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var recs = await Usergroup.find({
+          creatoremail: user.email,
+        usergrouptype:'b1earn'});
 
    res.json(recs);
 
@@ -383,6 +511,29 @@ joina1groupuser : async function(req, res, next){
 
 },
 
+getb1groupowner : async function(req, res, next){
+   if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+  }
+
+  var grouprec = await Usergroup.findOne({
+        usergroupname: req.body.usergroup,
+         } );
+
+  if(!grouprec) {
+    ResponseService.json(403, res, "Group not found ");
+          return;
+  }
+
+  res.json(grouprec);
+
+},
+
+
 geta1groupowner : async function(req, res, next){
    if(!req.body.userid) {
     return ResponseService.json(401, res, "Userid not provided  ")
@@ -447,6 +598,31 @@ geta1groupuser : async function(req, res, next){
 
 },
 
+getb1groupuser : async function(req, res, next){
+
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+        /*
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+  }
+
+        */
+  var userconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!userconfig) {
+    return ResponseService.json(401, res, "Userconfig not found  ")
+  }
+
+  if(!userconfig.useripfsconfig) {
+    return ResponseService.json(401, res, "Useripfsconfig not found  ")
+  }
+
+   res.json(userconfig);
+
+},
 
 
 
