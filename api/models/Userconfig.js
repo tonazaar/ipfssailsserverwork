@@ -29,6 +29,9 @@ module.exports = {
     nodetype: {
       type: "string",
     },
+    nodegroup: {
+      type: "string",
+    },
     usergroupname: {
       type: "string",
     },

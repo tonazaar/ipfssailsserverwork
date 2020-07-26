@@ -859,3 +859,64 @@ isAuthorised
 Decoded={"id":"5ed531bd3acd49430ea2aa39","iat":1591290723,"exp":2671290723}
 User={"createdAt":1591030204956,"updatedAt":1591030204956,"id":"5ed531bd3acd49430ea2aa39","email":"user2@dora.com","username":"user2","userid":"user2xxx","role":"user","account":1,"password":"$2b$10$PjR.b7bIk05WrDjknT.tXOoDcKJZZZ7Rqv6Y55VuKWWBhSCdKytKW"}
 <- POST /api/usergroup/lista2groups           (9ms 200)
+
+ info: Starting app...
+
+ info: Initializing project hook... (`api/hooks/custom/`)
+ info: Initializing `apianalytics` hook...  (requests to monitored routes will be logged!)
+ info: ·• Auto-migrating...  (alter)
+ info:    Hold tight, this could take a moment.
+ info:  ✓ Auto-migration complete.
+
+0.001
+ warn: ---------------------------------------------------------------------------
+ warn: Files in the `controllers` directory may be traditional controllers or 
+action files.  Traditional controllers are dictionaries of actions, with 
+pascal-cased filenames ending in "Controller" (e.g. MyGreatController.js).
+Action files are kebab-cased (e.g. do-stuff.js) and contain a single action.
+The following files were ignored for not meeting those criteria:
+ warn: - ipfstokenmap/slpipfs.json
+ warn: - ipfsusage/gamaprivnet_alphaone.json
+ warn: - ipfsusage/gamaprivnet_alphathree.json
+ warn: - ipfsusage/gamaprivnet_alphatwo.json
+ warn: - ipfsusage/node1cluster.json
+ warn: - ipfsusage/node1private.json
+ warn: - ipfsusage/node1public.json
+ warn: - ipfsusage/node2cluster.json
+ warn: - ipfsusage/node2private.json
+ warn: - ipfsusage/node2public.json
+ warn: - ipfsusage/nodexcluster.json
+ warn: - ipfsusage/nodexprivate.json
+ warn: - ipfsusage/nodexpublic.json
+ warn: - ipfsusage/testone.json
+ warn: - ipfsusage/testtwo.json
+ warn: - ipfsusage/userdefault.json
+ warn: - ipfsusage/xx.json
+ warn: ----------------------------------------------------------------------------
+
+ warn: Ignored attempt to bind route (/api/usergroup/getb1groupusers) to unknown action :: UsergroupController.getb1groupusers
+debug: Skipping v0 bootstrap script...  (because it's already been run)
+debug: (last run on this computer: @ Tue Feb 18 2020 15:56:49 GMT+0000 (Coordinated Universal Time))
+ info: 
+ info:                .-..-.
+ info: 
+ info:    Sails              <|    .-..-.
+ info:    v1.2.3              |\
+ info:                       /|.\
+ info:                      / || \
+ info:                    ,'  |'  \
+ info:                 .-'.-==|/_--'
+ info:                 `--'-------' 
+ info:    __---___--___---___--___---___--___
+ info:  ____---___--___---___--___---___--___-__
+ info: 
+ info: Server lifted in `/home/ubuntu/phase2/sailswork/ipfssailsserverwork`
+ info: To shut down Sails, press <CTRL> + C at any time.
+ info: Read more at https://sailsjs.com/support.
+
+debug: -------------------------------------------------------
+debug: :: Sun Jul 26 2020 07:32:38 GMT+0000 (Coordinated Universal Time)
+
+debug: Environment : development
+debug: Port        : 1337
+debug: -------------------------------------------------------

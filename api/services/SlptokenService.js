@@ -3,15 +3,17 @@
 let SLPSDK = require('slp-sdk');
 let slpsdk = new SLPSDK();
 
+
 let walletInfo
 try {
-  walletInfo = require(`../../.secret/wallet.live.json`)
+  walletInfo = require('../../.secret/wallet.live.json')
 } catch (err) {
   console.log(
     `Could not open wallet.json. Generate a wallet with create-wallet first.`
   )
   process.exit(0)
 }
+
 
 const TOKEN_ID =
   "f9a2699bee594e45c163ee1f78303c5ded829813a21ca0aadba2291b6cdb6f88"

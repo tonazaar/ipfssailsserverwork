@@ -131,6 +131,8 @@ assignnodetouser : async function(req, res, next){
   var newrec = await Userconfig.update({
 	id: tmpuserconfig.id}).set({
         usagelimit : userdefault.usagelimit,
+        nodegroup: nodeconf.nodegroup,
+        nodetype: nodeconf.nodetype,
         useripfsconfig: useripfsconfig,
          } ).fetch();
 
@@ -152,6 +154,8 @@ updateuserconfig : async function(req, res, next){
       nodetype: userdefault.nodetype,
       basepath : userdefault.basepath,
       usagelimit: userdefault.usagelimit,
+      nodegroup: userdefault.nodegroup,
+      nodename: userdefault.nodename,
       ipaddress: userdefault.ipaddress,
       publicgateway: userdefault.publicgateway,
       localgateway: userdefault.localgateway,
@@ -167,6 +171,8 @@ updateuserconfig : async function(req, res, next){
   var newrec = await Userconfig.update({
 	id: tmpuserconfig.id}).set({
         usagelimit : userdefault.usagelimit,
+        nodegroup: userdefault.nodegroup,
+        nodetype: userdefault.nodetype,
         useripfsconfig: useripfsconfig,
          } ).fetch();
 

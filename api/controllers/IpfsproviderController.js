@@ -288,6 +288,36 @@ listnodesofgroup : async function(req, res, next){
 
 },
 
+listmynodes : async function(req, res, next){
+
+
+   if(!req.body.userid ){
+
+    ResponseService.json(403, res, "Userid is not set ");
+          return;
+   }
+
+  var recs = await Ipfsprovider.find({ userid: req.body.userid });
+
+  res.json(recs);
+
+},
+
+listmynodesgroups : async function(req, res, next){
+
+
+   if(!req.body.nodegroup ){
+
+    ResponseService.json(403, res, "Nodegroup is not set ");
+          return;
+   }
+
+  var recs = await Ipfsprovider.find({ nodegroup: req.body.nodegroup });
+
+  res.json(recs);
+
+},
+
 
 getprivategroups : async function(req, res, next){
 
