@@ -423,7 +423,7 @@ listmyc1groups : async function(req, res, next){
           return;
   }
 
-  var recs = await Usergroup.find({
+  var recs = await Usergroup.findOne({
           creatoremail: user.email,
         usergrouptype:'c1storage'});
 
