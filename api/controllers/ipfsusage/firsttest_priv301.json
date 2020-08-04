@@ -1,0 +1,21 @@
+{
+  "usagelimit": "20000000",
+  "publicgateway": "https://ipfs.io",
+  "localgateway": "http://52.77.254.147:8081",
+  "basepath": "",
+  "ipaddress": "52.77.254.147",
+  "nodetype": "privnet",
+  "nodegroup": "firsttest",
+  "nodeid": "QmYkspk8ShiYujaYZoTpXQvatRCrAaqLTGRK7FEidev5Qg",
+  "nodename": "priv301",
+  "xconfig": {
+    "Addresses": {
+      "Swarm": [
+        "/ip4/52.77.254.147/tcp/7004",
+        "/ip4/52.77.254.147/tcp/7005/ws"
+      ],
+      "API": "/ip4/52.77.254.147/tcp/7006",
+      "Gateway": "/ip4/52.77.254.147/tcp/7007"
+    }
+  }
+}
