@@ -1164,8 +1164,9 @@ transmitgroupchange : async function(req, res, next){
 
   var noderec = await Ipfsprovider.findOne({nodegroup: req.body.nodegroup });
 
+     for(var i=0; i< groupusers.length; i++) {
      var useripfsconfig = {
-      userid: tmpusergroup.userid,  // this is wrong. Need to see what to do
+      userid: groupusers[i].userid,  // this is wrong. Need to see what to do
       nodetype: noderec.nodetype,
       nodeid: noderec.nodeid,
       nodegroup: noderec.nodegroup,
@@ -1183,14 +1184,14 @@ transmitgroupchange : async function(req, res, next){
 
 
 
-
-
-   var groupupdate = await Userconfig.update({usergroupname: req.body.usergroup}).set({
+   var groupupdate = await Userconfig.update({id: groupusers[i].id}).set({
         useripfsconfig: useripfsconfig,
         nodegroup: noderec.nodegroup,
          } ).fetch();
+  }
 
-   res.json(groupupdate);
+   groupusers = await Userconfig.find({usergroupname: req.body.usergroup});
+   res.json(groupusers);
 
 
 

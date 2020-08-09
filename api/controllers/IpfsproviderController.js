@@ -117,10 +117,26 @@ var jsonData;
 
   var recs = await Ipfsprovider.findOne({nodeid: jsonData.nodeid});
    if(recs) {
-    ResponseService.json(403, res, "Nodeid already exists   ");
-          return;
+       var newrec = await Ipfsprovider.update({
+	       id: recs.id}).set({
+        nodename : req.body.nodename,
+        nodegroup : req.body.nodegroup,
+        nodetype : req.body.nodetype,
+        nodestatus : 'pending' ,
+        nodelocation : 'remote' ,
+        useraccess : 'disabled'  ,
+        usagelimit : jsonData.usagelimit,
+        publicgateway: jsonData.publicgateway,
+        localgateway: jsonData.localgateway,
+        basepath: jsonData.basepath,
+        ipaddress : jsonData.ipaddress,
+        xconfig : jsonData.xconfig,
+         } ).fetch();
 
-  }
+   res.json(newrec);
+
+  } else {
+
  
 
   var newrec = await Ipfsprovider.create({
@@ -140,7 +156,7 @@ var jsonData;
          } ).fetch();
 
    res.json(newrec);
-
+    }
 },
 
 joinnodepublic : async function(req, res, next){
