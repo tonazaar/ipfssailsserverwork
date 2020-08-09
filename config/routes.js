@@ -79,6 +79,8 @@ module.exports.routes = {
   'POST /api/usergroup/getcreatorofgroup': 'UsergroupController.getcreatorofgroup',
 
 
+  'POST /api/usergroupadmin/transmitgroupchange': 'UsergroupController.transmitgroupchange',
+  'POST /api/usergroupadmin/updatenodegroup': 'UsergroupController.updatenodegroup',
   'POST /api/ipfsadmin/listusers': 'IpfsadminController.listusers',
   'POST /api/ipfsadmin/createuserconfig': 'IpfsadminController.createuserconfig',
   'POST /api/ipfsadmin/updateuserconfig': 'IpfsadminController.updateuserconfig',

@@ -726,6 +726,44 @@ createa2groupuser : async function(req, res, next){
 },
 
 
+
+updatenodegroup:  async function(req, res, next){
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "usergroup not provided  ")
+  }
+
+  if(!req.body.nodegroup) {
+    return ResponseService.json(401, res, "nodegroup not provided  ")
+  }
+
+
+  var usergrec = await Usergroup.findOne({usergroupname: req.body.usergroup});
+
+  if(!usergrec) {
+    return ResponseService.json(401, res, "usergroup not found ")
+  }
+
+  var noderec = await Ipfsprovider.findOne({nodegroup: req.body.nodegroup});
+
+  if(!noderec) {
+    return ResponseService.json(401, res, "nodegroup not found  ")
+  }
+
+	/*
+  if(usergrec.nodetype != noderec.nodetype) {
+    return ResponseService.json(401, res, "nodetype mismatch ")
+  }
+	*/
+
+  var grouprec = await Usergroup.update({
+        id: usergrec.id}).set({
+        nodegroup: req.body.nodegroup,
+	}).fetch();
+
+   res.json(grouprec);
+},
+
 joina2groupuser : async function(req, res, next){
 
   if(!req.body.userid) {
@@ -1096,6 +1134,67 @@ deletemygroup : async function(req, res, next){
 },
 
 
+transmitgroupchange : async function(req, res, next){
+
+  if(!req.body.nodegroup) {
+    return ResponseService.json(401, res, " nodegroup not provided  ")
+   }
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+   }
+
+
+
+   var tmpusergroup = await Usergroup.findOne({usergroupname: req.body.usergroup});
+   if(!tmpusergroup) {
+	   
+    ResponseService.json(403, res, "User group not found ");
+          return;
+
+   }
+
+   var groupusers = await Userconfig.find({usergroupname: req.body.usergroup});
+
+   if(groupusers.length != 1){
+          ResponseService.json(403, res, "No users to update ");
+          return;
+    }
+
+
+  var noderec = await Ipfsprovider.findOne({nodegroup: req.body.nodegroup });
+
+     var useripfsconfig = {
+      userid: tmpusergroup.userid,  // this is wrong. Need to see what to do
+      nodetype: noderec.nodetype,
+      nodeid: noderec.nodeid,
+      nodegroup: noderec.nodegroup,
+        usergroupkey: tmpusergroup.accesssecret,
+        usergrouptype: tmpusergroup.usergrouptype,
+      nodename: noderec.nodename,
+      basepath : noderec.basepath,
+      usagelimit: noderec.usagelimit,
+      ipaddress: noderec.ipaddress,
+      publicgateway: noderec.publicgateway,
+      localgateway: noderec.localgateway,
+      config: noderec.xconfig
+     };
+
+
+
+
+
+
+   var groupupdate = await Userconfig.update({usergroupname: req.body.usergroup}).set({
+        useripfsconfig: useripfsconfig,
+        nodegroup: noderec.nodegroup,
+         } ).fetch();
+
+   res.json(groupupdate);
+
+
+
+},
 removefromgroup : async function(req, res, next){
 
   if(!req.body.userid) {
