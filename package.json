@@ -8,7 +8,7 @@
     "@sailshq/connect-redis": "^3.2.1",
     "@sailshq/lodash": "^3.10.3",
     "@sailshq/socket.io-redis": "^5.2.0",
-    "bcrypt": "^3.0.8",
+    "bcrypt": "^5.0.0",
     "ipfs": "^0.41.1",
     "ipfsd-ctl": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
