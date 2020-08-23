@@ -30,24 +30,38 @@ createuserconfig : async function(req, res, next){
           return;
   }
 
+  // to be changed with more specific node to assign by default
+  var nodeconfs = await Ipfsprovider.find({nodetype: req.body.nodetype}).limit(1);
+   if(nodeconfs.length != 1) {
+    ResponseService.json(403, res, "nodetype does not exist   ");
+          return;
+
+  }
+   var nodeconf = nodeconfs[0];
+
    var useripfsconfig = {
       userid: user.userid,
-      nodetype: userdefault.nodetype,
-      basepath : userdefault.basepath,
-      usagelimit: userdefault.usagelimit,
-      ipaddress: userdefault.ipaddress,
-      publicgateway: userdefault.publicgateway,
-      localgateway: userdefault.localgateway,   
-      config: userdefault.xconfig
+      nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig
      };
+
 
   var newrec = await Userconfig.create({
         email : user.email,
-        userid : user.userid,   
         username : user.username,
+        userid : user.userid,
         usagelimit : userdefault.usagelimit,
-        useraccess : 'enabled',
-	useripfsconfig: useripfsconfig,
+        nodegroup: nodeconf.nodegroup,
+        nodetype: nodeconf.nodetype,
+        useripfsconfig: useripfsconfig,
          } ).fetch();
 
         res.json(newrec);

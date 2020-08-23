@@ -30,6 +30,7 @@ module.exports.routes = {
   'POST /api/ipfsnode/startnode': 'IpfsnodeController.startnode',
   'POST /api/ipfsnode/stopnode': 'IpfsnodeController.stopnode',
   'POST /api/ipfsnode/getipfsconfig': 'IpfsnodeController.getipfsconfig',
+  'POST /api/ipfsnode/createipfsconfig': 'IpfsnodeController.createipfsconfig',
   'POST /api/ipfsnode/getnodestatus': 'IpfsnodeController.getnodestatus',
 
   'POST /api/ipfsusage/getusage': 'IpfsusageController.getusage',
