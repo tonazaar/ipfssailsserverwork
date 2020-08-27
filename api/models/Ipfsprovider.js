@@ -17,6 +17,9 @@ module.exports = {
       type: "string",
       required: true,
     },
+    purpose: {
+      type: "string",
+    },
     nodename: {
       type: "string",
       required: true,

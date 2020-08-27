@@ -7,6 +7,60 @@ userdefault = require("./ipfsusage/userdefault.json");
 
 module.exports = {
 
+assignpurpose : async function(req, res, next){
+
+   if(!req.body.nodeid) {
+    ResponseService.json(403, res, "nodeid not specified");
+          return;
+   }
+
+
+   var recs = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
+   if(!recs) {
+    ResponseService.json(403, res, "Nodeid does not exist   ");
+          return;
+
+   }
+
+
+   var newrec = await Ipfsprovider.update({
+	       id: recs.id}).set({
+        purpose : req.body.purpose,
+               }).fetch();
+
+   res.json(newrec);
+},
+
+
+updatenodestatus : async function(req, res, next){
+
+   if(!req.body.nodeid) {
+    ResponseService.json(403, res, "nodeid not specified");
+          return;
+   }
+
+   if(!req.body.nodestatus) {
+    ResponseService.json(403, res, "nodeid not specified");
+          return;
+   }
+
+
+   var recs = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
+   if(!recs) {
+    ResponseService.json(403, res, "Nodeid does not exist   ");
+          return;
+
+   }
+
+
+   var newrec = await Ipfsprovider.update({
+	       id: recs.id}).set({
+        nodestatus : req.body.nodestatus,
+               }).fetch();
+
+   res.json(newrec);
+},
+
 joinnodecluster : async function(req, res, next){
 
 var nodename = req.body.nodename; 
@@ -63,6 +117,7 @@ var jsonData;
         nodetype : req.body.nodetype,
         nodestatus : 'pending' ,
         nodelocation : 'remote' ,
+        purpose : 'shared' ,
         useraccess : 'disabled'  ,
         usagelimit : jsonData.usagelimit,
 	publicgateway: jsonData.publicgateway,
@@ -146,6 +201,7 @@ var jsonData;
         nodetype : req.body.nodetype,
         nodestatus : 'pending' ,
         nodelocation : 'remote' ,
+        purpose : 'shared' ,
         useraccess : 'disabled'  ,
         usagelimit : jsonData.usagelimit,
 	publicgateway: jsonData.publicgateway,
@@ -213,6 +269,7 @@ var jsonData;
         nodetype : req.body.nodetype,
         nodestatus : 'pending' ,
         nodelocation : 'remote' ,
+        purpose : 'shared' ,
         useraccess : 'disabled'  ,
         usagelimit : jsonData.usagelimit,
 	publicgateway: jsonData.publicgateway,
