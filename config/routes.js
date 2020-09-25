@@ -90,6 +90,7 @@ module.exports.routes = {
   'POST /api/ipfsadmin/enableuser': 'IpfsadminController.enableuser',
   'POST /api/ipfsadmin/disableuser': 'IpfsadminController.disableuser',
   'POST /api/ipfsadmin/assignnodetouser': 'IpfsadminController.assignnodetouser',
+  'POST /api/ipfsadmin/updatenodestatus': 'IpfsadminController.updatenodestatus',
   'POST /api/ipfsadmin/updatenodeusage': 'IpfsadminController.updatenodeusage',
 
   'POST /api/tokenuser/gettokenbalance': 'TokenuserController.gettokenbalance',

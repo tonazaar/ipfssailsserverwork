@@ -1,9 +1,9 @@
 {
   "usagelimit": "20000000",
   "publicgateway": "https://ipfs.io",
-  "localgateway": "http://52.77.254.147:7007",
+  "localgateway": "http://3.1.100.184:7007",
   "basepath": "",
-  "ipaddress": "52.77.254.147",
+  "ipaddress": "3.1.100.184",
   "nodetype": "privnet",
   "nodegroup": "firsttest",
   "nodeid": "QmYkspk8ShiYujaYZoTpXQvatRCrAaqLTGRK7FEidev5Qg",
@@ -11,11 +11,11 @@
   "xconfig": {
     "Addresses": {
       "Swarm": [
-        "/ip4/52.77.254.147/tcp/7004",
-        "/ip4/52.77.254.147/tcp/7005/ws"
+        "/ip4/3.1.100.184/tcp/7004",
+        "/ip4/3.1.100.184/tcp/7005/ws"
       ],
-      "API": "/ip4/52.77.254.147/tcp/7006",
-      "Gateway": "/ip4/52.77.254.147/tcp/7007"
+      "API": "/ip4/3.1.100.184/tcp/7006",
+      "Gateway": "/ip4/3.1.100.184/tcp/7007"
     }
   }
 }

@@ -1,11 +1,15 @@
 var _ = require('lodash');
+crypto = require('crypto');
+
 
 
 module.exports = {
 
   signup: async function (req, res) {
        console.log("in signup"+ req.body);
-    var userid = req.body.username + 'xxx';
+  var buf = crypto.randomBytes(5);
+  var rand = buf.toString('hex');
+    var userid = req.body.username + rand;
         var username = req.body.username ;
 	   var role = req.body.role;
 
