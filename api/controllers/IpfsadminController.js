@@ -14,6 +14,18 @@ getfile : async function(req, res, next){
 },
 
 
+singleuserconfigupdate : async function(req, res, next){
+
+  if(!email) {
+    ResponseService.json(403, res, " Email not provided ");
+          return;
+  }
+
+  var item = await timeupdateuserconfig (res, req.body.email);
+        return item;
+
+
+},
 
 createuserconfig : async function(req, res, next){
 
@@ -61,6 +73,7 @@ createuserconfig : async function(req, res, next){
         usagelimit : userdefault.usagelimit,
         nodegroup: nodeconf.nodegroup,
         nodetype: nodeconf.nodetype,
+	nodeid: nodeconf.nodeid,
         useripfsconfig: useripfsconfig,
 	ipfsconfigupdatetime: userdefault.updatedAt,
          } ).fetch();
@@ -186,6 +199,7 @@ assignnodetouser : async function(req, res, next){
         nodegroup: nodeconf.nodegroup,
         nodetype: nodeconf.nodetype,
 	providerupdatetime: nodeconf.updatedAt,
+	nodeid: nodeconf.nodeid,
         useripfsconfig: useripfsconfig,
          } ).fetch();
 
@@ -407,4 +421,54 @@ function verifyParams(res, email, password){
   }
 };
 
+function async timeupdateuserconfig (res, email){
+
+  var userc = await Userconfig.findOne({email: email});
+  if(!userc) {
+    ResponseService.json(403, res, "Email not found ");
+          return;
+  }
+
+  var nodeconf = await Ipfsprovider.findOne({nodeid: userc.nodeid});
+  if(!nodeconf) {
+    ResponseService.json(403, res, "Nodeid not found ");
+          return;
+  }
+
+
+   var useripfsconfig = {
+      userid: user.userid,
+      nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig
+     };
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+  var newrec = await Userconfig.update({
+	id: tmpuserconfig.id}).set({
+        usagelimit : userdefault.usagelimit,
+        nodegroup: nodeconf.nodegroup,
+        nodetype: nodeconf.nodetype,
+	providerupdatetime: nodeconf.updatedAt,
+	nodeid: nodeconf.nodeid,
+        useripfsconfig: useripfsconfig,
+         } ).fetch();
+
+        res.json(newrec);
+
+
+};
 

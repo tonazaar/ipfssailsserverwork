@@ -29,6 +29,9 @@ module.exports = {
     nodetype: {
       type: "string",
     },
+    nodeid: {
+      type: "string",
+    },
     nodegroup: {
       type: "string",
     },
