@@ -62,6 +62,7 @@ createuserconfig : async function(req, res, next){
         nodegroup: nodeconf.nodegroup,
         nodetype: nodeconf.nodetype,
         useripfsconfig: useripfsconfig,
+	ipfsconfigupdatetime: userdefault.updatedAt,
          } ).fetch();
 
         res.json(newrec);
@@ -184,6 +185,7 @@ assignnodetouser : async function(req, res, next){
         usagelimit : userdefault.usagelimit,
         nodegroup: nodeconf.nodegroup,
         nodetype: nodeconf.nodetype,
+	providerupdatetime: nodeconf.updatedAt,
         useripfsconfig: useripfsconfig,
          } ).fetch();
 
@@ -224,6 +226,7 @@ updateuserconfig : async function(req, res, next){
         usagelimit : userdefault.usagelimit,
         nodegroup: userdefault.nodegroup,
         nodetype: userdefault.nodetype,
+	ipfsconfigupdatetime: userdefault.updatedAt,
         useripfsconfig: useripfsconfig,
          } ).fetch();
 

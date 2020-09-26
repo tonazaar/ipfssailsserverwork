@@ -32,6 +32,18 @@ module.exports = {
     nodegroup: {
       type: "string",
     },
+    providerupdatetime: {
+      type: "string",
+    },
+    nodeupdatetime: {
+      type: "string",
+    },
+    usergroupupdatetime: {
+      type: "string",
+    },
+    ipfsconfigupdatetime : {
+      type: "string",
+    },
     usergroupname: {
       type: "string",
     },

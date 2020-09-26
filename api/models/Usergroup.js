@@ -23,6 +23,9 @@ module.exports = {
     usergroupkey: {
       type: "string",
     },
+    providerupdatetime: {
+      type: "string",
+    },
     usergroupname: {
       type: "string",
     },

@@ -57,6 +57,7 @@ createa1groupuser : async function(req, res, next){
         usergroupname: req.body.usergroup,
         usergroupkey: accesssecret,
         usergrouptype: "a1private",
+        providerupdatetime: noderec.updatedAt,
         nodetype: noderec.nodetype,
         nodegroup: noderec.nodegroup,
          } ).fetch();
@@ -99,6 +100,7 @@ createa1groupuser : async function(req, res, next){
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
 	 usergroupname: grouprec.usergroupname,
+        usergroupupdatetime: grouprec.updatedAt,
         usergrouptype: grouprec.usergrouptype,
          } ).fetch();
   }
@@ -160,6 +162,7 @@ createb1groupuser : async function(req, res, next){
         usergroupkey: accesssecret,
         usergrouptype: "b1earn",
         nodetype: noderec.nodetype,
+        providerupdatetime: noderec.updatedAt,
         nodegroup: noderec.nodegroup,
          } ).fetch();
 
@@ -201,6 +204,7 @@ createb1groupuser : async function(req, res, next){
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
 	 usergroupname: grouprec.usergroupname,
+        usergroupupdatetime: grouprec.updatedAt,
         usergrouptype: grouprec.usergrouptype,
          } ).fetch();
   }
@@ -501,6 +505,7 @@ joina1groupuser : async function(req, res, next){
         useripfsconfig: useripfsconfig,
          usergroupname: grouprec.usergroupname,
         usergrouptype: grouprec.usergrouptype,
+        usergroupupdatetime: grouprec.updatedAt,
          } ).fetch();
   }
 
@@ -670,6 +675,7 @@ createa2groupuser : async function(req, res, next){
         usergroupkey: accesssecret,
         usergrouptype: "a2public",
         nodetype: noderec.nodetype,
+        providerupdatetime: noderec.updatedAt,
         nodegroup: noderec.nodegroup,
          } ).fetch();
 
@@ -717,6 +723,7 @@ createa2groupuser : async function(req, res, next){
         useripfsconfig: useripfsconfig,
          usergroupname: grouprec.usergroupname,
         usergrouptype: grouprec.usergrouptype,
+        usergroupupdatetime: grouprec.updatedAt,
          } ).fetch();
   }
 
@@ -831,6 +838,7 @@ joina2groupuser : async function(req, res, next){
         useripfsconfig: useripfsconfig,
          usergroupname: grouprec.usergroupname,
         usergrouptype: grouprec.usergrouptype,
+        usergroupupdatetime: grouprec.updatedAt,
          } ).fetch();
   }
 
@@ -927,6 +935,7 @@ createc1groupuser : async function(req, res, next){
         usergroupkey: accesssecret,
         usergrouptype: "c1storage",
         nodetype: noderec.nodetype,
+        providerupdatetime: noderec.updatedAt,
         nodegroup: noderec.nodegroup,
          } ).fetch();
 
@@ -974,6 +983,7 @@ createc1groupuser : async function(req, res, next){
         useripfsconfig: useripfsconfig,
          usergroupname: grouprec.usergroupname,
         usergrouptype: grouprec.usergrouptype,
+        usergroupupdatetime: grouprec.updatedAt,
          } ).fetch();
   }
 
@@ -1050,6 +1060,7 @@ joinc1groupuser : async function(req, res, next){
         useripfsconfig: useripfsconfig,
          usergroupname: grouprec.usergroupname,
         usergrouptype: grouprec.usergrouptype,
+        usergroupupdatetime: grouprec.updatedAt,
          } ).fetch();
   }
 
@@ -1187,6 +1198,7 @@ transmitgroupchange : async function(req, res, next){
    var groupupdate = await Userconfig.update({id: groupusers[i].id}).set({
         useripfsconfig: useripfsconfig,
         nodegroup: noderec.nodegroup,
+        providerupdatetime: noderec.updatedAt,
          } ).fetch();
   }
 
