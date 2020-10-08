@@ -7,7 +7,11 @@ userdefault = require("./ipfsusage/userdefault.json");
 
 module.exports = {
 	//
-// may be not needed
+// Don't add anything more to keep it generic
+// assignnode
+// assignnodegroup
+// assignuser
+// assignusergroup
 assignpurpose : async function(req, res, next){
 
    if(!req.body.nodeid) {

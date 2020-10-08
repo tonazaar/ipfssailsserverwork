@@ -421,7 +421,7 @@ function verifyParams(res, email, password){
   }
 };
 
-function async timeupdateuserconfig (res, email){
+async function timeupdateuserconfig (res, email){
 
   var userc = await Userconfig.findOne({email: email});
   if(!userc) {

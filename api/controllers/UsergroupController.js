@@ -110,6 +110,87 @@ createa1groupuser : async function(req, res, next){
 
 },
 
+transmitnodechange : async function(req, res, next){
+// to usergroups
+	// userconfigs
+	// nodegroups (having that node)
+	//
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usergroup) {
+    return ResponseService.json(401, res, "Usergroup not provided  ")
+  }
+
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+// noderec has changed
+// usergroup also to be updated
+  var noderec;
+
+     noderec = await Ipfsprovider.findOne({nodeid: tmpuserconfig.nodeid });
+  
+
+  if(!noderec) {
+    ResponseService.json(403, res, "No nodes found ");
+          return;
+  }
+
+  var usergroup = await Usergroup.findOne({creatoremail: user.email});
+
+  if(usergroup) {
+    ResponseService.json(403, res, "Only one group allowed");
+          return;
+  }
+
+     usergroup = await Usergroup.update({
+        id: usergroup.id}).set({
+           providerupdatetime: noderec.updatedAt,
+           nodetype: noderec.nodetype,
+           nodegroup: noderec.nodegroup,
+         } ).fetch();
+
+
+   var useripfsconfig = {
+      userid: user.userid,
+      nodetype: noderec.nodetype,
+      nodeid: noderec.nodeid,
+      nodegroup: noderec.nodegroup,
+        usergroupkey: grouprec.accesssecret,
+        usergrouptype: grouprec.usergrouptype,
+      nodename: noderec.nodename,
+      basepath : noderec.basepath,
+      usagelimit: noderec.usagelimit,
+      ipaddress: noderec.ipaddress,
+      publicgateway: noderec.publicgateway,
+      localgateway: noderec.localgateway,
+      config: noderec.xconfig
+     };
+
+
+  if(tmpuserconfig) {
+
+     tmpuserconfig = await Userconfig.update({
+        id: tmpuserconfig.id}).set({
+        useripfsconfig: useripfsconfig,
+	 usergroupname: grouprec.usergroupname,
+        usergroupupdatetime: grouprec.updatedAt,
+        usergrouptype: grouprec.usergrouptype,
+         } ).fetch();
+  }
+
+   res.json(tmpuserconfig);
+
+
+},
+
 createb1groupuser : async function(req, res, next){
 
   if(!req.body.userid) {

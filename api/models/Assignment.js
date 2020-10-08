@@ -7,9 +7,6 @@ var _ = require('lodash');
 module.exports = {
 
   attributes: {
-    nodelocation: {
-      type: "string",
-    },
     nodegroup: {
       type: "string",
     },
@@ -17,7 +14,7 @@ module.exports = {
       type: "string",
       required: true,
     },
-    purpose: {
+    usergroup: {
       type: "string",
     },
     assignmentname: {
@@ -27,10 +24,7 @@ module.exports = {
       type: "string",
       required: true,
     },
-    usagelimit: {
-      type: "string",
-    },
-    useraccess: {
+    userid: {
       type: "string",
     },
     nodetype: {
@@ -41,21 +35,6 @@ module.exports = {
     },
     nodeusage: {
       type: "string",  // dedicated or shared
-    },
-    xconfig: {
-      type: "json",
-    },
-    publicgateway: {
-      type: "string",
-    },
-    localgateway: {
-      type: "string",
-    },
-    ipaddress: {
-      type: "string",
-    },
-    basepath: {
-      type: "string",
     },
 
   },
