@@ -1,4 +1,6 @@
 var _ = require('lodash');
+crypto = require('crypto');
+
 const IPFS = require('ipfs');
  const fs = require('fs')
  const path = require('path')
@@ -12,7 +14,14 @@ module.exports = {
 // assignnodegroup
 // assignuser
 // assignusergroup
-assignpurpose : async function(req, res, next){
+
+
+assignuser : async function(req, res, next){
+
+   if(!req.body.userid) {
+    ResponseService.json(403, res, "userid not specified");
+          return;
+   }
 
    if(!req.body.nodeid) {
     ResponseService.json(403, res, "nodeid not specified");
@@ -20,20 +29,166 @@ assignpurpose : async function(req, res, next){
    }
 
 
-   var recs = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
-   if(!recs) {
-    ResponseService.json(403, res, "Nodeid does not exist   ");
+   var recs = await Assignment.findOne({userid: req.body.userid});
+   if(recs) {
+    ResponseService.json(403, res, "assignment already exists exist   ");
           return;
 
    }
 
+   var buf = crypto.randomBytes(3);
+  var rand = buf.toString('hex');
+    var assignname = "agnid_"+req.body.userid+ rand;
 
-   var newrec = await Ipfsprovider.update({
-	       id: recs.id}).set({
-        purpose : req.body.purpose,
+   var assrec = await Assignment.create({
+        assignmentname : assignname,
+        nodeid : req.body.nodeid,
+        userid : req.body.userid,
+        usergroup : '',
+        nodename : req.body.nodename,
+        nodegroup : req.body.nodegroup,
+        nodestatus : 'pending' ,
+         } ).fetch();
+
+
+
+   var provrec = await Ipfsprovider.update({
+               nodeid: req.body.nodeid}).set({
+        assignmentname : assrec.assignmentname
                }).fetch();
 
-   res.json(newrec);
+   var userconfigrec = await Useconfig.update({ 
+	   userid: req.body.userid}).set({ assignmentname : assrec.assignmentname
+               }).fetch();
+
+   res.json(userconfigrec);
+},
+
+assignusergroup : async function(req, res, next){
+
+   if(!req.body.usergroup) {
+    ResponseService.json(403, res, "usergroup not specified");
+          return;
+   }
+
+   if(!req.body.nodeid) {
+    ResponseService.json(403, res, "nodeid not specified");
+          return;
+   }
+
+
+   var recs = await Assignment.findOne({userid: req.body.userid});
+   if(recs) {
+    ResponseService.json(403, res, "assignment already exists exist   ");
+          return;
+
+   }
+
+   var buf = crypto.randomBytes(3);
+  var rand = buf.toString('hex');
+    var assignname = "agnid_"+req.body.userid+ rand;
+
+   var assrec = await Assignment.create({
+        assignmentname : assignname,
+        nodeid : req.body.nodeid,
+        usergroup : req.body.usergroup,
+        nodename : req.body.nodename,
+        nodegroup : req.body.nodegroup,
+        nodestatus : 'pending' ,
+         } ).fetch();
+
+
+
+   var provrec = await Ipfsprovider.update({
+               nodeid: req.body.nodeid}).set({
+        assignmentname : assrec.assignmentname
+               }).fetch();
+
+   var usergrouprec = await Usergroup.update({ 
+	   usergroup: req.body.usergroup}).set({ assignmentname : assrec.assignmentname
+               }).fetch();
+
+   res.json(usergrouprec);
+},
+
+assignnode : async function(req, res, next){
+
+
+   if(!req.body.nodeid) {
+    ResponseService.json(403, res, "nodeid not specified");
+          return;
+   }
+
+   if(!req.body.assignmentname) {
+    ResponseService.json(403, res, "assignmentname not specified");
+          return;
+   }
+
+   var assrecs = await Assignment.findOne({assignmentname: req.body.assignmentname});
+   if(!assrecs) {
+    ResponseService.json(403, res, "assignmentname does not exist   ");
+          return;
+
+   }
+
+   var provrec = await Ipfsprovider.update({
+               nodeid: req.body.nodeid}).set({
+        assignmentname : req.body.assignmentname
+               }).fetch();
+
+
+
+   var assrec = await Assignment.update({
+               id: assrecs.id}).set({
+        nodename : provrec.nodename,
+        nodeid : provrec.nodeid
+               }).fetch();
+
+   res.json(assrec);
+},
+
+assignnodetogroup : async function(req, res, next){
+
+
+   if(!req.body.nodeid) {
+    ResponseService.json(403, res, "nodeid not specified");
+          return;
+   }
+
+   if(!req.body.nodegroup) {
+    ResponseService.json(403, res, "nodegroup not specified");
+          return;
+   }
+
+   var nodegrp = await Ipfsprovider.findOne({nodegroup: req.body.nodegroup});
+
+   if(!nodegrp) {
+    ResponseService.json(403, res, "nodegrp does not exist   ");
+          return;
+   }
+
+   var assrecs = await Assignment.findOne({assignmentname: nodegrp.assignmentname});
+   if(!assrecs) {
+    ResponseService.json(403, res, "assignmentname does not exist   ");
+          return;
+   }
+
+   var assrecs = await Assignment.findOne({assignmentname: req.body.assignmentname});
+
+   var provrec = await Ipfsprovider.update({
+               nodeid: req.body.nodeid}).set({
+        assignmentname : nodegrp.assignmentname
+               }).fetch();
+
+
+
+   var assrec = await Assignment.update({
+               id: assrecs.id}).set({
+        nodename : provrec.nodename,
+        nodeid : provrec.nodeid
+               }).fetch();
+
+   res.json(assrec);
 },
 
 
