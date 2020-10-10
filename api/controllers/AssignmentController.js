@@ -126,8 +126,10 @@ assignnode : async function(req, res, next){
 
    var assrecs = await Assignment.findOne({assignmentname: req.body.assignmentname});
    if(!assrecs) {
-    ResponseService.json(403, res, "assignmentname does not exist   ");
-          return;
+        assrecs = await Assignment.create({
+        assignmentname : req.body.assignmentname,
+        nodeid : req.body.nodeid
+               }).fetch();
 
    }
 
@@ -145,6 +147,42 @@ assignnode : async function(req, res, next){
                }).fetch();
 
    res.json(assrec);
+},
+
+assignnodegroup : async function(req, res, next){
+
+
+   if(!req.body.nodegroup) {
+    ResponseService.json(403, res, "nodegroup not specified");
+          return;
+   }
+
+   if(!req.body.assignmentname) {
+    ResponseService.json(403, res, "assignmentname not specified");
+          return;
+   }
+
+   var assrecs = await Assignment.findOne({assignmentname: req.body.assignmentname});
+
+   if(!assrecs) {
+        assrecs = await Assignment.create({
+        assignmentname : req.body.assignmentname,
+        nodegroup : req.body.nodegroup
+               }).fetch();
+
+   }
+
+
+
+   var provrec = await Ipfsprovider.update({
+               nodegroup: req.body.nodegroup}).set({
+        assignmentname : req.body.assignmentname
+               }).fetch();
+
+
+
+
+   res.json(provrec);
 },
 
 assignnodetogroup : async function(req, res, next){
@@ -167,9 +205,15 @@ assignnodetogroup : async function(req, res, next){
           return;
    }
 
+   if(!nodegrp.assignmentname) {
+    ResponseService.json(403, res, "nodegrp.assignmentname does not exist   ");
+          return;
+   }
+
+
    var assrecs = await Assignment.findOne({assignmentname: nodegrp.assignmentname});
    if(!assrecs) {
-    ResponseService.json(403, res, "assignmentname does not exist   ");
+    ResponseService.json(403, res, "assignment record does not exist   ");
           return;
    }
 

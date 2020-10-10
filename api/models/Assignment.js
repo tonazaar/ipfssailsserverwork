@@ -12,7 +12,6 @@ module.exports = {
     },
     nodeid: {
       type: "string",
-      required: true,
     },
     usergroup: {
       type: "string",
@@ -22,7 +21,6 @@ module.exports = {
     },
     nodename: {
       type: "string",
-      required: true,
     },
     userid: {
       type: "string",

@@ -27,6 +27,7 @@ module.exports.routes = {
   'GET /api/auth/protected': 'UserController.check',
   'POST /test': 'UserController.test',
 
+  'POST /api/assignment/assignnodegroup': 'AssignmentController.assignnodegroup',
   'POST /api/assignment/assignnode': 'AssignmentController.assignnode',
   'POST /api/assignment/assignuser': 'AssignmentController.assignuser',
   'POST /api/assignment/assignusergroup': 'AssignmentController.assignusergroup',
