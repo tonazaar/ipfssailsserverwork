@@ -27,6 +27,11 @@ module.exports.routes = {
   'GET /api/auth/protected': 'UserController.check',
   'POST /test': 'UserController.test',
 
+  'POST /api/assignment/assignnode': 'AssignmentController.assignnode',
+  'POST /api/assignment/assignuser': 'AssignmentController.assignuser',
+  'POST /api/assignment/assignusergroup': 'AssignmentController.assignusergroup',
+  'POST /api/assignment/assignnodetogroup': 'AssignmentController.assignnodetogroup',
+
   'POST /api/ipfsnode/startnode': 'IpfsnodeController.startnode',
   'POST /api/ipfsnode/stopnode': 'IpfsnodeController.stopnode',
   'POST /api/ipfsnode/getipfsconfig': 'IpfsnodeController.getipfsconfig',
