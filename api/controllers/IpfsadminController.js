@@ -42,6 +42,31 @@ createuserconfig : async function(req, res, next){
           return;
   }
 
+
+ var buf = crypto.randomBytes(3);
+  var rand = buf.toString('hex');
+    var assignname = "agnid_"+req.body.userid+ rand;
+
+   var assrec ;
+
+  if(!userc.assignmentname) {
+     assrec = await Assignment.create({
+        assignmentname : assignname,
+        userid : req.body.userid,
+        usergroup : '',
+        nodestatus : 'pending' ,
+         } ).fetch();
+   }
+
+
+
+   userc = await Useconfig.update({
+           userid: req.body.userid}).set({ assignmentname : assrec.assignmentname
+               }).fetch();
+
+
+
+
   // to be changed with more specific node to assign by default
   var nodeconfs = await Ipfsprovider.find({nodetype: req.body.nodetype}).limit(1);
    if(nodeconfs.length != 1) {
@@ -51,8 +76,18 @@ createuserconfig : async function(req, res, next){
   }
    var nodeconf = nodeconfs[0];
 
+   if(nodeconf.assignmentname) {
+     if(assrec.assignmentname != nodeconf.assignmentname) {
+         ResponseService.json(403, res, "assignment name mismatch with node ");
+	 return;
+     }
+   }
+
+   var provrec = await Ipfsprovider.update({ nodeid: nodeconf.nodeid}).set({ assignmentname : assrec.assignmentname }).fetch();
+
    var useripfsconfig = {
       userid: user.userid,
+      assignmentname : userc.assignmentname,
       nodetype: nodeconf.nodetype,
       nodeid: nodeconf.nodeid,
       nodegroup: nodeconf.nodegroup,
@@ -70,6 +105,7 @@ createuserconfig : async function(req, res, next){
         email : user.email,
         username : user.username,
         userid : user.userid,
+        assignmentname : userc.assignmentname,
         usagelimit : userdefault.usagelimit,
         nodegroup: nodeconf.nodegroup,
         nodetype: nodeconf.nodetype,
@@ -192,6 +228,24 @@ assignnodetouser : async function(req, res, next){
     ResponseService.json(403, res, "No user config record ");
           return;
   }
+
+  if(!tmpuserconfig.assignmentname) {
+    ResponseService.json(403, res, "User assignment record not done ");
+          return;
+  }
+
+
+  if(nodeconf.assignmentname) {
+      if(tmpuserconfig.assignmentname != nodeconf.assignmentname) {
+         ResponseService.json(403, res, "assignment name mismatch with node ");
+         return;
+      } 
+   }else {
+
+   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : tmpuserconfig.assignmentname }).fetch();
+
+   }
+
 
   var newrec = await Userconfig.update({
 	id: tmpuserconfig.id}).set({
