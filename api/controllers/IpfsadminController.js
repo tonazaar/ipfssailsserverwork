@@ -1,6 +1,8 @@
 var _ = require('lodash');
 const IPFS = require('ipfs');
 userdefault = require("./ipfsusage/userdefault.json");
+crypto = require('crypto');
+
 
 
 module.exports = {
@@ -29,6 +31,10 @@ singleuserconfigupdate : async function(req, res, next){
 
 createuserconfig : async function(req, res, next){
 
+  if(!req.body.userid) {
+    ResponseService.json(403, res, "Userid does not exist ");
+          return;
+  }
 //   ResponseService.json(403, res, "Depreciated , use assignnode");
   var user = await User.findOne({userid: req.body.userid});
   if(!user) {
@@ -44,25 +50,18 @@ createuserconfig : async function(req, res, next){
 
 
  var buf = crypto.randomBytes(3);
-  var rand = buf.toString('hex');
-    var assignname = "agnid_"+req.body.userid+ rand;
+ var rand = buf.toString('hex');
+ var assignname = "agnid_"+req.body.userid+ rand;
 
-   var assrec ;
 
-  if(!userc.assignmentname) {
-     assrec = await Assignment.create({
+ var  assrec = await Assignment.create({
         assignmentname : assignname,
         userid : req.body.userid,
         usergroup : '',
         nodestatus : 'pending' ,
          } ).fetch();
-   }
 
 
-
-   userc = await Useconfig.update({
-           userid: req.body.userid}).set({ assignmentname : assrec.assignmentname
-               }).fetch();
 
 
 
@@ -77,17 +76,14 @@ createuserconfig : async function(req, res, next){
    var nodeconf = nodeconfs[0];
 
    if(nodeconf.assignmentname) {
-     if(assrec.assignmentname != nodeconf.assignmentname) {
-         ResponseService.json(403, res, "assignment name mismatch with node ");
-	 return;
-     }
+       ResponseService.json(403, res, "Node is already assigned ");
+       return;
    }
 
-   var provrec = await Ipfsprovider.update({ nodeid: nodeconf.nodeid}).set({ assignmentname : assrec.assignmentname }).fetch();
 
    var useripfsconfig = {
       userid: user.userid,
-      assignmentname : userc.assignmentname,
+      assignmentname : assrec.assignmentname,
       nodetype: nodeconf.nodetype,
       nodeid: nodeconf.nodeid,
       nodegroup: nodeconf.nodegroup,
@@ -101,11 +97,12 @@ createuserconfig : async function(req, res, next){
      };
 
 
+
   var newrec = await Userconfig.create({
         email : user.email,
         username : user.username,
         userid : user.userid,
-        assignmentname : userc.assignmentname,
+        assignmentname : assrec.assignmentname,
         usagelimit : userdefault.usagelimit,
         nodegroup: nodeconf.nodegroup,
         nodetype: nodeconf.nodetype,
@@ -113,6 +110,8 @@ createuserconfig : async function(req, res, next){
         useripfsconfig: useripfsconfig,
 	ipfsconfigupdatetime: userdefault.updatedAt,
          } ).fetch();
+
+   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname }).fetch();
 
         res.json(newrec);
 
