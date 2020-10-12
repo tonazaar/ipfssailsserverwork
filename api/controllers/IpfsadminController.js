@@ -35,6 +35,11 @@ createuserconfig : async function(req, res, next){
     ResponseService.json(403, res, "Userid does not exist ");
           return;
   }
+
+  if(!req.body.usertype) {
+    ResponseService.json(403, res, "usertype not provided ");
+          return;
+  }
 //   ResponseService.json(403, res, "Depreciated , use assignnode");
   var user = await User.findOne({userid: req.body.userid});
   if(!user) {
@@ -49,20 +54,19 @@ createuserconfig : async function(req, res, next){
   }
 
 
- var buf = crypto.randomBytes(3);
- var rand = buf.toString('hex');
- var assignname = "agnid_"+req.body.userid+ rand;
 
+ var assrec ;
+ if(req.body.usertype == 'C1') {
+    assrec = await CreateUserAssignment_C1(req.body.userid, req.body.usertype);
+ } else if(req.body.usertype == 'A1') {
+    assrec = await CreateUserAssignment_A1(req.body.userid, req.body.usertype);
+ } else if(req.body.usertype == 'A2') {
+    assrec = await CreateUserAssignment_A2(req.body.userid, req.body.usertype);
+ } else {
+    ResponseService.json(403, res, "Unknown usertype " + req.body.usertype);
+          return;
 
- var  assrec = await Assignment.create({
-        assignmentname : assignname,
-        userid : req.body.userid,
-        usergroup : '',
-        nodestatus : 'pending' ,
-         } ).fetch();
-
-
-
+ }
 
 
 
@@ -525,4 +529,56 @@ async function timeupdateuserconfig (res, email){
 
 
 };
+
+
+async function CreateUserAssignment_C1(userid, usertype) {
+
+ var buf = crypto.randomBytes(3);
+ var rand = buf.toString('hex');
+ var assignname = "agnid_"+req.body.userid+"_"+usertype+"_"+ rand;
+
+ var  assrec = await Assignment.create({
+        assignmentname : assignmentname,
+        userid : userid,
+        usergroup : '',
+        usertype : usertype,
+        nodestatus : 'pending' ,
+         } ).fetch();
+
+   return assrec;
+}
+
+
+
+async function CreateUserAssignment_A1(userid, usertype) {
+ var buf = crypto.randomBytes(3);
+ var rand = buf.toString('hex');
+ var assignname = "agnid_"+req.body.userid+"_"+usertype+"_"+ rand;
+
+ var  assrec = await Assignment.create({
+        assignmentname : assignmentname,
+        userid : userid,
+        usergroup : '',
+        usertype : usertype,
+        nodestatus : 'pending' ,
+         } ).fetch();
+
+   return assrec;
+}
+
+async function CreateUserAssignment_A2(userid, usertype) {
+ var buf = crypto.randomBytes(3);
+ var rand = buf.toString('hex');
+ var assignname = "agnid_"+req.body.userid+"_"+usertype+"_"+ rand;
+
+ var  assrec = await Assignment.create({
+        assignmentname : assignmentname,
+        userid : userid,
+        usertype : usertype,
+        usergroup : '',
+        nodestatus : 'pending' ,
+         } ).fetch();
+
+   return assrec;
+}
 

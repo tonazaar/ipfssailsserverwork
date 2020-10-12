@@ -25,6 +25,9 @@ module.exports = {
     userid: {
       type: "string",
     },
+    usertype: {
+      type: "string",
+    },
     nodetype: {
       type: "string",
     },
