@@ -67,7 +67,8 @@ createuserconfig : async function(req, res, next){
 
 
   // to be changed with more specific node to assign by default
-  var nodeconfs = await Ipfsprovider.find({nodetype: req.body.nodetype}).limit(1);
+  //var nodeconfs = await Ipfsprovider.find({nodetype: req.body.nodetype}).limit(1);
+  var nodeconfs = await Ipfsprovider.find({where: {assignmentname: '', nodetype: req.body.nodetype},limit: 1} );
    if(nodeconfs.length != 1) {
     ResponseService.json(403, res, "nodetype does not exist   ");
           return;
