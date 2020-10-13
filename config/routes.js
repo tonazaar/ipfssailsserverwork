@@ -29,6 +29,8 @@ module.exports.routes = {
 
   'POST /api/assignment/assignnodegroup': 'AssignmentController.assignnodegroup',
   'POST /api/assignment/assignnode': 'AssignmentController.assignnode',
+  'POST /api/assignment/listnodesofassignment': 'AssignmentController.listnodesofassignment',
+  'POST /api/assignment/listassnodesbyuserid': 'AssignmentController.listassnodesbyuserid',
   'POST /api/assignment/assignuser': 'AssignmentController.assignuser',
   'POST /api/assignment/assignusergroup': 'AssignmentController.assignusergroup',
   'POST /api/assignment/assignnodetogroup': 'AssignmentController.assignnodetogroup',

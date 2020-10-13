@@ -569,31 +569,43 @@ getprivatenodes : async function(req, res, next){
 	res.json(recs);
 },
 
-listnodesofgroup : async function(req, res, next){
+listnodesofassignment : async function(req, res, next){
 
+   if(!req.body.assignmentname ){
 
-   if(!req.body.nodegroup ){
-
-    ResponseService.json(403, res, "Nodegroup is not set ");
+    ResponseService.json(403, res, "Assignmentname is not provided ");
           return;
    }
 
-  var recs = await Ipfsprovider.find({ nodegroup: req.body.nodegroup });
+  var recs = await Ipfsprovider.find({ assignmentname: req.body.assignmentname });
 
   res.json(recs);
 
 },
 
-listmynodes : async function(req, res, next){
+listassnodesbyuserid : async function(req, res, next){
 
 
    if(!req.body.userid ){
 
-    ResponseService.json(403, res, "Userid is not set ");
+    ResponseService.json(403, res, "Userid is not provided ");
           return;
    }
 
-  var recs = await Ipfsprovider.find({ userid: req.body.userid });
+  var userrec = await Userconfig.findOne({ userid: req.body.userid });
+
+   if(!userrec ){
+    ResponseService.json(403, res, "Userconfig not found");
+          return;
+   }
+
+
+   if(!userrec.assignmentname || userrec.assignmentname == '' ){
+    ResponseService.json(403, res, "No assignment to user ");
+          return;
+   }
+
+  var recs = await Ipfsprovider.find({ assignmentname: userrec.assignmentname });
 
   res.json(recs);
 
