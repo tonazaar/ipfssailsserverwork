@@ -77,8 +77,13 @@ module.exports = {
     tonbalance: {
       type: "string",
     },
+     assignment: {
+      model: 'Assignment',
+    },
 
   },
+
+
 
 
 };

@@ -53,9 +53,14 @@ createuserconfig : async function(req, res, next){
           return;
   }
 
-
-
  var assrec ;
+
+  if(userc.assignmentname ) {
+    ResponseService.json(403, res, "Assignment already exists ");
+          return;
+  }
+
+
  if(req.body.usertype == 'C1') {
     assrec = await CreateUserAssignment_C1(req.body.userid, req.body.usertype);
  } else if(req.body.usertype == 'A1') {
@@ -108,6 +113,7 @@ createuserconfig : async function(req, res, next){
         username : user.username,
         userid : user.userid,
         assignmentname : assrec.assignmentname,
+        assignment : assrec.id,
         usagelimit : userdefault.usagelimit,
         nodegroup: nodeconf.nodegroup,
         nodetype: nodeconf.nodetype,
@@ -116,7 +122,10 @@ createuserconfig : async function(req, res, next){
 	ipfsconfigupdatetime: userdefault.updatedAt,
          } ).fetch();
 
-   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname }).fetch();
+   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname ,
+        assignment : assrec.id,
+   
+   }).fetch();
 
         res.json(newrec);
 
@@ -204,12 +213,30 @@ assignnodetouser : async function(req, res, next){
           return;
   }
 
+  var userc = await Userconfig.findOne({email: user.email});
+  if(!userc) {
+    ResponseService.json(403, res, "User config doesnot exist ");
+          return;
+  }
+
+  if(!userc.assignmentname || userc.assignmentname == '') {
+    ResponseService.json(403, res, "User has not assignment ");
+          return;
+  }
+
   var nodeconf = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
    if(!nodeconf) {
     ResponseService.json(403, res, "Nodeid does not exist   ");
           return;
 
   }
+
+  if(nodeconf.assignmentname) {
+    ResponseService.json(403, res, "Node alreay assigned. Cannot change ");
+          return;
+  }
+
+
 
 
    var useripfsconfig = {
@@ -218,6 +245,7 @@ assignnodetouser : async function(req, res, next){
       nodeid: nodeconf.nodeid,
       nodegroup: nodeconf.nodegroup,
       nodename: nodeconf.nodename,
+      assignmentname: userc.assignmentname,
       basepath : nodeconf.basepath,
       usagelimit: nodeconf.usagelimit,
       ipaddress: nodeconf.ipaddress,
@@ -226,6 +254,7 @@ assignnodetouser : async function(req, res, next){
       config: nodeconf.xconfig
      };
 
+	/*
   var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
 
   if(!tmpuserconfig) {
@@ -249,10 +278,14 @@ assignnodetouser : async function(req, res, next){
    var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : tmpuserconfig.assignmentname }).fetch();
 
    }
-
+*/
+   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : userc.assignmentname ,
+        assignment : userc.id,
+   
+   }).fetch();
 
   var newrec = await Userconfig.update({
-	id: tmpuserconfig.id}).set({
+	id: userc.id}).set({
         usagelimit : userdefault.usagelimit,
         nodegroup: nodeconf.nodegroup,
         nodetype: nodeconf.nodetype,
@@ -266,6 +299,8 @@ assignnodetouser : async function(req, res, next){
 
 },
 
+
+	/*
 updateuserconfig : async function(req, res, next){
 
   var user = await User.findOne({userid: req.body.userid});
@@ -306,7 +341,7 @@ updateuserconfig : async function(req, res, next){
 
 },
 
-
+*/
 
 expandusagelimit : async function(req, res, next){
 

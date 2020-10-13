@@ -23,42 +23,45 @@ assignuser : async function(req, res, next){
           return;
    }
 
-   if(!req.body.nodeid) {
-    ResponseService.json(403, res, "nodeid not specified");
+   var userc = await Userconfig.findOne({email: user.email});
+  if(userc) {
+    ResponseService.json(403, res, "Config already exists ");
           return;
-   }
+  }
 
-
-   var recs = await Assignment.findOne({userid: req.body.userid});
-   if(recs) {
-    ResponseService.json(403, res, "assignment already exists exist   ");
+   if(userc.assignmentname ) {
+     if(req.body.overwrite == 'yes') {
+	     // do nothing
+     }else {
+        ResponseService.json(403, res, "Assignment already exists ");
           return;
 
-   }
+     }
+  }
 
-   var buf = crypto.randomBytes(3);
-  var rand = buf.toString('hex');
-    var assignname = "agnid_"+req.body.userid+ rand;
 
-   var assrec = await Assignment.create({
-        assignmentname : assignname,
-        nodeid : req.body.nodeid,
-        userid : req.body.userid,
-        usergroup : '',
-        nodename : req.body.nodename,
-        nodegroup : req.body.nodegroup,
-        nodestatus : 'pending' ,
-         } ).fetch();
+ var assrec ;
+ if(req.body.usertype == 'C1') {
+    assrec = await CreateUserAssignment_C1(req.body.userid, req.body.usertype);
+ } else {
+    ResponseService.json(403, res, "Only C1 usertype allowed" );
+          return;
+
+ }
 
 
 
+
+/*
    var provrec = await Ipfsprovider.update({
                nodeid: req.body.nodeid}).set({
-        assignmentname : assrec.assignmentname
+        assignmentname : assrec.assignmentname,
+		   assignment: assrec.id,
                }).fetch();
-
+*/
    var userconfigrec = await Useconfig.update({ 
-	   userid: req.body.userid}).set({ assignmentname : assrec.assignmentname
+	   id: userc.id}).set({ assignmentname : assrec.assignmentname,
+		   assignment: assrec.id,
                }).fetch();
 
    res.json(userconfigrec);
@@ -101,11 +104,13 @@ assignusergroup : async function(req, res, next){
 
    var provrec = await Ipfsprovider.update({
                nodeid: req.body.nodeid}).set({
-        assignmentname : assrec.assignmentname
+        assignmentname : assrec.assignmentname,
+		   assignment: assrec.id,
                }).fetch();
 
    var usergrouprec = await Usergroup.update({ 
-	   usergroup: req.body.usergroup}).set({ assignmentname : assrec.assignmentname
+	   usergroup: req.body.usergroup}).set({ assignmentname : assrec.assignmentname,
+		   assignment: assrec.id,
                }).fetch();
 
    res.json(usergrouprec);
@@ -135,7 +140,8 @@ assignnode : async function(req, res, next){
 
    var provrec = await Ipfsprovider.update({
                nodeid: req.body.nodeid}).set({
-        assignmentname : req.body.assignmentname
+        assignmentname : req.body.assignmentname,
+		   assignment: assrec.id,
                }).fetch();
 
 
@@ -176,7 +182,8 @@ assignnodegroup : async function(req, res, next){
 
    var provrec = await Ipfsprovider.update({
                nodegroup: req.body.nodegroup}).set({
-        assignmentname : req.body.assignmentname
+        assignmentname : req.body.assignmentname,
+		   assignment: assrec.id,
                }).fetch();
 
 
@@ -221,7 +228,8 @@ assignnodetogroup : async function(req, res, next){
 
    var provrec = await Ipfsprovider.update({
                nodeid: req.body.nodeid}).set({
-        assignmentname : nodegrp.assignmentname
+        assignmentname : nodegrp.assignmentname,
+		   assignment: assrec.id,
                }).fetch();
 
 
@@ -737,4 +745,21 @@ function verifyParams(res, email, password){
   }
 };
 
+
+async function CreateUserAssignment_C1(userid, usertype) {
+
+ var buf = crypto.randomBytes(3);
+ var rand = buf.toString('hex');
+ var assignname = "agnid_"+req.body.userid+"_"+usertype+"_"+ rand;
+
+ var  assrec = await Assignment.create({
+        assignmentname : assignmentname,
+        userid : userid,
+        usergroup : '',
+        usertype : usertype,
+        nodestatus : 'pending' ,
+         } ).fetch();
+
+   return assrec;
+}
 

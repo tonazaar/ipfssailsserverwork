@@ -58,6 +58,9 @@ module.exports = {
 	    collection: 'Userconfig',
 	    via: 'usergroupptr'
     },
+     assignment: {
+      model: 'Assignment',
+    },
 
   },
 

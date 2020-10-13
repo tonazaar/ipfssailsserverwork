@@ -57,6 +57,10 @@ module.exports = {
     basepath: {
       type: "string",
     },
+    assignment: {
+      model: 'Assignment',
+    },
+
 
   },
 
