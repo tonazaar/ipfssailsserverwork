@@ -41,7 +41,7 @@ setusertypefornode : async function(req, res, next){
 
 },
 
-setuserfornode : async function(req, res, next){
+setc1userfornode : async function(req, res, next){
 
 
    if(!req.body.userid) {
@@ -67,7 +67,8 @@ setuserfornode : async function(req, res, next){
           return;
   }
 
- x =  await AssignNode_ForUser(user, node) ;
+ x =  await AssignNode_ForUserconfig(user, node) ;
+
    res.json(x);
 
 },
@@ -173,7 +174,7 @@ assignusergroup : async function(req, res, next){
 },
 
 assignnode : async function(req, res, next){
-
+// needed for admin work
 
    if(!req.body.nodeid) {
     ResponseService.json(403, res, "nodeid not specified");
@@ -820,11 +821,17 @@ async function AssignNode_ForC1type(userid, node) {
 	return provrec;
 }
 
-async function AssignNode_ForUser(user, node) {
+async function AssignNode_ForUserconfig(user, node) {
 
    if(user.usertype != node.usertype) {
 	   return node ;
    }
+
+//assignmentname
+// update userconfig also, update assignment (not needed)
+// assigment of user, (node, nodes, groups), only links canbe provided
+// the node, nodes can have  assignment name, groups, type
+
    var provrec = await Ipfsprovider.update({
                nodeid: node.nodeid}).set({
         useraccess : user.userid,
