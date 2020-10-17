@@ -16,6 +16,62 @@ module.exports = {
 // assignusergroup
 
 
+setusertypefornode : async function(req, res, next){
+
+   if(!req.body.usertype) {
+    ResponseService.json(403, res, "usertype not specified");
+          return;
+   }
+
+
+   if(!req.body.nodeid) {
+    ResponseService.json(403, res, "nodeid not specified");
+          return;
+   }
+
+   var prov = await IpfsProvider.findOne({nodeid: req.body.nodeid});
+  if(!prov) {
+    ResponseService.json(403, res, "Node not found ");
+          return;
+  }
+
+  x = await AssignNode_Usertype(req.body.usertype, prov) ;
+
+   res.json(x);
+
+},
+
+setuserfornode : async function(req, res, next){
+
+
+   if(!req.body.userid) {
+    ResponseService.json(403, res, "userid not specified");
+          return;
+   }
+
+   var userc = await Userconfig.findOne({email: user.email});
+  if(userc) {
+    ResponseService.json(403, res, "Config already exists ");
+          return;
+  }
+
+
+   if(!req.body.nodeid) {
+    ResponseService.json(403, res, "nodeid not specified");
+          return;
+   }
+
+   var prov = await IpfsProvider.findOne({nodeid: req.body.nodeid});
+  if(!prov) {
+    ResponseService.json(403, res, "Node not found ");
+          return;
+  }
+
+ x =  await AssignNode_ForUser(user, node) ;
+   res.json(x);
+
+},
+
 assignuser : async function(req, res, next){
 
    if(!req.body.userid) {
@@ -745,7 +801,47 @@ function verifyParams(res, email, password){
   }
 };
 
+function CheckC1_UserAssignable(userid, node) {
+//  if node
 
+//  if(!node.useraccess)
+//  if(!node.nodestatus)
+//  if(!node.usertype)
+
+}
+
+async function AssignNode_ForC1type(userid, node) {
+
+   var provrec = await Ipfsprovider.update({
+               nodeid: node.nodeid}).set({
+        usertype : 'C1' ,
+               }).fetch();
+
+	return provrec;
+}
+
+async function AssignNode_ForUser(user, node) {
+
+   if(user.usertype != node.usertype) {
+	   return node ;
+   }
+   var provrec = await Ipfsprovider.update({
+               nodeid: node.nodeid}).set({
+        useraccess : user.userid,
+               }).fetch();
+
+	return provrec;
+}
+
+async function AssignNode_Usertype(usertype, node) {
+
+   var provrec = await Ipfsprovider.update({
+               nodeid: node.nodeid}).set({
+        usertype : usertype
+               }).fetch();
+
+	return provrec;
+}
 async function CreateUserAssignment_C1(userid, usertype) {
 
  var buf = crypto.randomBytes(3);

@@ -33,6 +33,9 @@ module.exports = {
     useraccess: {
       type: "string",
     },
+    usertype: {
+      type: "string",
+    },
     nodetype: {
       type: "string",
     },
