@@ -73,6 +73,59 @@ setc1userfornode : async function(req, res, next){
 
 },
 
+seta1usergroupfornode : async function(req, res, next){
+// only owner of usergroup can add nodes etc
+
+   if(!req.body.userid) {
+    ResponseService.json(403, res, "userid not specified");
+          return;
+   }
+
+   if(!req.body.usergroup) {
+    ResponseService.json(403, res, "usergroup not specified");
+          return;
+   }
+
+
+   var userc = await Userconfig.findOne({email: user.email});
+
+  if(userc) {
+    ResponseService.json(403, res, "Config already exists ");
+          return;
+  }
+
+  
+  var ug = await Usergroup.findOne({usergroup: req.body.usergroup});
+
+  if(ug) {
+    ResponseService.json(403, res, "Usergroup not found ");
+          return;
+  }
+
+  if(ug.creatoremail != user.email) {
+
+    ResponseService.json(403, res, "User not owner of usergroup ");
+          return;
+
+  }
+
+   if(!req.body.nodeid) {
+    ResponseService.json(403, res, "nodeid not specified");
+          return;
+   }
+
+   var prov = await IpfsProvider.findOne({nodeid: req.body.nodeid});
+  if(!prov) {
+    ResponseService.json(403, res, "Node not found ");
+          return;
+  }
+
+ x =  await AssignNode_ForUsergroup(user, node, ug) ;
+
+   res.json(x);
+
+},
+
 assignuser : async function(req, res, next){
 
    if(!req.body.userid) {
