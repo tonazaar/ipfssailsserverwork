@@ -47,7 +47,8 @@ createuserconfig : async function(req, res, next){
           return;
   }
 
-  var userc = await Userconfig.findOne({email: user.email});
+  var userc = await Userconfig.findOne({email: user.email, usertype:req.body.usertype});
+
   if(userc) {
     ResponseService.json(403, res, "Config already exists ");
           return;
@@ -93,6 +94,7 @@ createuserconfig : async function(req, res, next){
 
    var useripfsconfig = {
       userid: user.userid,
+      usertype: req.body.usertype,
       assignmentname : assrec.assignmentname,
       nodetype: nodeconf.nodetype,
       nodeid: nodeconf.nodeid,
@@ -112,6 +114,7 @@ createuserconfig : async function(req, res, next){
         email : user.email,
         username : user.username,
         userid : user.userid,
+        usertype: req.body.usertype,
         assignmentname : assrec.assignmentname,
         assignment : assrec.id,
         usagelimit : userdefault.usagelimit,
@@ -124,6 +127,9 @@ createuserconfig : async function(req, res, next){
 
    var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname ,
         assignment : assrec.id,
+        usertype: req.body.usertype,
+        useraccess : user.userid,  // to decide useraccess or group access
+	   // group is not already created at this time
    
    }).fetch();
 
@@ -431,6 +437,37 @@ disableuser : async function(req, res, next){
 },
 
 getuserconfig : async function(req, res, next){
+// One account for each usertype is allowed
+
+  if(!req.body.userid)  {
+    ResponseService.json(403, res, "userid not specified ");
+          return;
+  }
+
+  if(!req.body.usertype)  {
+    ResponseService.json(403, res, "usertype not specified ");
+          return;
+  }
+
+
+  var user = await User.findOne({userid: req.body.userid, usertype:req.body.usertype});
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+
+        res.json(tmpuserconfig);
+
+},
+getuserconfigs : async function(req, res, next){
 
 
   if(!req.body.userid)  {
@@ -445,7 +482,7 @@ getuserconfig : async function(req, res, next){
           return;
   }
 
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+  var tmpuserconfig = await Userconfig.find({userid: req.body.userid});
 
   if(!tmpuserconfig) {
     ResponseService.json(403, res, "No user config record ");

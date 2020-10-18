@@ -59,8 +59,12 @@ module.exports = {
     userptr: {
       model: 'User',
     },
+    usertype: {
+      type: "string",  // c1single, a2group, a1group. Currently used as C1, A1, A2 
+       // Used to control from frontend
+    },
     usergrouptype: {
-      type: "string",
+      type: "string",  // c1storage etc
     },
     tokenassigned: {
       type: "string",

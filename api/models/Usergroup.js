@@ -32,6 +32,8 @@ module.exports = {
 
     usergroupname: {
       type: "string",
+      required: true,
+      unique: true,
     },
     usergrouptype: {
       type: "string",   //c1storage, a1private, a2public
