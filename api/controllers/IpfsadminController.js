@@ -62,25 +62,33 @@ createuserconfig : async function(req, res, next){
   }
 
 
+ var nodetype = req.body.nodetype;
  if(req.body.usertype == 'C1') {
     assrec = await CreateUserAssignment_C1(req.body.userid, req.body.usertype);
+    nodetype = 'privatenode';
  } else if(req.body.usertype == 'A1') {
     assrec = await CreateUserAssignment_A1(req.body.userid, req.body.usertype);
+    nodetype = 'privatenode';
  } else if(req.body.usertype == 'A2') {
     assrec = await CreateUserAssignment_A2(req.body.userid, req.body.usertype);
+    nodetype = 'publicnode';
  } else {
     ResponseService.json(403, res, "Unknown usertype " + req.body.usertype);
           return;
 
  }
 
+ var userid = req.body.userid;
+ var usertype = req.body.usertype;
 
 
   // to be changed with more specific node to assign by default
   //var nodeconfs = await Ipfsprovider.find({nodetype: req.body.nodetype}).limit(1);
-  var nodeconfs = await Ipfsprovider.find({where: {assignmentname: '', nodetype: req.body.nodetype},limit: 1} );
+	
+  var nodeconfs = await Getnodeto_Use(userid, usertype, nodetype) ;
+
    if(nodeconfs.length != 1) {
-    ResponseService.json(403, res, "nodetype does not exist   ");
+    ResponseService.json(403, res, "Node not available ");
           return;
 
   }
@@ -602,6 +610,20 @@ async function timeupdateuserconfig (res, email){
 
 };
 
+async function Getnodeto_Use(userid, usertype, nodetype) {
+// Get nodes of type private or shared
+// multiple users can share node with usergroup assignment
+// Not belonging to usergroup can also share. But not implemented
+// As it may complicate
+
+
+  var nodeconfs = await Ipfsprovider.find({where: {assignmentname: '', 
+	  nodetype: nodetype, usertype: usertype },limit: 1} );
+
+  return nodeconfs;
+
+	
+}
 
 async function CreateUserAssignment_C1(userid, usertype) {
 
