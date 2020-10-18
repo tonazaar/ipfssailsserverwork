@@ -444,6 +444,33 @@ getuserconfig : async function(req, res, next){
 
 },
 
+getgroupuserconfig : async function(req, res, next){
+// One account for each usertype is allowed
+
+  if(!req.body.userid)  {
+    ResponseService.json(403, res, "userid not specified ");
+          return;
+  }
+
+  if(!req.body.usergroupname)  {
+    ResponseService.json(403, res, "usergroup not found ");
+          return;
+  }
+
+
+
+  var tmp= await GetUsergroup_config(userid, usergroup) ;
+
+  if(!tmp) {
+    ResponseService.json(403, res, "Group config not found ");
+          return;
+  }
+
+
+   res.json(tmp);
+
+},
+
 getuserconfigs : async function(req, res, next){
 
 
