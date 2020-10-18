@@ -82,9 +82,13 @@ createuserconfig : async function(req, res, next){
  var usertype = req.body.usertype;
 
 
-  // to be changed with more specific node to assign by default
-  //var nodeconfs = await Ipfsprovider.find({nodetype: req.body.nodetype}).limit(1);
-	
+/* 
+ * User is alloted private node,  public node (shared to be considered later)
+ * User or User groups based access can be present  
+ * In A1, A2 group based access is provided
+ * In C1 no groups present
+ */
+
   var nodeconfs = await Getnodeto_Use(userid, usertype, nodetype) ;
 
    if(nodeconfs.length != 1) {
@@ -141,9 +145,7 @@ createuserconfig : async function(req, res, next){
    
    }).fetch();
 
-        res.json(newrec);
-
-
+   res.json(newrec);
 },
 
 
