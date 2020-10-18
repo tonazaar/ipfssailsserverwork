@@ -20,7 +20,7 @@ module.exports = {
       type: "string",
       required: true,
     },
-  assignmentname: {
+    assignmentname: {
       type: "string",
     },
     usagelimit: {

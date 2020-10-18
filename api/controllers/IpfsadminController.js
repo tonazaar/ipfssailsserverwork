@@ -47,7 +47,7 @@ createuserconfig : async function(req, res, next){
           return;
   }
 
-  var userc = await Userconfig.findOne({email: user.email, usertype:req.body.usertype});
+  var userc = await Userconfig.findOne({userid: userid, usertype:req.body.usertype});
 
   if(userc) {
     ResponseService.json(403, res, "Config already exists ");
@@ -62,25 +62,23 @@ createuserconfig : async function(req, res, next){
   }
 
 
+ var userid = req.body.userid;
+ var usertype = req.body.usertype;
  var nodetype = req.body.nodetype;
- if(req.body.usertype == 'C1') {
-    assrec = await CreateUserAssignment_C1(req.body.userid, req.body.usertype);
+ if(usertype == 'C1') {
+    assrec = await CreateUserAssignment_C1(userid, usertype);
     nodetype = 'privatenode';
- } else if(req.body.usertype == 'A1') {
-    assrec = await CreateUserAssignment_A1(req.body.userid, req.body.usertype);
+ } else if(usertype == 'A1') {
+    assrec = await CreateUserAssignment_A1(userid, usertype);
     nodetype = 'privatenode';
- } else if(req.body.usertype == 'A2') {
-    assrec = await CreateUserAssignment_A2(req.body.userid, req.body.usertype);
+ } else if(usertype == 'A2') {
+    assrec = await CreateUserAssignment_A2(userid, usertype);
     nodetype = 'publicnode';
  } else {
-    ResponseService.json(403, res, "Unknown usertype " + req.body.usertype);
+    ResponseService.json(403, res, "Unknown usertype " + usertype);
           return;
 
  }
-
- var userid = req.body.userid;
- var usertype = req.body.usertype;
-
 
 /* 
  * User is alloted private node,  public node (shared to be considered later)
@@ -105,8 +103,8 @@ createuserconfig : async function(req, res, next){
 
 
    var useripfsconfig = {
-      userid: user.userid,
-      usertype: req.body.usertype,
+      userid: userid,
+      usertype: usertype,
       assignmentname : assrec.assignmentname,
       nodetype: nodeconf.nodetype,
       nodeid: nodeconf.nodeid,
@@ -120,13 +118,11 @@ createuserconfig : async function(req, res, next){
       config: nodeconf.xconfig
      };
 
-
-
   var newrec = await Userconfig.create({
         email : user.email,
         username : user.username,
         userid : user.userid,
-        usertype: req.body.usertype,
+        usertype: usertype,
         assignmentname : assrec.assignmentname,
         assignment : assrec.id,
         usagelimit : userdefault.usagelimit,
@@ -139,9 +135,9 @@ createuserconfig : async function(req, res, next){
 
    var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname ,
         assignment : assrec.id,
-        usertype: req.body.usertype,
+        usertype: usertype,
         useraccess : 'enabled'
-	   // access control based on assignment and usertype
+  // access control based on assignment and usertype
    
    }).fetch();
 
@@ -163,9 +159,7 @@ updatenodestatus : async function(req, res, next){
 
    }
 
-
-
-    var nodeconf = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
+   var nodeconf = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
 
    if(!nodeconf) {
     ResponseService.json(403, res, "Nodeid does not exist   ");
@@ -221,6 +215,10 @@ updatenodeusage : async function(req, res, next){
 
 },
 
+joinnodetouser : async function(req, res, next){
+
+},
+
 assignnodetouser : async function(req, res, next){
 
   var user = await User.findOne({userid: req.body.userid});
@@ -253,8 +251,6 @@ assignnodetouser : async function(req, res, next){
   }
 
 
-
-
    var useripfsconfig = {
       userid: user.userid,
       nodetype: nodeconf.nodetype,
@@ -270,31 +266,6 @@ assignnodetouser : async function(req, res, next){
       config: nodeconf.xconfig
      };
 
-	/*
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
-
-  if(!tmpuserconfig) {
-    ResponseService.json(403, res, "No user config record ");
-          return;
-  }
-
-  if(!tmpuserconfig.assignmentname) {
-    ResponseService.json(403, res, "User assignment record not done ");
-          return;
-  }
-
-
-  if(nodeconf.assignmentname) {
-      if(tmpuserconfig.assignmentname != nodeconf.assignmentname) {
-         ResponseService.json(403, res, "assignment name mismatch with node ");
-         return;
-      } 
-   }else {
-
-   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : tmpuserconfig.assignmentname }).fetch();
-
-   }
-*/
    var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : userc.assignmentname ,
         assignment : userc.id,
    
@@ -460,13 +431,8 @@ getuserconfig : async function(req, res, next){
   }
 
 
-  var user = await User.findOne({userid: req.body.userid, usertype:req.body.usertype});
-  if(!user) {
-    ResponseService.json(403, res, "No user record ");
-          return;
-  }
 
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+  var tmpuserconfig = await GetUserconfig_Asowner(userid, usertype) ;
 
   if(!tmpuserconfig) {
     ResponseService.json(403, res, "No user config record ");
@@ -474,9 +440,10 @@ getuserconfig : async function(req, res, next){
   }
 
 
-        res.json(tmpuserconfig);
+   res.json(tmpuserconfig);
 
 },
+
 getuserconfigs : async function(req, res, next){
 
 
@@ -611,6 +578,31 @@ async function timeupdateuserconfig (res, email){
 
 
 };
+
+async function CreateUserconfig_asOwner(userid, usergroup, nodetype) {
+}
+
+async function AddNode_asOwner(userid, usergroup, nodetype) {
+}
+
+async function GetUsergroup_config(userid, usergroup, nodetype) {
+// get userconfig for accessing groups
+
+}
+
+
+async function GetUserconfig_Asowner(userid, usertype) {
+
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid,
+	  usertype:req.body.usertype});
+
+
+  return tmpuserconfig;
+
+}
+
+
+
 
 async function Getnodeto_Use(userid, usertype, nodetype) {
 // Get nodes of type private or shared
