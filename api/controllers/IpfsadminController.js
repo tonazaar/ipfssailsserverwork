@@ -128,8 +128,8 @@ createuserconfig : async function(req, res, next){
    var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname ,
         assignment : assrec.id,
         usertype: req.body.usertype,
-        useraccess : user.userid,  // to decide useraccess or group access
-	   // group is not already created at this time
+        useraccess : 'enabled'
+	   // access control based on assignment and usertype
    
    }).fetch();
 

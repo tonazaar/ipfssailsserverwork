@@ -874,9 +874,9 @@ async function AssignNode_ForC1type(userid, node) {
 	return provrec;
 }
 
-async function AssignNode_ForUserconfig(user, node) {
+async function AssignNode_ForUserconfig(userconfig, node) {
 
-   if(user.usertype != node.usertype) {
+   if(userconfig.usertype != node.usertype) {
 	   return node ;
    }
 
@@ -887,7 +887,7 @@ async function AssignNode_ForUserconfig(user, node) {
 
    var provrec = await Ipfsprovider.update({
                nodeid: node.nodeid}).set({
-        useraccess : user.userid,
+        assignmentname : userconfig.assignmentname,
                }).fetch();
 
 	return provrec;
