@@ -44,7 +44,7 @@ module.exports = {
     grouptokenassigned: {
       type: "string",
     },
-    oneipfsconfig: {   // not sure
+    groupipfsconfig: {   // not sure
       type: "json",
     },
     grouptonwallet: {

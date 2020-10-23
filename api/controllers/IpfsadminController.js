@@ -145,6 +145,118 @@ createuserconfig : async function(req, res, next){
 },
 
 
+creategroupconfig : async function(req, res, next){
+
+  if(!req.body.userid) {
+    ResponseService.json(403, res, "Userid does not exist ");
+          return;
+  }
+
+  if(!req.body.usertype) {
+    ResponseService.json(403, res, "usertype not provided ");
+          return;
+  }
+//   ResponseService.json(403, res, "Depreciated , use assignnode");
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+  var userc = await Usergroupconfig.findOne({userid: userid, usertype:req.body.usertype});
+
+  if(userc) {
+    ResponseService.json(403, res, "Config already exists ");
+          return;
+  }
+
+ var assrec ;
+
+  if(userc.assignmentname ) {
+    ResponseService.json(403, res, "Assignment already exists ");
+          return;
+  }
+
+
+ var userid = req.body.userid;
+ var usertype = req.body.usertype;
+ var nodetype = req.body.nodetype;
+
+ if(usertype == 'A1') {
+    assrec = await CreateGroupAssignment_A1(userid, usertype, groupname);
+    nodetype = 'privatenode';
+ } else if(usertype == 'A2') {
+    assrec = await CreateGroupAssignment_A2(userid, usertype, groupname);
+    nodetype = 'publicnode';
+ } else {
+    ResponseService.json(403, res, "Unknown usertype " + usertype);
+          return;
+
+ }
+
+/* 
+ * User is alloted private node,  public node (shared to be considered later)
+ * User or User groups based access can be present  
+ * In A1, A2 group based access is provided
+ * In C1 no groups present
+ */
+
+  var nodeconfs = await Getnodeto_Use(userid, usertype, nodetype) ;
+
+   if(nodeconfs.length != 1) {
+    ResponseService.json(403, res, "Node not available ");
+          return;
+
+  }
+   var nodeconf = nodeconfs[0];
+
+   if(nodeconf.assignmentname) {
+       ResponseService.json(403, res, "Node is already assigned ");
+       return;
+   }
+
+
+   var groupipfsconfig = {
+      userid: userid,
+      usertype: usertype,
+      assignmentname : assrec.assignmentname,
+      nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig
+     };
+
+  var newrec = await Usergroupconfig.create({
+        email : user.email,
+        username : user.username,
+        userid : user.userid,
+        usertype: usertype,
+        assignmentname : assrec.assignmentname,
+        assignment : assrec.id,
+        usagelimit : userdefault.usagelimit,
+        nodegroup: nodeconf.nodegroup,
+        nodetype: nodeconf.nodetype,
+	nodeid: nodeconf.nodeid,
+        groupipfsconfig: groupipfsconfig,
+	ipfsconfigupdatetime: userdefault.updatedAt,
+         } ).fetch();
+
+   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname ,
+        assignment : assrec.id,
+        usertype: usertype,
+        useraccess : 'enabled'
+  // access control based on assignment and usertype
+   
+   }).fetch();
+
+   res.json(newrec);
+},
 updatenodestatus : async function(req, res, next){
 
    if(!req.body.nodestatus) {
@@ -614,16 +726,19 @@ async function AddNode_asOwner(userid, usergroup, nodetype) {
 
 async function GetUsergroup_config(userid, usergroup, nodetype) {
 // get userconfig for accessing groups
+  var tmpgroupconfig = await Groupuserconfig.findOne({userid: userid, 
+	  usergroupname: usergroup,
+	  usertype:usertype});
+  return tmpgroupconfig;
+
 
 }
 
 
 async function GetUserconfig_Asowner(userid, usertype) {
 
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid,
-	  usertype:req.body.usertype});
-
-
+  var tmpuserconfig = await Userconfig.findOne({userid: userid,
+	  usertype:usertype});
   return tmpuserconfig;
 
 }

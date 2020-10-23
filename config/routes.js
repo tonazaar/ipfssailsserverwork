@@ -94,6 +94,7 @@ module.exports.routes = {
   'POST /api/usergroupadmin/updatenodegroup': 'UsergroupController.updatenodegroup',
   'POST /api/ipfsadmin/listusers': 'IpfsadminController.listusers',
   'POST /api/ipfsadmin/createuserconfig': 'IpfsadminController.createuserconfig',
+  'POST /api/ipfsadmin/creategroupconfig': 'IpfsadminController.creategroupconfig',
   'POST /api/ipfsadmin/updateuserconfig': 'IpfsadminController.updateuserconfig',
   'POST /api/ipfsadmin/expandusagelimit': 'IpfsadminController.expandusagelimit',
   'POST /api/ipfsadmin/getgroupuserconfig': 'IpfsadminController.getgroupuserconfig',
