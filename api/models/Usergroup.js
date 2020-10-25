@@ -35,7 +35,7 @@ module.exports = {
       required: true,
       unique: true,
     },
-    usergrouptype: {
+    usertype: {
       type: "string",   //c1storage, a1private, a2public
     },
     nodegroup: {
@@ -43,9 +43,6 @@ module.exports = {
     },
     grouptokenassigned: {
       type: "string",
-    },
-    groupipfsconfig: {   // not sure
-      type: "json",
     },
     grouptonwallet: {
       type: "json",
@@ -56,10 +53,10 @@ module.exports = {
     grouptonbalance: {
       type: "string",
     },
-    userconfigs: {
-	    collection: 'Userconfig',
-	    via: 'usergroupptr'
+    userptr: {
+      model: 'User',
     },
+
      assignment: {
       model: 'Assignment',
     },

@@ -152,6 +152,12 @@ creategroupconfig : async function(req, res, next){
           return;
   }
 
+  if(!req.body.usergroupname) {
+    ResponseService.json(403, res, "usergroupname does not exist ");
+          return;
+  }
+
+
   if(!req.body.usertype) {
     ResponseService.json(403, res, "usertype not provided ");
           return;
@@ -163,16 +169,16 @@ creategroupconfig : async function(req, res, next){
           return;
   }
 
-  var userc = await Usergroupconfig.findOne({userid: userid, usertype:req.body.usertype});
+  var userg = await Usergroupconfig.findOne({userid: userid, usertype:req.body.usertype, usergroupname: req.body.usergroupname});
 
-  if(userc) {
+  if(userg) {
     ResponseService.json(403, res, "Config already exists ");
           return;
   }
 
  var assrec ;
 
-  if(userc.assignmentname ) {
+  if(userg.assignmentname ) {
     ResponseService.json(403, res, "Assignment already exists ");
           return;
   }
@@ -182,11 +188,12 @@ creategroupconfig : async function(req, res, next){
  var usertype = req.body.usertype;
  var nodetype = req.body.nodetype;
 
+// add a node and a assignment for the group of user
  if(usertype == 'A1') {
-    assrec = await CreateGroupAssignment_A1(userid, usertype, groupname);
+    assrec = await CreateGroupAssignment_A1(userid, usertype, usergroupname);
     nodetype = 'privatenode';
  } else if(usertype == 'A2') {
-    assrec = await CreateGroupAssignment_A2(userid, usertype, groupname);
+    assrec = await CreateGroupAssignment_A2(userid, usertype, usergroupname);
     nodetype = 'publicnode';
  } else {
     ResponseService.json(403, res, "Unknown usertype " + usertype);
@@ -218,6 +225,7 @@ creategroupconfig : async function(req, res, next){
 
    var groupipfsconfig = {
       userid: userid,
+        groupid : userg.groupid,
       usertype: usertype,
       assignmentname : assrec.assignmentname,
       nodetype: nodeconf.nodetype,
@@ -229,13 +237,14 @@ creategroupconfig : async function(req, res, next){
       ipaddress: nodeconf.ipaddress,
       publicgateway: nodeconf.publicgateway,
       localgateway: nodeconf.localgateway,
-      config: nodeconf.xconfig
+      config: nodeconf.gconfig
      };
 
   var newrec = await Usergroupconfig.create({
         email : user.email,
         username : user.username,
         userid : user.userid,
+        groupid : userg.groupid,
         usertype: usertype,
         assignmentname : assrec.assignmentname,
         assignment : assrec.id,
@@ -257,6 +266,7 @@ creategroupconfig : async function(req, res, next){
 
    res.json(newrec);
 },
+
 updatenodestatus : async function(req, res, next){
 
    if(!req.body.nodestatus) {
@@ -399,48 +409,6 @@ assignnodetouser : async function(req, res, next){
 },
 
 
-	/*
-updateuserconfig : async function(req, res, next){
-
-  var user = await User.findOne({userid: req.body.userid});
-  if(!user) {
-    ResponseService.json(403, res, "No user record ");
-          return;
-  }
-
-   var useripfsconfig = {
-      userid: user.userid,
-      nodetype: userdefault.nodetype,
-      basepath : userdefault.basepath,
-      usagelimit: userdefault.usagelimit,
-      nodegroup: userdefault.nodegroup,
-      nodename: userdefault.nodename,
-      ipaddress: userdefault.ipaddress,
-      publicgateway: userdefault.publicgateway,
-      localgateway: userdefault.localgateway,
-      config: userdefault.xconfig
-     };
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
-
-  if(!tmpuserconfig) {
-    ResponseService.json(403, res, "No user config record ");
-          return;
-  }
-
-  var newrec = await Userconfig.update({
-	id: tmpuserconfig.id}).set({
-        usagelimit : userdefault.usagelimit,
-        nodegroup: userdefault.nodegroup,
-        nodetype: userdefault.nodetype,
-	ipfsconfigupdatetime: userdefault.updatedAt,
-        useripfsconfig: useripfsconfig,
-         } ).fetch();
-
-        res.json(newrec);
-
-},
-
-*/
 
 expandusagelimit : async function(req, res, next){
 
@@ -812,3 +780,40 @@ async function CreateUserAssignment_A2(userid, usertype) {
    return assrec;
 }
 
+
+
+async function  CreateGroupAssignment_A2(user, usertype, usergroupname) {
+
+  var buf = crypto.randomBytes(5);
+  var rand = buf.toString('hex');
+  var groupid = usergroupname + rand;
+
+  buf = crypto.randomBytes(3);
+  rand = buf.toString('hex');
+  var assignname = "agnid_"+groupid+"_"+usertype+"_"+ rand;
+
+  var  assrec = await Assignment.create({
+        assignmentname : assignmentname,
+        userid : userid,
+        groupid : groupid,
+        usertype : usertype,
+        usergroup : '',
+        nodestatus : 'pending' ,
+         } ).fetch();
+
+  var grouprec = await Usergroup.create({
+        creatoremail: user.email,
+        creatorname: user.username,
+        creatoruserid: user.userid,
+        usergroupname: usergroupname,
+        assignmentname: assignname,
+        groupid: groupid,
+        usergroupkey: accesssecret,
+        usergrouptype: "a1private",
+        providerupdatetime: noderec.updatedAt,
+        nodetype: noderec.nodetype,
+        nodegroup: noderec.nodegroup,
+         } ).fetch();
+
+
+}

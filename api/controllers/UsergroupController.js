@@ -7,10 +7,14 @@ userdefault = require("./ipfsusage/userdefault.json");
 
 module.exports = {
 
-createa1groupuser : async function(req, res, next){
+creategroupuser : async function(req, res, next){
 
   if(!req.body.userid) {
     return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usertype) {
+    return ResponseService.json(401, res, "usertype not provided  ")
   }
 
   if(!req.body.usergroup) {
@@ -30,82 +34,27 @@ createa1groupuser : async function(req, res, next){
   var buf = crypto.randomBytes(64);
   var accesssecret = buf.toString('hex');
 
+   buf = crypto.randomBytes(5);
+  var rand = buf.toString('hex');
+  var groupid = usergroupname + rand;
+
   var noderec;
 
-  if(req.body.dedicatedorshared === 'shared') {
-     noderec = await Ipfsprovider.findOne({nodetype: 'privatenode', nodeusage: 'shared' });
-  }else {
-     noderec = await Ipfsprovider.findOne({nodetype: 'privatenode', nodeusage: 'dedicated' });
-  }
 
-  if(!noderec) {
-    ResponseService.json(403, res, "No nodes found ");
-          return;
-  }
-
-  var usergroup = await Usergroup.findOne({creatoremail: user.email});
-
-  if(usergroup) {
-    ResponseService.json(403, res, "Only one group allowed");
-          return;
-  }
 
   var grouprec = await Usergroup.create({
         creatoremail: user.email,
         creatorname: user.username,
         creatoruserid: user.userid,
+        groupid: groupid,
         usergroupname: req.body.usergroup,
         usergroupkey: accesssecret,
-        usergrouptype: "a1private",
-        providerupdatetime: noderec.updatedAt,
-        nodetype: noderec.nodetype,
-        nodegroup: noderec.nodegroup,
+        usergrouptype: req.body.usertype,
          } ).fetch();
 
 
 
-   var useripfsconfig = {
-      userid: user.userid,
-      nodetype: noderec.nodetype,
-      nodeid: noderec.nodeid,
-      nodegroup: noderec.nodegroup,
-        usergroupkey: grouprec.accesssecret,
-        usergrouptype: grouprec.usergrouptype,
-      nodename: noderec.nodename,
-      basepath : noderec.basepath,
-      usagelimit: noderec.usagelimit,
-      ipaddress: noderec.ipaddress,
-      publicgateway: noderec.publicgateway,
-      localgateway: noderec.localgateway,
-      config: noderec.xconfig
-     };
-
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
-
-  if(!tmpuserconfig) {
-
-     tmpuserconfig = await Userconfig.create({
-        email : user.email,
-        userid : user.userid,
-        username : user.username,
-        usagelimit : userdefault.usagelimit,
-	 usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype,
-        useraccess : 'enabled',
-        useripfsconfig: useripfsconfig,
-         } ).fetch();
-
-  }else {
-     tmpuserconfig = await Userconfig.update({
-        id: tmpuserconfig.id}).set({
-        useripfsconfig: useripfsconfig,
-	 usergroupname: grouprec.usergroupname,
-        usergroupupdatetime: grouprec.updatedAt,
-        usergrouptype: grouprec.usergrouptype,
-         } ).fetch();
-  }
-
-   res.json(tmpuserconfig);
+   res.json(grouprec);
 
 
 },

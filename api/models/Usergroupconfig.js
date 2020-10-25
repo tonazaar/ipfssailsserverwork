@@ -73,7 +73,7 @@ module.exports = {
     tokenassigned: {
       type: "string",
     },
-    useripfsconfig: {
+    groupipfsconfig: {
       type: "json",
     },
     tonwallet: {
