@@ -49,7 +49,7 @@ creategroupuser : async function(req, res, next){
         groupid: groupid,
         usergroupname: req.body.usergroup,
         usergroupkey: accesssecret,
-        usergrouptype: req.body.usertype,
+        usertype: req.body.usertype,
          } ).fetch();
 
 
@@ -113,7 +113,7 @@ transmitnodechange : async function(req, res, next){
       nodeid: noderec.nodeid,
       nodegroup: noderec.nodegroup,
         usergroupkey: grouprec.accesssecret,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
       nodename: noderec.nodename,
       basepath : noderec.basepath,
       usagelimit: noderec.usagelimit,
@@ -131,7 +131,7 @@ transmitnodechange : async function(req, res, next){
         useripfsconfig: useripfsconfig,
 	 usergroupname: grouprec.usergroupname,
         usergroupupdatetime: grouprec.updatedAt,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
          } ).fetch();
   }
 
@@ -190,7 +190,7 @@ createb1groupuser : async function(req, res, next){
         creatoruserid: user.userid,
         usergroupname: req.body.usergroup,
         usergroupkey: accesssecret,
-        usergrouptype: "b1earn",
+        usertype: "b1earn",
         nodetype: noderec.nodetype,
         providerupdatetime: noderec.updatedAt,
         nodegroup: noderec.nodegroup,
@@ -204,7 +204,7 @@ createb1groupuser : async function(req, res, next){
       nodeid: noderec.nodeid,
       nodegroup: noderec.nodegroup,
         usergroupkey: grouprec.accesssecret,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
       nodename: noderec.nodename,
       basepath : noderec.basepath,
       usagelimit: noderec.usagelimit,
@@ -224,7 +224,7 @@ createb1groupuser : async function(req, res, next){
         username : user.username,
         usagelimit : userdefault.usagelimit,
 	 usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
         useraccess : 'enabled',
         useripfsconfig: useripfsconfig,
          } ).fetch();
@@ -235,7 +235,7 @@ createb1groupuser : async function(req, res, next){
         useripfsconfig: useripfsconfig,
 	 usergroupname: grouprec.usergroupname,
         usergroupupdatetime: grouprec.updatedAt,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
          } ).fetch();
   }
 
@@ -279,7 +279,7 @@ getcreatorofgroup: async function(req, res, next){
 
 lista1groups : async function(req, res, next){
   var recs = await Usergroup.find({
-	usergrouptype:'a1private'});
+	usertype:'a1private'});
 
    res.json(recs);
 
@@ -298,15 +298,37 @@ listmya1groups : async function(req, res, next){
 
   var recs = await Usergroup.find({
 	  creatoremail: user.email,
-        usergrouptype:'a1private'});
+        usertype:'a1private'});
 
    res.json(recs);
 
 },
 
+listmygroups : async function(req, res, next){
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usertype) {
+    return ResponseService.json(401, res, "usertype not provided  ")
+  }
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var recs = await Usergroup.find({
+	  creatoremail: user.email,
+        usertype: req.body.usertype });
+
+   res.json(recs);
+
+},
 listb1groups : async function(req, res, next){
   var recs = await Usergroup.find({
-        usergrouptype:'b1earn'});
+        usertype:'b1earn'});
 
    res.json(recs);
 
@@ -325,7 +347,7 @@ listmyb1groups : async function(req, res, next){
 
   var recs = await Usergroup.find({
           creatoremail: user.email,
-        usergrouptype:'b1earn'});
+        usertype:'b1earn'});
 
    res.json(recs);
 
@@ -347,7 +369,7 @@ listjoineda1groups : async function(req, res, next){
     // Now we can do anything we could do with a Mongo `db` instance:
     var collection = db.collection("userconfig");
 
-    collection.distinct("usergroupname", {usergrouptype: 'a1private', userid: req.body.userid}).then(x=> {
+    collection.distinct("usergroupname", {usertype: 'a1private', userid: req.body.userid}).then(x=> {
 
         console.log (x);
         res.json(x);
@@ -374,7 +396,7 @@ listjoineda2groups : async function(req, res, next){
     // Now we can do anything we could do with a Mongo `db` instance:
     var collection = db.collection("userconfig");
 
-    collection.distinct("usergroupname", {usergrouptype: 'a2public', userid: req.body.userid}).then(x=> {
+    collection.distinct("usergroupname", {usertype: 'a2public', userid: req.body.userid}).then(x=> {
 
         console.log (x);
         res.json(x);
@@ -400,7 +422,7 @@ listjoinedc1groups : async function(req, res, next){
     // Now we can do anything we could do with a Mongo `db` instance:
     var collection = db.collection("userconfig");
 
-    collection.distinct("usergroupname", {usergrouptype: 'c1storage', userid: req.body.userid}).then(x=> {
+    collection.distinct("usergroupname", {usertype: 'c1storage', userid: req.body.userid}).then(x=> {
 
         console.log (x);
         res.json(x);
@@ -413,7 +435,7 @@ listjoinedc1groups : async function(req, res, next){
 
 lista2groups : async function(req, res, next){
   var recs = await Usergroup.find({
-	usergrouptype:'a2public'});
+	usertype:'a2public'});
 
    res.json(recs);
 
@@ -432,7 +454,7 @@ listmya2groups : async function(req, res, next){
 
   var recs = await Usergroup.find({
           creatoremail: user.email,
-        usergrouptype:'a1public'});
+        usertype:'a1public'});
 
    res.json(recs);
 
@@ -440,7 +462,7 @@ listmya2groups : async function(req, res, next){
 
 listc1groups : async function(req, res, next){
   var recs = await Usergroup.find({
-	usergrouptype:'c1storage'});
+	usertype:'c1storage'});
 
    res.json(recs);
 
@@ -459,7 +481,7 @@ listmyc1groups : async function(req, res, next){
 
   var recs = await Usergroup.findOne({
           creatoremail: user.email,
-        usergrouptype:'c1storage'});
+        usertype:'c1storage'});
 
    res.json(recs);
 
@@ -497,7 +519,7 @@ joina1groupuser : async function(req, res, next){
 
 
  var leaderconfig = await Userconfig.findOne({usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype});
+        usertype: grouprec.usertype});
 
 
   if(!leaderconfig) {
@@ -524,7 +546,7 @@ joina1groupuser : async function(req, res, next){
         username : user.username,
         usagelimit : userdefault.usagelimit,
          usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
         useraccess : 'enabled',
         useripfsconfig: useripfsconfig,
          } ).fetch();
@@ -534,7 +556,7 @@ joina1groupuser : async function(req, res, next){
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
          usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
         usergroupupdatetime: grouprec.updatedAt,
          } ).fetch();
   }
@@ -675,7 +697,7 @@ createa2groupuser : async function(req, res, next){
     return ResponseService.json(401, res, "dedicatedorshared not set  ")
   }
 
-  if(!req.body.usergrouptype !=  "a2public") {
+  if(!req.body.usertype !=  "a2public") {
     return ResponseService.json(401, res, "Usergrouptype wrong ")
   }
 
@@ -703,7 +725,7 @@ createa2groupuser : async function(req, res, next){
         creatoruserid: user.userid,
         usergroupname: req.body.usergroup,
         usergroupkey: accesssecret,
-        usergrouptype: "a2public",
+        usertype: "a2public",
         nodetype: noderec.nodetype,
         providerupdatetime: noderec.updatedAt,
         nodegroup: noderec.nodegroup,
@@ -717,7 +739,7 @@ createa2groupuser : async function(req, res, next){
       nodeid: noderec.nodeid,
       nodegroup: noderec.nodegroup,
         usergroupkey: grouprec.accesssecret,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
       nodename: noderec.nodename,
       basepath : noderec.basepath,
       usagelimit: noderec.usagelimit,
@@ -742,7 +764,7 @@ createa2groupuser : async function(req, res, next){
         username : user.username,
         usagelimit : userdefault.usagelimit,
          usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
         useraccess : 'enabled',
         useripfsconfig: useripfsconfig,
          } ).fetch();
@@ -752,7 +774,7 @@ createa2groupuser : async function(req, res, next){
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
          usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
         usergroupupdatetime: grouprec.updatedAt,
          } ).fetch();
   }
@@ -811,7 +833,7 @@ joina2groupuser : async function(req, res, next){
     return ResponseService.json(401, res, "Usergroup not provided  ")
   }
 
-  if(!req.body.usergrouptype !=  "a2public") {
+  if(!req.body.usertype !=  "a2public") {
     return ResponseService.json(401, res, "Usergrouptype wrong ")
   }
 
@@ -829,7 +851,7 @@ joina2groupuser : async function(req, res, next){
          } );
 
   var leaderconfig = await Userconfig.findOne({usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype});
+        usertype: grouprec.usertype});
 
 
   if(!leaderconfig) {
@@ -857,7 +879,7 @@ joina2groupuser : async function(req, res, next){
         username : user.username,
         usagelimit : userdefault.usagelimit,
          usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
         useraccess : 'enabled',
         useripfsconfig: useripfsconfig,
          } ).fetch();
@@ -867,7 +889,7 @@ joina2groupuser : async function(req, res, next){
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
          usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
         usergroupupdatetime: grouprec.updatedAt,
          } ).fetch();
   }
@@ -963,7 +985,7 @@ createc1groupuser : async function(req, res, next){
         creatoruserid: user.userid,
         usergroupname: req.body.usergroup,
         usergroupkey: accesssecret,
-        usergrouptype: "c1storage",
+        usertype: "c1storage",
         nodetype: noderec.nodetype,
         providerupdatetime: noderec.updatedAt,
         nodegroup: noderec.nodegroup,
@@ -977,7 +999,7 @@ createc1groupuser : async function(req, res, next){
       nodeid: noderec.nodeid,
       nodegroup: noderec.nodegroup,
         usergroupkey: grouprec.accesssecret,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
       nodename: noderec.nodename,
       basepath : noderec.basepath,
       usagelimit: noderec.usagelimit,
@@ -1002,7 +1024,7 @@ createc1groupuser : async function(req, res, next){
         username : user.username,
         usagelimit : userdefault.usagelimit,
          usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
         useraccess : 'enabled',
         useripfsconfig: useripfsconfig,
          } ).fetch();
@@ -1012,7 +1034,7 @@ createc1groupuser : async function(req, res, next){
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
          usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
         usergroupupdatetime: grouprec.updatedAt,
          } ).fetch();
   }
@@ -1033,7 +1055,7 @@ joinc1groupuser : async function(req, res, next){
     return ResponseService.json(401, res, "Usergroup not provided  ")
   }
 
-  if(!req.body.usergrouptype !=  "c1storage") {
+  if(!req.body.usertype !=  "c1storage") {
     return ResponseService.json(401, res, "Usergrouptype wrong ")
   }
 
@@ -1053,7 +1075,7 @@ joinc1groupuser : async function(req, res, next){
          } );
 
   var leaderconfig = await Userconfig.findOne({usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype});
+        usertype: grouprec.usertype});
 
 
   if(!leaderconfig) {
@@ -1079,7 +1101,7 @@ joinc1groupuser : async function(req, res, next){
         username : user.username,
         usagelimit : userdefault.usagelimit,
          usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
         useraccess : 'enabled',
         useripfsconfig: useripfsconfig,
          } ).fetch();
@@ -1089,7 +1111,7 @@ joinc1groupuser : async function(req, res, next){
         id: tmpuserconfig.id}).set({
         useripfsconfig: useripfsconfig,
          usergroupname: grouprec.usergroupname,
-        usergrouptype: grouprec.usergrouptype,
+        usertype: grouprec.usertype,
         usergroupupdatetime: grouprec.updatedAt,
          } ).fetch();
   }
@@ -1165,7 +1187,7 @@ deletemygroup : async function(req, res, next){
         id: tmpuserconfig.id}).set({
         useripfsconfig: null,
          usergroupname: '',
-        usergrouptype: ''
+        usertype: ''
          } ).fetch();
 
    res.json(configrec);
@@ -1212,7 +1234,7 @@ transmitgroupchange : async function(req, res, next){
       nodeid: noderec.nodeid,
       nodegroup: noderec.nodegroup,
         usergroupkey: tmpusergroup.accesssecret,
-        usergrouptype: tmpusergroup.usergrouptype,
+        usertype: tmpusergroup.usertype,
       nodename: noderec.nodename,
       basepath : noderec.basepath,
       usagelimit: noderec.usagelimit,
@@ -1265,7 +1287,7 @@ removefromgroup : async function(req, res, next){
         id: tmpuserconfig.id}).set({
         useripfsconfig: null,
          usergroupname: '',
-        usergrouptype: ''
+        usertype: ''
          } ).fetch();
 
    res.json(configrec);

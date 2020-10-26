@@ -61,6 +61,7 @@ module.exports.routes = {
   'POST /api/usergroup/joina1groupuser': 'UsergroupController.joina1groupuser',
   'POST /api/usergroup/createa1groupuser': 'UsergroupController.createa1groupuser',
   'POST /api/usergroup/joina2groupuser': 'UsergroupController.joina2groupuser',
+  'POST /api/usergroup/creategroupuser': 'UsergroupController.creategroupuser',
   'POST /api/usergroup/createa2groupuser': 'UsergroupController.createa2groupuser',
   'POST /api/usergroup/createb1groupuser': 'UsergroupController.createb1groupuser',
 
@@ -78,6 +79,7 @@ module.exports.routes = {
   'POST /api/usergroup/lista2groups': 'UsergroupController.lista2groups',
   'POST /api/usergroup/listc1groups': 'UsergroupController.listc1groups',
   'POST /api/usergroup/listmyc1groups': 'UsergroupController.listmyc1groups',
+  'POST /api/usergroup/listmygroups': 'UsergroupController.listmygroups',
   'POST /api/usergroup/createc1groupuser': 'UsergroupController.createc1groupuser',
   'POST /api/usergroup/listmya1groups': 'UsergroupController.listmya1groups',
   'POST /api/usergroup/listmyb1groups': 'UsergroupController.listmyb1groups',
