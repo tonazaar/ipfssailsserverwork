@@ -17,7 +17,7 @@ creategroupuser : async function(req, res, next){
     return ResponseService.json(401, res, "usertype not provided  ")
   }
 
-  if(!req.body.usergroup) {
+  if(!req.body.usergroupname) {
     return ResponseService.json(401, res, "Usergroup not provided  ")
   }
 
@@ -36,7 +36,7 @@ creategroupuser : async function(req, res, next){
 
    buf = crypto.randomBytes(5);
   var rand = buf.toString('hex');
-  var groupid = usergroupname + rand;
+  var groupid = req.body.usergroupname + rand;
 
   var noderec;
 
@@ -47,7 +47,7 @@ creategroupuser : async function(req, res, next){
         creatorname: user.username,
         creatoruserid: user.userid,
         groupid: groupid,
-        usergroupname: req.body.usergroup,
+        usergroupname: req.body.usergroupname,
         usergroupkey: accesssecret,
         usertype: req.body.usertype,
          } ).fetch();
@@ -1151,8 +1151,11 @@ deletemygroup : async function(req, res, next){
     return ResponseService.json(401, res, "Data not provided  ")
    }
 
-  if(!req.body.usergroup) {
+  if(!req.body.usergroupname) {
     return ResponseService.json(401, res, "Usergroup not provided  ")
+   }
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Data not provided  ")
    }
 
    var user= await User.findOne({userid: req.body.userid});
@@ -1163,34 +1166,23 @@ deletemygroup : async function(req, res, next){
   }
 
 
-   var tmpusergroup = await Usergroup.findOne({creatoremail: user.email});
-   if(tmpusergroup.usergroupname != req.body.usergroup) {
-	   
-    ResponseService.json(403, res, "Not owner of group to delete ");
-          return;
+   var tmpusergroup = await Usergroup.findOne({creatoremail: user.email, usergroupname: req.body.usergroupname});
 
+   if(!tmpusergroup) {
+    ResponseService.json(403, res, "Groupname not found ");
+          return;
    }
 
-   var groupusers = await Userconfig.find({usergroupname: req.body.usergroup});
-
-   if(groupusers.length != 1){
-          ResponseService.json(403, res, "Others using this group ");
+   if(tmpusergroup.usergroupconfig != null ) {
+    ResponseService.json(403, res, "Group not detached ");
           return;
-    }
-
-   var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid, usergroupname: req.body.usergroup});
-
-   var removing = await Usergroup.destroyOne({ creatoremail: user.email});
+   }
 
 
-   var configrec = await Userconfig.update({
-        id: tmpuserconfig.id}).set({
-        useripfsconfig: null,
-         usergroupname: '',
-        usertype: ''
-         } ).fetch();
+   var removing = await Usergroup.destroyOne({id: tmpusergroup.id});
 
-   res.json(configrec);
+
+   res.json(removing);
 
 
 

@@ -10,11 +10,15 @@ module.exports = {
     creatoremail: {
       type: "string",
       required: true,
-      unique: true,
     },
     creatorname: {
       type: "string",
       required: true,
+    },
+    groupid: {
+      type: "string",
+      required: true,
+      unique: true,
     },
     creatoruserid: {
       type: "string",
