@@ -169,15 +169,20 @@ deletegroupconfig : async function(req, res, next){
           return;
   }
 
-  var usergc = await Usergroupconfig.findOne({groupid: req.body.groupid, usertype:req.body.usertype, usergroupname: req.body.usergroupname});
+  var usergc = await Usergroupconfig.find({where: {groupid: req.body.groupid }, limit:1});
 
   if(!usergc) {
     ResponseService.json(403, res, "Usergroup config does not exist ");
           return;
   }
 
+   var provrec = await Ipfsprovider.update({ nodeid: usergc[0].nodeid }).set({ assignmentname : ''  ,
+        assignment : null ,
+	 }).fetch();
+  // access control based on assignment and usertype
+
    
-  var rem = await Usergroupconfig.destroyOne({id: usergc.id});
+  var rem = await Usergroupconfig.destroyOne({id: usergc[0].id});
    res.json(rem);
 },
 
@@ -273,12 +278,13 @@ creategroupconfig : async function(req, res, next){
 
   var newrec = await Usergroupconfig.create({
         email : userg.creatoremail,
-        username : userg.username,
-        userid : userg.userid,
+        username : userg.creatorname,
+        userid : userg.creatoruserid,
         groupid : userg.groupid,
         usertype: usertype,
         assignmentname : assrec.assignmentname,
         assignment : assrec.id,
+        usergroupptr : userg.id,
         usagelimit : userdefault.usagelimit,
         nodegroup: nodeconf.nodegroup,
         nodetype: nodeconf.nodetype,
@@ -286,6 +292,7 @@ creategroupconfig : async function(req, res, next){
         groupipfsconfig: groupipfsconfig,
 	ipfsconfigupdatetime: userdefault.updatedAt,
          } ).fetch();
+
 
    var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname ,
         assignment : assrec.id,
@@ -370,11 +377,6 @@ updatenodeusage : async function(req, res, next){
 
 updatenodeitem : async function(req, res, next){
 
-   if(!req.body.nodeusage) {
-    ResponseService.json(403, res, "Node usage not set   ");
-          return;
-
-   }
 
   if(!req.body.nodeid ) {
     ResponseService.json(403, res, "Node id notset ");
@@ -399,7 +401,6 @@ updatenodeitem : async function(req, res, next){
 
    var newrec = await Ipfsprovider.update({
         id: nodeconf.id}).set(req.body.nodeitem).fetch();
-        usertype : reqreq.body.nodeusage,
         //nodegroup : req.body.nodeitem.nodegroup,
         //nodetype : req.body.nodeitem.nodetype,
          //} ).fetch();
@@ -869,6 +870,7 @@ async function  CreateGroupAssignment_A2(userg, usertype) {
          } ).fetch();
 
 
+   return assrec;
 }
 
 async function  CreateGroupAssignment_A1( userg, usertype) {
@@ -886,6 +888,7 @@ async function  CreateGroupAssignment_A1( userg, usertype) {
         nodestatus : 'pending' ,
          } ).fetch();
 
+   return assrec;
 
 }
 

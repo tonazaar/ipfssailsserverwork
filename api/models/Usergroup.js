@@ -34,7 +34,6 @@ module.exports = {
     usergroupname: {
       type: "string",
       required: true,
-      unique: true,
     },
     usertype: {
       type: "string",   //c1storage, a1private, a2public
@@ -56,9 +55,6 @@ module.exports = {
     },
     userptr: {
       model: 'User',
-    },
-    usergroupconfig: {
-      model: 'Usergroupconfig',
     },
 
      assignment: {
