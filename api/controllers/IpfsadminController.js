@@ -141,6 +141,8 @@ createuserconfig : async function(req, res, next){
    
    }).fetch();
 
+   var x = await User.update({ id: user.id}, 'Userconfig').addToCollection(newrec.id);
+
    res.json(newrec);
 },
 
@@ -302,6 +304,7 @@ creategroupconfig : async function(req, res, next){
    
    }).fetch();
 
+   var x = await User.update({ id: user.id}, 'Usergroupconfig').addToCollection(newrec.id);
    res.json(newrec);
 },
 

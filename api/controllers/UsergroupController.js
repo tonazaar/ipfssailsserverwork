@@ -46,6 +46,7 @@ creategroupuser : async function(req, res, next){
         creatoremail: user.email,
         creatorname: user.username,
         creatoruserid: user.userid,
+        userptr: user.id,
         groupid: groupid,
         usergroupname: req.body.usergroupname,
         usergroupkey: accesssecret,
@@ -53,6 +54,7 @@ creategroupuser : async function(req, res, next){
          } ).fetch();
 
 
+  var x = await User.addToCollection(user.id, 'Usergroup', grouprec.id);
 
    res.json(grouprec);
 

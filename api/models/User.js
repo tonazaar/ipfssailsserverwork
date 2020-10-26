@@ -20,10 +20,23 @@ module.exports = {
       type: "string",
       required: true,
     },
+    selectedgroupid: {
+      type: "string",
+    },
+	  usergroup: {
+		  collection: 'Usergroup',
+		  via : 'userptr'
+	  },
 	  userconfig: {
 		  collection: 'Userconfig',
 		  via : 'userptr'
 	  },
+	  usergroupconfig: {
+		  collection: 'Usergroupconfig',
+		  via : 'userptr'
+	  },
+    
+    
     role: {
       type: "string",
       required: true,
