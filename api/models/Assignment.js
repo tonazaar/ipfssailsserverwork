@@ -13,7 +13,10 @@ module.exports = {
     nodeid: {
       type: "string",
     },
-    usergroup: {
+    username: {
+      type: "string",
+    },
+    usergroupname: {
       type: "string",
     },
     assignmentname: {
@@ -23,6 +26,9 @@ module.exports = {
       type: "string",
     },
     userid: {
+      type: "string",
+    },
+    groupid: {
       type: "string",
     },
     usertype: {

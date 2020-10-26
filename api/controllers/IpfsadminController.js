@@ -145,10 +145,10 @@ createuserconfig : async function(req, res, next){
 },
 
 
-creategroupconfig : async function(req, res, next){
+deletegroupconfig : async function(req, res, next){
 
-  if(!req.body.userid) {
-    ResponseService.json(403, res, "Userid does not exist ");
+  if(!req.body.groupid) {
+    ResponseService.json(403, res, "groupid does not exist ");
           return;
   }
 
@@ -163,37 +163,68 @@ creategroupconfig : async function(req, res, next){
           return;
   }
 //   ResponseService.json(403, res, "Depreciated , use assignnode");
-  var user = await User.findOne({userid: req.body.userid});
-  if(!user) {
-    ResponseService.json(403, res, "No user record ");
+  var userg = await Usergroup.findOne({groupid: req.body.groupid});
+  if(!userg) {
+    ResponseService.json(403, res, "No userg record ");
           return;
   }
 
-  var userg = await Usergroupconfig.findOne({userid: userid, usertype:req.body.usertype, usergroupname: req.body.usergroupname});
+  var usergc = await Usergroupconfig.findOne({groupid: req.body.groupid, usertype:req.body.usertype, usergroupname: req.body.usergroupname});
 
-  if(userg) {
-    ResponseService.json(403, res, "Config already exists ");
+  if(!usergc) {
+    ResponseService.json(403, res, "Usergroup config does not exist ");
+          return;
+  }
+
+   
+  var rem = await Usergroupconfig.destroyOne({id: usergc.id});
+   res.json(rem);
+},
+
+creategroupconfig : async function(req, res, next){
+
+  if(!req.body.groupid) {
+    ResponseService.json(403, res, "groupid does not exist ");
+          return;
+  }
+
+  if(!req.body.usergroupname) {
+    ResponseService.json(403, res, "usergroupname does not exist ");
+          return;
+  }
+
+
+  if(!req.body.usertype) {
+    ResponseService.json(403, res, "usertype not provided ");
+          return;
+  }
+//   ResponseService.json(403, res, "Depreciated , use assignnode");
+  var userg = await Usergroup.findOne({groupid: req.body.groupid});
+  if(!userg) {
+    ResponseService.json(403, res, "No userg record ");
+          return;
+  }
+
+  var usergc = await Usergroupconfig.findOne({groupid: req.body.groupid, usertype:req.body.usertype, usergroupname: req.body.usergroupname});
+
+  if(usergc) {
+    ResponseService.json(403, res, "Usergroup config already exists ");
           return;
   }
 
  var assrec ;
 
-  if(userg.assignmentname ) {
-    ResponseService.json(403, res, "Assignment already exists ");
-          return;
-  }
 
 
- var userid = req.body.userid;
  var usertype = req.body.usertype;
  var nodetype = req.body.nodetype;
 
 // add a node and a assignment for the group of user
  if(usertype == 'A1') {
-    assrec = await CreateGroupAssignment_A1(userid, usertype, usergroupname);
+    assrec = await CreateGroupAssignment_A1(userg, usertype);
     nodetype = 'privatenode';
  } else if(usertype == 'A2') {
-    assrec = await CreateGroupAssignment_A2(userid, usertype, usergroupname);
+    assrec = await CreateGroupAssignment_A2(userg, usertype) ;
     nodetype = 'publicnode';
  } else {
     ResponseService.json(403, res, "Unknown usertype " + usertype);
@@ -208,7 +239,7 @@ creategroupconfig : async function(req, res, next){
  * In C1 no groups present
  */
 
-  var nodeconfs = await Getnodeto_Use(userid, usertype, nodetype) ;
+  var nodeconfs = await Getnodeto_Use(userg.groupid, usertype, nodetype) ;
 
    if(nodeconfs.length != 1) {
     ResponseService.json(403, res, "Node not available ");
@@ -224,7 +255,7 @@ creategroupconfig : async function(req, res, next){
 
 
    var groupipfsconfig = {
-      userid: userid,
+      userid: userg.userid,
         groupid : userg.groupid,
       usertype: usertype,
       assignmentname : assrec.assignmentname,
@@ -237,13 +268,13 @@ creategroupconfig : async function(req, res, next){
       ipaddress: nodeconf.ipaddress,
       publicgateway: nodeconf.publicgateway,
       localgateway: nodeconf.localgateway,
-      config: nodeconf.gconfig
+      config: nodeconf.xconfig
      };
 
   var newrec = await Usergroupconfig.create({
-        email : user.email,
-        username : user.username,
-        userid : user.userid,
+        email : userg.creatoremail,
+        username : userg.username,
+        userid : userg.userid,
         groupid : userg.groupid,
         usertype: usertype,
         assignmentname : assrec.assignmentname,
@@ -332,6 +363,46 @@ updatenodeusage : async function(req, res, next){
         //nodegroup : req.body.nodeitem.nodegroup,
         //nodetype : req.body.nodeitem.nodetype,
          } ).fetch();
+
+   res.json(newrec);
+
+},
+
+updatenodeitem : async function(req, res, next){
+
+   if(!req.body.nodeusage) {
+    ResponseService.json(403, res, "Node usage not set   ");
+          return;
+
+   }
+
+  if(!req.body.nodeid ) {
+    ResponseService.json(403, res, "Node id notset ");
+          return;
+   }
+
+  if(!req.body.nodeitem ) {
+    ResponseService.json(403, res, "nodeitem id notset ");
+          return;
+   }
+
+
+
+    var nodeconf = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
+
+   if(!nodeconf) {
+    ResponseService.json(403, res, "Nodeid does not exist   ");
+          return;
+
+   }
+
+
+   var newrec = await Ipfsprovider.update({
+        id: nodeconf.id}).set(req.body.nodeitem).fetch();
+        usertype : reqreq.body.nodeusage,
+        //nodegroup : req.body.nodeitem.nodegroup,
+        //nodetype : req.body.nodeitem.nodetype,
+         //} ).fetch();
 
    res.json(newrec);
 
@@ -738,7 +809,7 @@ async function CreateUserAssignment_C1(userid, usertype) {
  var  assrec = await Assignment.create({
         assignmentname : assignmentname,
         userid : userid,
-        usergroup : '',
+        usergroupname : '',
         usertype : usertype,
         nodestatus : 'pending' ,
          } ).fetch();
@@ -756,7 +827,7 @@ async function CreateUserAssignment_A1(userid, usertype) {
  var  assrec = await Assignment.create({
         assignmentname : assignmentname,
         userid : userid,
-        usergroup : '',
+        usergroupname : '',
         usertype : usertype,
         nodestatus : 'pending' ,
          } ).fetch();
@@ -773,7 +844,7 @@ async function CreateUserAssignment_A2(userid, usertype) {
         assignmentname : assignmentname,
         userid : userid,
         usertype : usertype,
-        usergroup : '',
+        usergroupname : '',
         nodestatus : 'pending' ,
          } ).fetch();
 
@@ -782,38 +853,39 @@ async function CreateUserAssignment_A2(userid, usertype) {
 
 
 
-async function  CreateGroupAssignment_A2(user, usertype, usergroupname) {
+async function  CreateGroupAssignment_A2(userg, usertype) {
 
-  var buf = crypto.randomBytes(5);
-  var rand = buf.toString('hex');
-  var groupid = usergroupname + rand;
 
   buf = crypto.randomBytes(3);
   rand = buf.toString('hex');
-  var assignname = "agnid_"+groupid+"_"+usertype+"_"+ rand;
+  var assignname = "agnid_"+userg.groupid+"_"+usertype+"_"+ rand;
 
   var  assrec = await Assignment.create({
-        assignmentname : assignmentname,
-        userid : userid,
-        groupid : groupid,
+        assignmentname : assignname,
+        groupid : userg.groupid,
         usertype : usertype,
-        usergroup : '',
+        usergroupname : userg.usergroupname,
         nodestatus : 'pending' ,
-         } ).fetch();
-
-  var grouprec = await Usergroup.create({
-        creatoremail: user.email,
-        creatorname: user.username,
-        creatoruserid: user.userid,
-        usergroupname: usergroupname,
-        assignmentname: assignname,
-        groupid: groupid,
-        usergroupkey: accesssecret,
-        usergrouptype: "a1private",
-        providerupdatetime: noderec.updatedAt,
-        nodetype: noderec.nodetype,
-        nodegroup: noderec.nodegroup,
          } ).fetch();
 
 
 }
+
+async function  CreateGroupAssignment_A1( userg, usertype) {
+
+
+  buf = crypto.randomBytes(3);
+  rand = buf.toString('hex');
+  var assignname = "agnid_"+userg.groupid+"_"+usertype+"_"+ rand;
+
+  var  assrec = await Assignment.create({
+        assignmentname : assignname,
+        groupid : userg.groupid,
+        usertype : usertype,
+        usergroupname : userg.usergroupname,
+        nodestatus : 'pending' ,
+         } ).fetch();
+
+
+}
+

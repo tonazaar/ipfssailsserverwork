@@ -30,9 +30,6 @@ module.exports = {
     providerupdatetime: {
       type: "string",
     },
-     assignmentname: {
-      type: "string",
-    },
 
     usergroupname: {
       type: "string",

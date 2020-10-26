@@ -54,6 +54,10 @@ module.exports = {
     ipfsconfigupdatetime : {
       type: "string",
     },
+    groupid: {
+      type: "string",
+      required: true,
+    },
     usergroupname: {
       type: "string",
     },

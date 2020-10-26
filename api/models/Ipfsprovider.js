@@ -48,9 +48,6 @@ module.exports = {
     xconfig: {
       type: "json",
     },
-    gconfig: {
-      type: "json",
-    },
     publicgateway: {
       type: "string",
     },

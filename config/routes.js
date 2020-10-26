@@ -96,6 +96,7 @@ module.exports.routes = {
   'POST /api/usergroupadmin/updatenodegroup': 'UsergroupController.updatenodegroup',
   'POST /api/ipfsadmin/listusers': 'IpfsadminController.listusers',
   'POST /api/ipfsadmin/createuserconfig': 'IpfsadminController.createuserconfig',
+  'POST /api/ipfsadmin/deletegroupconfig': 'IpfsadminController.deletegroupconfig',
   'POST /api/ipfsadmin/creategroupconfig': 'IpfsadminController.creategroupconfig',
   'POST /api/ipfsadmin/updateuserconfig': 'IpfsadminController.updateuserconfig',
   'POST /api/ipfsadmin/expandusagelimit': 'IpfsadminController.expandusagelimit',
@@ -107,6 +108,7 @@ module.exports.routes = {
   'POST /api/ipfsadmin/assignnodetouser': 'IpfsadminController.assignnodetouser',
   'POST /api/ipfsadmin/updatenodestatus': 'IpfsadminController.updatenodestatus',
   'POST /api/ipfsadmin/updatenodeusage': 'IpfsadminController.updatenodeusage',
+  'POST /api/ipfsadmin/updatenodeitem': 'IpfsadminController.updatenodeitem',
 
   'POST /api/tokenuser/gettokenbalance': 'TokenuserController.gettokenbalance',
   'POST /api/tokenuser/updateearnedtoken': 'TokenuserController.updateearnedtoken',
