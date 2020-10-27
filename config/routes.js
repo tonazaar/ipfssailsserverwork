@@ -39,7 +39,9 @@ module.exports.routes = {
 
   'POST /api/ipfsnode/startnode': 'IpfsnodeController.startnode',
   'POST /api/ipfsnode/stopnode': 'IpfsnodeController.stopnode',
+// Replaced by getuserconfig
 //  'POST /api/ipfsnode/getipfsconfig': 'IpfsnodeController.getipfsconfig',
+//  'POST /api/ipfsnode/getgroupipfsconfig': 'IpfsnodeController.getgroupipfsconfig',
 //  'POST /api/ipfsnode/createipfsconfig': 'IpfsnodeController.createipfsconfig',
   'POST /api/ipfsnode/getnodestatus': 'IpfsnodeController.getnodestatus',
 
@@ -100,8 +102,8 @@ module.exports.routes = {
   'POST /api/ipfsadmin/creategroupconfig': 'IpfsadminController.creategroupconfig',
   'POST /api/ipfsadmin/updateuserconfig': 'IpfsadminController.updateuserconfig',
   'POST /api/ipfsadmin/expandusagelimit': 'IpfsadminController.expandusagelimit',
-  'POST /api/ipfsadmin/getgroupuserconfig': 'IpfsadminController.getgroupuserconfig',
   'POST /api/ipfsadmin/getuserconfig': 'IpfsadminController.getuserconfig',
+  'POST /api/ipfsadmin/getusergroupconfig': 'IpfsadminController.getusergroupconfig',
   'POST /api/ipfsadmin/getuserconfigs': 'IpfsadminController.getuserconfigs',
   'POST /api/ipfsadmin/enableuser': 'IpfsadminController.enableuser',
   'POST /api/ipfsadmin/disableuser': 'IpfsadminController.disableuser',

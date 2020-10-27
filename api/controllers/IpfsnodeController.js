@@ -33,64 +33,41 @@ stopnode : async function(req, res, next){
 
 },
 
+getgroupipfsconfig : async function(req, res, next){
+
+  if(!req.body.groupid) {
+    ResponseService.json(403, res, "No groupid provided ");
+          return;
+  }
+  if(!req.body.usertype) {
+    ResponseService.json(403, res, "No usertype provided ");
+          return;
+  }
+
+  var tmpuserconfig = await Usergroupconfig.findOne({groupid: req.body.groupid, usertype: req.body.usertype} );
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+
+  res.json(tmpuserconfig.groupipfsconfig);
+
+},
+
 getipfsconfig : async function(req, res, next){
 
-/*
-	  var basepath = '';
-        var ipaddress = '157.245.63.46';
-        var nodetype;
-
-        var config1 = {
-"Addresses": {
-    "Swarm": [
-      "/ip4/157.245.63.46/tcp/6002",
-      "/ip4/157.245.63.46/tcp/6003/ws"
-    ],
-    "API": "/ip4/157.245.63.46/tcp/5001",
-    "Gateway": "/ip4/157.245.63.46/tcp/9090",
-    "Delegates": []
+  if(!req.body.userid) {
+    ResponseService.json(403, res, "No userid provided ");
+          return;
+  }
+  if(!req.body.usertype) {
+    ResponseService.json(403, res, "No usertype provided ");
+          return;
   }
 
-};
-
-        var config2 = {
-         "Addresses": {
-    "Swarm": [
-      "/ip4/0.0.0.0/tcp/7002",
-      "/ip4/127.0.0.1/tcp/4003/ws"
-    ],
-    "API": "/ip4/127.0.0.1/tcp/5002",
-    "Gateway": "/ip4/0.0.0.0/tcp/9001",
-    "Delegates": []
-  }
-    };
-
-  nodetype = req.body.nodetype;
-  var userid = req.body.userid;
-
- if(req.body.nodetype == 'clusternode') {
-     basepath = '/cluster'+req.body.userid;
-  }else if(req.body.nodetype == 'privatesharednode') {
-     basepath = '/privateshared'+req.body.userid;
-  }else if(req.body.nodetype == 'publicsharednode') {
-     basepath = '/publicshared'+req.body.userid;
-  }else {
-     basepath = '/private'+req.body.userid;
-          nodetype = 'privatenode';
-  }
-
-  var ipfsconfig = {
-      userid: userid,
-      nodetype: nodetype,
-      basepath : basepath,
-      usagelimit: userdefault.usagelimit,
-      ipaddress: ipaddress,
-      publicgateway: 'https://ipfs.io',
-      localgateway: 'http://157.245.63.46:9090',
-      config: config1
-  };
-*/
-  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid});
+  var tmpuserconfig = await Userconfig.findOne({userid: req.body.userid, usertype: req.body.usertype} );
 
   if(!tmpuserconfig) {
     ResponseService.json(403, res, "No user config record ");

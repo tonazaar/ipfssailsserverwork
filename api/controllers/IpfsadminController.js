@@ -595,26 +595,22 @@ getuserconfig : async function(req, res, next){
   }
 
 
-   res.json(tmpuserconfig);
+   res.json(tmpuserconfig.useripfsconfig);
 
 },
 
-getgroupuserconfig : async function(req, res, next){
+getusergroupconfig : async function(req, res, next){
 // One account for each usertype is allowed
 
-  if(!req.body.userid)  {
-    ResponseService.json(403, res, "userid not specified ");
-          return;
-  }
-
-  if(!req.body.usergroupname)  {
-    ResponseService.json(403, res, "usergroup not found ");
+  if(!req.body.groupid)  {
+    ResponseService.json(403, res, "groupid not specified ");
           return;
   }
 
 
 
-  var tmp= await GetUsergroup_config(userid, usergroup) ;
+
+  var tmp= await GetUsergroup_config(groupid) ;
 
   if(!tmp) {
     ResponseService.json(403, res, "Group config not found ");
@@ -622,7 +618,7 @@ getgroupuserconfig : async function(req, res, next){
   }
 
 
-   res.json(tmp);
+   res.json(tmp.groupipfsconfig);
 
 },
 
@@ -767,11 +763,9 @@ async function CreateUserconfig_asOwner(userid, usergroup, nodetype) {
 async function AddNode_asOwner(userid, usergroup, nodetype) {
 }
 
-async function GetUsergroup_config(userid, usergroup, nodetype) {
+async function GetUsergroup_config(groupid) {
 // get userconfig for accessing groups
-  var tmpgroupconfig = await Groupuserconfig.findOne({userid: userid, 
-	  usergroupname: usergroup,
-	  usertype:usertype});
+  var tmpgroupconfig = await Groupuserconfig.findOne({groupid: groupid });
   return tmpgroupconfig;
 
 
