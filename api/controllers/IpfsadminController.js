@@ -56,10 +56,6 @@ createuserconfig : async function(req, res, next){
 
  var assrec ;
 
-  if(userc.assignmentname ) {
-    ResponseService.json(403, res, "Assignment already exists ");
-          return;
-  }
 
 
  var userid = req.body.userid;
@@ -141,7 +137,9 @@ createuserconfig : async function(req, res, next){
    
    }).fetch();
 
-   var x = await User.update({ id: user.id}, 'Userconfig').addToCollection(newrec.id);
+//   var x = await User.update({ id: user.id}, 'Userconfig').addToCollection(newrec.id);
+   var x = await User.addToCollection(user.id, 'userconfig', newrec.id);
+
 
    res.json(newrec);
 },
@@ -304,8 +302,9 @@ creategroupconfig : async function(req, res, next){
    
    }).fetch();
 
-   var x = await User.update({ id: user.id}, 'Usergroupconfig').addToCollection(newrec.id);
-   res.json(newrec);
+   var x = await User.addToCollection(user.id, 'usergroupconfig', newrec.id); 
+	
+	res.json(newrec);
 },
 
 updatenodestatus : async function(req, res, next){
@@ -585,7 +584,8 @@ getuserconfig : async function(req, res, next){
           return;
   }
 
-
+  var usertype = req.body.usertype;
+  var userid = req.body.userid;
 
   var tmpuserconfig = await GetUserconfig_Asowner(userid, usertype) ;
 
@@ -599,6 +599,37 @@ getuserconfig : async function(req, res, next){
 
 },
 
+deleteuserconfig : async function(req, res, next){
+// One account for each usertype is allowed
+
+  if(!req.body.userid)  {
+    ResponseService.json(403, res, "userid not specified ");
+          return;
+  }
+
+  if(!req.body.usertype)  {
+    ResponseService.json(403, res, "usertype not specified ");
+          return;
+  }
+
+  var usertype = req.body.usertype;
+  var userid = req.body.userid;
+
+  var tmpuserconfig = await GetUserconfig_Asowner(userid, usertype) ;
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+  await DeleteUserAssignment(userid, tmpuserconfig.assignmentname);
+  await ReleaseNodeAssignment(tmpuserconfig.nodeid, tmpuserconfig.assignmentname);
+
+  var rem = await Userconfig.destroyOne({id: tmpuserconfig.id});
+   res.json(rem);
+
+},
+
 getusergroupconfig : async function(req, res, next){
 // One account for each usertype is allowed
 
@@ -607,7 +638,7 @@ getusergroupconfig : async function(req, res, next){
           return;
   }
 
-
+  var groupid = req.body.groupid;
 
 
   var tmp= await GetUsergroup_config(groupid) ;
@@ -645,7 +676,7 @@ getuserconfigs : async function(req, res, next){
   }
 
 
-        res.json(tmpuserconfig);
+  res.json(tmpuserconfig);
 
 },
 
@@ -802,10 +833,10 @@ async function CreateUserAssignment_C1(userid, usertype) {
 
  var buf = crypto.randomBytes(3);
  var rand = buf.toString('hex');
- var assignname = "agnid_"+req.body.userid+"_"+usertype+"_"+ rand;
+ var assignname = "agnid_"+userid+"_"+usertype+"_"+ rand;
 
  var  assrec = await Assignment.create({
-        assignmentname : assignmentname,
+        assignmentname : assignname,
         userid : userid,
         usergroupname : '',
         usertype : usertype,
@@ -820,10 +851,10 @@ async function CreateUserAssignment_C1(userid, usertype) {
 async function CreateUserAssignment_A1(userid, usertype) {
  var buf = crypto.randomBytes(3);
  var rand = buf.toString('hex');
- var assignname = "agnid_"+req.body.userid+"_"+usertype+"_"+ rand;
+ var assignname = "agnid_"+userid+"_"+usertype+"_"+ rand;
 
  var  assrec = await Assignment.create({
-        assignmentname : assignmentname,
+        assignmentname : assignname,
         userid : userid,
         usergroupname : '',
         usertype : usertype,
@@ -836,10 +867,10 @@ async function CreateUserAssignment_A1(userid, usertype) {
 async function CreateUserAssignment_A2(userid, usertype) {
  var buf = crypto.randomBytes(3);
  var rand = buf.toString('hex');
- var assignname = "agnid_"+req.body.userid+"_"+usertype+"_"+ rand;
+ var assignname = "agnid_"+userid+"_"+usertype+"_"+ rand;
 
  var  assrec = await Assignment.create({
-        assignmentname : assignmentname,
+        assignmentname : assignname,
         userid : userid,
         usertype : usertype,
         usergroupname : '',
@@ -849,6 +880,22 @@ async function CreateUserAssignment_A2(userid, usertype) {
    return assrec;
 }
 
+async function DeleteUserAssignment(userid, assign) {
+
+ var  assrec = await Assignment.destroyOne({
+        assignmentname : assign,
+         } );
+
+   return assrec;
+}
+
+async function ReleaseNodeAssignment(nodeid, assign) {
+   var provrec = await Ipfsprovider.update({ nodeid: nodeid}).set({ assignmentname : '',
+        assignment : null,
+   }).fetch();
+
+   return provrec;
+}
 
 
 async function  CreateGroupAssignment_A2(userg, usertype) {
