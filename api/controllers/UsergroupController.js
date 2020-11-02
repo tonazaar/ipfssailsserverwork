@@ -31,6 +31,14 @@ creategroupuser : async function(req, res, next){
           return;
   }
 
+  var checkgroupname = await Usergroup.find({ where: {userptr: user.id, 
+        usergroupname: req.body.usergroupname }});
+
+  if(checkgroupname.length > 0){
+    ResponseService.json(403, res, "User group already exists ");
+          return;
+  }
+
   var buf = crypto.randomBytes(64);
   var accesssecret = buf.toString('hex');
 
@@ -54,7 +62,7 @@ creategroupuser : async function(req, res, next){
          } ).fetch();
 
 
-  var x = await User.addToCollection(user.id, 'Usergroup', grouprec.id);
+  var x = await User.addToCollection(user.id, 'usergroup', grouprec.id);
 
    res.json(grouprec);
 
@@ -1168,20 +1176,20 @@ deletemygroup : async function(req, res, next){
   }
 
 
-   var tmpusergroup = await Usergroup.findOne({creatoremail: user.email, usergroupname: req.body.usergroupname});
+   var tmpusergroup = await Usergroup.find({where:{creatoremail: user.email, usergroupname: req.body.usergroupname}, limit: 1});
 
-   if(!tmpusergroup) {
+   if(tmpusergroup.length <= 0) {
     ResponseService.json(403, res, "Groupname not found ");
           return;
    }
 
-   if(tmpusergroup.usergroupconfig != null ) {
+   if(tmpusergroup[0].usergroupconfig != null ) {
     ResponseService.json(403, res, "Group not detached ");
           return;
    }
 
 
-   var removing = await Usergroup.destroyOne({id: tmpusergroup.id});
+   var removing = await Usergroup.destroyOne({id: tmpusergroup[0].id});
 
 
    res.json(removing);

@@ -171,17 +171,24 @@ deletegroupconfig : async function(req, res, next){
 
   var usergc = await Usergroupconfig.find({where: {groupid: req.body.groupid }, limit:1});
 
-  if(!usergc) {
+  if(usergc.length <= 0) {
     ResponseService.json(403, res, "Usergroup config does not exist ");
           return;
   }
 
+/*
+
    var provrec = await Ipfsprovider.update({ nodeid: usergc[0].nodeid }).set({ assignmentname : ''  ,
         assignment : null ,
-	 }).fetch();
+	 }).fetch(); */
   // access control based on assignment and usertype
 
+  await DeleteUsergroupAssignment(usergc[0].groupid, usergc[0].assignmentname);
+  await ReleaseNodeAssignment(usergc[0].nodeid, usergc[0].assignmentname);
+
    
+  await Usergroup.update({id: userg.id}).set({usergroupconfig: null}); 
+
   var rem = await Usergroupconfig.destroyOne({id: usergc[0].id});
    res.json(rem);
 },
@@ -209,6 +216,12 @@ creategroupconfig : async function(req, res, next){
     ResponseService.json(403, res, "No userg record ");
           return;
   }
+
+  if(userg.usergroupconfig) {
+    ResponseService.json(403, res, "Group config already exists for group");
+          return;
+  }
+
 
   var usergc = await Usergroupconfig.findOne({groupid: req.body.groupid, usertype:req.body.usertype, usergroupname: req.body.usergroupname});
 
@@ -302,7 +315,7 @@ creategroupconfig : async function(req, res, next){
    
    }).fetch();
 
-   var x = await User.addToCollection(user.id, 'usergroupconfig', newrec.id); 
+   var x = await Usergroup.update({id: userg.id}).set({usergroupconfig: newrec.id});
 	
 	res.json(newrec);
 },
@@ -881,6 +894,16 @@ async function CreateUserAssignment_A2(userid, usertype) {
 }
 
 async function DeleteUserAssignment(userid, assign) {
+
+ var  assrec = await Assignment.destroyOne({
+        assignmentname : assign,
+         } );
+
+   return assrec;
+}
+
+
+async function DeleteUsergroupAssignment(groupid, assign) {
 
  var  assrec = await Assignment.destroyOne({
         assignmentname : assign,

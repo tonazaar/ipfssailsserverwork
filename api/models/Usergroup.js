@@ -56,8 +56,10 @@ module.exports = {
     userptr: {
       model: 'User',
     },
-
-     assignment: {
+    usergroupconfig: {
+        model: 'Usergroupconfig',
+    },
+    assignment: {
       model: 'Assignment',
     },
 
