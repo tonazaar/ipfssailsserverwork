@@ -223,7 +223,7 @@ creategroupconfig : async function(req, res, next){
   }
 
 
-  var usergc = await Usergroupconfig.findOne({groupid: req.body.groupid, usertype:req.body.usertype, usergroupname: req.body.usergroupname});
+  var usergc = await Usergroupconfig.findOne({groupid: req.body.groupid});
 
   if(usergc) {
     ResponseService.json(403, res, "Usergroup config already exists ");
@@ -809,8 +809,8 @@ async function AddNode_asOwner(userid, usergroup, nodetype) {
 
 async function GetUsergroup_config(groupid) {
 // get userconfig for accessing groups
-  var tmpgroupconfig = await Groupuserconfig.findOne({groupid: groupid });
-  return tmpgroupconfig;
+  var tmpgroupconfig = await Usergroupconfig.find({where:{groupid: groupid }, limit:1});
+  return tmpgroupconfig[0];
 
 
 }
