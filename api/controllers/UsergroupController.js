@@ -518,6 +518,50 @@ listjoinedgroups : async function(req, res, next){
   res.json(user[0]);
 },
 
+
+removefromgroup : async function(req, res, next){
+
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.groupid) {
+    return ResponseService.json(401, res, "groupid not provided  ")
+  }
+
+  if(!req.body.usertype) {
+    return ResponseService.json(401, res, "Usertype not provided  ")
+  }
+
+
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+
+
+  var grouprec = await Usergroup.findOne({
+        groupid: req.body.groupid,
+         } );
+
+
+  if(!grouprec) {
+    ResponseService.json(403, res, "Group record not found ");
+          return;
+  }
+  var x = await User.removeFromCollection(user.id, 'memberusergroup', grouprec.id);
+  var y = await Usergroup.removeFromCollection(grouprec.id, 'usersptr', user.id);
+
+
+   res.json(grouprec);
+
+
+
+
+},
 jointogroup : async function(req, res, next){
 
   if(!req.body.userid) {
@@ -1325,7 +1369,7 @@ transmitgroupchange : async function(req, res, next){
 
 
 },
-removefromgroup : async function(req, res, next){
+remoldovefromgroup : async function(req, res, next){
 
   if(!req.body.userid) {
     return ResponseService.json(401, res, "Data not provided  ")

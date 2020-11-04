@@ -666,6 +666,46 @@ getusergroupconfig : async function(req, res, next){
 
 },
 
+getjoinedgroupconfig : async function(req, res, next){
+// One account for each usertype is allowed
+
+  if(!req.body.groupid)  {
+    ResponseService.json(403, res, "groupid not specified ");
+          return;
+  }
+  if(!req.body.userid)  {
+    ResponseService.json(403, res, "userid not specified ");
+          return;
+  }
+
+  if(!req.body.usertype)  {
+    ResponseService.json(403, res, "usertype not specified ");
+          return;
+  }
+
+
+  var user = await User.findOne({userid: req.body.userid}).populate('memberusergroup', {where : { usertype: req.body.usertype, groupid: req.body.groupid}, select:['groupid','usergroupname', 'usertype', 'assignmentname', 'creatoremail', 'nodegroup' ]})
+
+  if(user.memberusergroup.length != 1){
+    ResponseService.json(403, res, "user not member ");
+          return;
+  }
+
+  var groupid = req.body.groupid;
+
+
+  var tmp= await GetUsergroup_config(groupid) ;
+
+  if(!tmp) {
+    ResponseService.json(403, res, "Group config not found ");
+          return;
+  }
+
+
+   res.json(tmp.groupipfsconfig);
+
+},
+
 getuserconfigs : async function(req, res, next){
 
 
