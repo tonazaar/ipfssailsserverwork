@@ -53,6 +53,9 @@ module.exports = {
     grouptonbalance: {
       type: "string",
     },
+    assignmentname: {
+      type: "string",
+    },
     userptr: {
       model: 'User',
     },
@@ -62,6 +65,12 @@ module.exports = {
     assignment: {
       model: 'Assignment',
     },
+
+    usersptr: {
+                  collection: 'User',
+                  via : 'memberusergroup'
+    },
+
 
   },
 

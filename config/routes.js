@@ -54,6 +54,8 @@ module.exports.routes = {
   'POST /api/ipfsusage/deletefile': 'IpfsusageController.deletefile',
   'POST /api/ipfsusage/searchfiles': 'IpfsusageController.searchfiles',
 
+  'POST /api/usergroup/jointogroup': 'UsergroupController.jointogroup',
+  'POST /api/usergroup/listjoinedgroups': 'UsergroupController.listjoinedgroups',
   'POST /api/usergroup/geta1groupuser': 'UsergroupController.geta1groupuser',
   'POST /api/usergroup/getb1groupuser': 'UsergroupController.getb1groupuser',
   'POST /api/usergroup/geta2groupuser': 'UsergroupController.geta2groupuser',

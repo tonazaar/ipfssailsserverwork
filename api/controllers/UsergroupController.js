@@ -498,6 +498,69 @@ listmyc1groups : async function(req, res, next){
 },
 
 
+listjoinedgroups : async function(req, res, next){
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usertype) {
+    return ResponseService.json(401, res, "Usertype not provided  ")
+  }
+
+
+  var user = await User.find({userid: req.body.userid}).populate('memberusergroup', {where : { usertype: req.body.usertype}, select:['groupid','usergroupname', 'usertype', 'assignmentname', 'creatoremail', 'nodegroup' ]})
+
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+   
+  res.json(user[0]);
+},
+
+jointogroup : async function(req, res, next){
+
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.groupid) {
+    return ResponseService.json(401, res, "groupid not provided  ")
+  }
+
+  if(!req.body.usertype) {
+    return ResponseService.json(401, res, "Usertype not provided  ")
+  }
+
+
+
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+
+
+  var grouprec = await Usergroup.findOne({
+        groupid: req.body.groupid,
+         } );
+
+
+  if(!grouprec) {
+    ResponseService.json(403, res, "Group record not found ");
+          return;
+  }
+  var x = await User.addToCollection(user.id, 'memberusergroup', grouprec.id);
+  var y = await Usergroup.addToCollection(grouprec.id, 'usersptr', user.id);
+
+
+   res.json(grouprec);
+
+
+
+
+},
 
 joina1groupuser : async function(req, res, next){
 

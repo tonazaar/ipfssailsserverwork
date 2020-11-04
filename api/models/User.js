@@ -31,6 +31,10 @@ module.exports = {
 		  collection: 'Userconfig',
 		  via : 'userptr'
 	  },
+	  memberusergroup: {
+		  collection: 'Usergroup',
+		  via : 'usersptr'
+	  },
     
     
     role: {
