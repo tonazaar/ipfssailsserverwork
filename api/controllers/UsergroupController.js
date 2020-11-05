@@ -254,15 +254,13 @@ createb1groupuser : async function(req, res, next){
 
 },
 getusersofgroup: async function(req, res, next){
-  if(!req.body.usergroup) {
-    return ResponseService.json(401, res, "Group name not provided  ")
+  if(!req.body.groupid) {
+    return ResponseService.json(401, res, "groupid not provided  ")
   }
+  var users = await Usergroup.findOne({groupid: req.body.groupid}).populate('usersptr', {where : { }, select:['userid','username' , 'email'   ]})
 
-  var recs = await Userconfig.find({
-	 usergroupname: req.body.usergroup }
-    );
 
-   res.json(recs);
+   res.json(users.usersptr);
 
 },
 
@@ -288,8 +286,9 @@ getcreatorofgroup: async function(req, res, next){
 
 
 lista1groups : async function(req, res, next){
+
   var recs = await Usergroup.find({
-	usertype:'a1private'});
+	usertype: 'A1' });
 
    res.json(recs);
 
@@ -445,7 +444,7 @@ listjoinedc1groups : async function(req, res, next){
 
 lista2groups : async function(req, res, next){
   var recs = await Usergroup.find({
-	usertype:'a2public'});
+	usertype:'A2'});
 
    res.json(recs);
 

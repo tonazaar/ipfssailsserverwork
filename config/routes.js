@@ -107,6 +107,7 @@ module.exports.routes = {
   'POST /api/ipfsadmin/getuserconfig': 'IpfsadminController.getuserconfig',
   'POST /api/ipfsadmin/deleteuserconfig': 'IpfsadminController.deleteuserconfig',
   'POST /api/ipfsadmin/getusergroupconfig': 'IpfsadminController.getusergroupconfig',
+  'POST /api/ipfsadmin/getjoinedgroupconfig': 'IpfsadminController.getjoinedgroupconfig',
   'POST /api/ipfsadmin/getuserconfigs': 'IpfsadminController.getuserconfigs',
   'POST /api/ipfsadmin/enableuser': 'IpfsadminController.enableuser',
   'POST /api/ipfsadmin/disableuser': 'IpfsadminController.disableuser',
