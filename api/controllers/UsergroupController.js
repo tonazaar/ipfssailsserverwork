@@ -291,7 +291,6 @@ lista1groups : async function(req, res, next){
 	usertype: 'A1' });
 
    res.json(recs);
-
 },
 
 listmya1groups : async function(req, res, next){
@@ -515,6 +514,52 @@ listjoinedgroups : async function(req, res, next){
   }
    
   res.json(user[0]);
+},
+
+
+
+listc1groups : async function(req, res, next){
+  var recs = await Usergroup.find({
+	usertype:'c1storage'});
+
+   res.json(recs);
+
+},
+
+listmyc1groups : async function(req, res, next){
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+  
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "User record not found ");
+          return;
+  }
+
+  var recs = await Usergroup.findOne({
+          creatoremail: user.email,
+        usertype:'c1storage'});
+
+   res.json(recs);
+
+},
+
+
+listassign : async function(req, res, next){
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usertype) {
+    return ResponseService.json(401, res, "Usertype not provided  ")
+  }
+
+
+  var ass = await Assignment.find({where:{usertype: req.body.usertype}, select:['groupid','userid', 'usertype', 'assignmentname', 'nodeid', 'nodetype'  ]});
+
+   
+  res.json(ass);
 },
 
 

@@ -78,6 +78,7 @@ module.exports.routes = {
 
 
 
+  'POST /api/usergroup/listassign': 'UsergroupController.listassign',
   'POST /api/usergroup/lista1groups': 'UsergroupController.lista1groups',
   'POST /api/usergroup/listb1groups': 'UsergroupController.listb1groups',
   'POST /api/usergroup/lista2groups': 'UsergroupController.lista2groups',

@@ -43,6 +43,10 @@ module.exports = {
     nodeusage: {
       type: "string",  // dedicated or shared
     },
+    nodeproviders: {
+              collection: 'Ipfsprovider',
+              via : 'assignment'
+    },
 
   },
 
