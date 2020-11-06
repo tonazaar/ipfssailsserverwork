@@ -139,7 +139,7 @@ createuserconfig : async function(req, res, next){
 
 //   var x = await User.update({ id: user.id}, 'Userconfig').addToCollection(newrec.id);
    var x = await User.addToCollection(user.id, 'userconfig', newrec.id);
-
+   var y = await Assignment.addToCollection(assrec.id, 'nodeproviders', provrec.id);
 
    res.json(newrec);
 },
@@ -316,6 +316,7 @@ creategroupconfig : async function(req, res, next){
    }).fetch();
 
    var x = await Usergroup.update({id: userg.id}).set({usergroupconfig: newrec.id});
+   var y = await Assignment.addToCollection(assrec.id, 'nodeproviders', provrec.id);
 	
 	res.json(newrec);
 },
@@ -995,6 +996,7 @@ async function  CreateGroupAssignment_A1( userg, usertype) {
         nodestatus : 'pending' ,
          } ).fetch();
 
+ 
    return assrec;
 
 }
