@@ -556,7 +556,7 @@ listassign : async function(req, res, next){
   }
 
 
-  var ass = await Assignment.find({where:{usertype: req.body.usertype}, select:['groupid','userid', 'usertype', 'assignmentname', 'nodeid', 'nodetype'  ]});
+  var ass = await Assignment.find({where:{usertype: req.body.usertype}, select:['groupid','userid', 'usertype', 'assignmentname', 'nodeid', 'nodetype'  ]}).populate("nodeproviders",  {where : { }, select:['nodeid','nodetype' ,'nodename', 'nodegroup'   ]});
 
    
   res.json(ass);
