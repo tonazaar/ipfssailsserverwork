@@ -186,6 +186,11 @@ updateuserconfig : async function(req, res, next){
           return;
   }
 
+  if(userc.nodeid == req.body.newnodeid) {
+    ResponseService.json(403, res, "The same node is already assigned");
+          return;
+  }
+
   console.log(JSON.stringify(userc));
 
  var assrec = userc.assignment;
@@ -545,7 +550,7 @@ joinnodetouser : async function(req, res, next){
 
 },
 
-assignnodetouser : async function(req, res, next){
+droppedassignnodetouser : async function(req, res, next){
 
   var user = await User.findOne({userid: req.body.userid});
   if(!user) {
