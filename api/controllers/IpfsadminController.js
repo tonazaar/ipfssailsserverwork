@@ -76,6 +76,11 @@ createuserconfig : async function(req, res, next){
 
  }
 
+
+ if(!assrec) {
+    ResponseService.json(403, res, "No assignement " );
+          return;
+ };
 /* 
  * User is alloted private node,  public node (shared to be considered later)
  * User or User groups based access can be present  
@@ -176,15 +181,20 @@ updateuserconfig : async function(req, res, next){
           return;
   }
 
-  if(userc.assignment.length == 0) {
+  if(!userc.assignment) {
     ResponseService.json(403, res, "Assignment does not exist ");
           return;
   }
 
+  console.log(JSON.stringify(userc));
 
- var assrec = users.assignment[0];
+ var assrec = userc.assignment;
 
 
+ if(!assrec) {
+    ResponseService.json(403, res, "No assignement " );
+          return;
+ };
 
  var userid = req.body.userid;
  var usertype = req.body.usertype;
@@ -199,7 +209,7 @@ updateuserconfig : async function(req, res, next){
 
   await ReleaseNodeAssignment(userc.nodeid, userc.assignmentname, userc.assignment);
 
-   var nodeconfs = await Ipfsprovider.find({ nodeid: newnodeid});
+   var nodeconfs = await Ipfsprovider.find({ nodeid: req.body.newnodeid});
 
 
    if(nodeconfs.length != 1) {
@@ -232,8 +242,6 @@ updateuserconfig : async function(req, res, next){
      };
 
   var newrec = await Userconfig.update({id:userc.id}).set({
-        assignmentname : assrec.assignmentname,
-        assignment : assrec.id,
         nodegroup: nodeconf.nodegroup,
         nodetype: nodeconf.nodetype,
 	nodeid: nodeconf.nodeid,
