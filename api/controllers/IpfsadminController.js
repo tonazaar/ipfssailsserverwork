@@ -139,11 +139,119 @@ createuserconfig : async function(req, res, next){
 
 //   var x = await User.update({ id: user.id}, 'Userconfig').addToCollection(newrec.id);
    var x = await User.addToCollection(user.id, 'userconfig', newrec.id);
-   var y = await Assignment.addToCollection(assrec.id, 'nodeproviders', provrec.id);
+//   var y = await Assignment.addToCollection(assrec.id, 'nodeproviders', nodeconf.id);
 
    res.json(newrec);
 },
 
+updateuserconfig : async function(req, res, next){
+
+  if(!req.body.userid) {
+    ResponseService.json(403, res, "Userid does not exist ");
+          return;
+  }
+
+  if(!req.body.usertype) {
+    ResponseService.json(403, res, "usertype not provided ");
+          return;
+  }
+
+  if(!req.body.newnodeid) {
+    ResponseService.json(403, res, "newnodeid not provided ");
+          return;
+  }
+
+
+//   ResponseService.json(403, res, "Depreciated , use assignnode");
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+  var userc = await Userconfig.findOne({userid: userid, usertype:req.body.usertype}).populate("assignment");
+
+  if(!userc) {
+    ResponseService.json(403, res, "Config does not exist ");
+          return;
+  }
+
+  if(userc.assignment.length == 0) {
+    ResponseService.json(403, res, "Assignment does not exist ");
+          return;
+  }
+
+
+ var assrec = users.assignment[0];
+
+
+
+ var userid = req.body.userid;
+ var usertype = req.body.usertype;
+ var nodetype = req.body.nodetype;
+
+/* 
+ * User is alloted private node,  public node (shared to be considered later)
+ * User or User groups based access can be present  
+ * In A1, A2 group based access is provided
+ * In C1 no groups present
+ */
+
+  await ReleaseNodeAssignment(userc.nodeid, userc.assignmentname, userc.assignment);
+
+   var nodeconfs = await Ipfsprovider.find({ nodeid: newnodeid});
+
+
+   if(nodeconfs.length != 1) {
+    ResponseService.json(403, res, "Node not available ");
+          return;
+
+  }
+   var nodeconf = nodeconfs[0];
+
+   if(nodeconf.assignmentname) {
+       ResponseService.json(403, res, "Node is already assigned ");
+       return;
+   }
+
+
+   var useripfsconfig = {
+      userid: userid,
+      usertype: usertype,
+      assignmentname : assrec.assignmentname,
+      nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig
+     };
+
+  var newrec = await Userconfig.update({id:userc.id}).set({
+        assignmentname : assrec.assignmentname,
+        assignment : assrec.id,
+        nodegroup: nodeconf.nodegroup,
+        nodetype: nodeconf.nodetype,
+	nodeid: nodeconf.nodeid,
+        useripfsconfig: useripfsconfig,
+	ipfsconfigupdatetime: userdefault.updatedAt,
+         } ).fetch();
+
+   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname ,
+        assignment : assrec.id,
+        usertype: usertype,
+        useraccess : 'enabled'
+  // access control based on assignment and usertype
+   
+   }).fetch();
+
+
+   res.json(newrec);
+},
 
 deletegroupconfig : async function(req, res, next){
 
@@ -184,7 +292,7 @@ deletegroupconfig : async function(req, res, next){
   // access control based on assignment and usertype
 
   await DeleteUsergroupAssignment(usergc[0].groupid, usergc[0].assignmentname);
-  await ReleaseNodeAssignment(usergc[0].nodeid, usergc[0].assignmentname);
+  await ReleaseNodeAssignment(usergc[0].nodeid, usergc[0].assignmentname, usergc[0].assignment);
 
    
   await Usergroup.update({id: userg.id}).set({usergroupconfig: null}); 
@@ -316,7 +424,7 @@ creategroupconfig : async function(req, res, next){
    }).fetch();
 
    var x = await Usergroup.update({id: userg.id}).set({usergroupconfig: newrec.id});
-   var y = await Assignment.addToCollection(assrec.id, 'nodeproviders', provrec.id);
+//   var y = await Assignment.addToCollection(assrec.id, 'nodeproviders', provrec.id);
 	
 	res.json(newrec);
 },
@@ -636,8 +744,9 @@ deleteuserconfig : async function(req, res, next){
           return;
   }
 
+
   await DeleteUserAssignment(userid, tmpuserconfig.assignmentname);
-  await ReleaseNodeAssignment(tmpuserconfig.nodeid, tmpuserconfig.assignmentname);
+  await ReleaseNodeAssignment(tmpuserconfig.nodeid, tmpuserconfig.assignmentname, tmpuserconfig.assignment);
 
   var rem = await Userconfig.destroyOne({id: tmpuserconfig.id});
    res.json(rem);
@@ -953,10 +1062,14 @@ async function DeleteUsergroupAssignment(groupid, assign) {
    return assrec;
 }
 
-async function ReleaseNodeAssignment(nodeid, assign) {
+async function ReleaseNodeAssignment(nodeid, assign, assid) {
    var provrec = await Ipfsprovider.update({ nodeid: nodeid}).set({ assignmentname : '',
         assignment : null,
    }).fetch();
+
+   if(assid) {
+   //await Assignment.removeFromCollection(assid, 'nodeproviders', provrec.id);
+	}
 
    return provrec;
 }

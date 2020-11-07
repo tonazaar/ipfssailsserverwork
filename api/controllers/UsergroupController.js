@@ -546,7 +546,7 @@ listmyc1groups : async function(req, res, next){
 },
 
 
-listassign : async function(req, res, next){
+listuserconfigassign : async function(req, res, next){
   if(!req.body.userid) {
     return ResponseService.json(401, res, "Userid not provided  ")
   }
@@ -556,12 +556,29 @@ listassign : async function(req, res, next){
   }
 
 
-  var ass = await Assignment.find({where:{usertype: req.body.usertype}, select:['groupid','userid', 'usertype', 'assignmentname', 'nodeid', 'nodetype'  ]}).populate("nodeproviders",  {where : { }, select:['nodeid','nodetype' ,'nodename', 'nodegroup'   ]});
-
+  // var ass = await Assignment.find({where:{usertype: req.body.usertype}, select:['groupid','userid', 'usertype', 'assignmentname', 'nodeid', 'nodetype'  ]}).populate("nodeproviders",  {where : { }, select:['nodeid','nodetype' ,'nodename', 'nodegroup'   ]});
+  var ass = await Userconfig.find({where:{usertype: req.body.usertype}, select:['userid', 'usertype', 'assignmentname', 'nodeid', 'nodetype'  ]});
    
   res.json(ass);
+
 },
 
+listgroupconfigassign : async function(req, res, next){
+  if(!req.body.userid) {
+    return ResponseService.json(401, res, "Userid not provided  ")
+  }
+
+  if(!req.body.usertype) {
+    return ResponseService.json(401, res, "Usertype not provided  ")
+  }
+
+
+  // var ass = await Assignment.find({where:{usertype: req.body.usertype}, select:['groupid','userid', 'usertype', 'assignmentname', 'nodeid', 'nodetype'  ]}).populate("nodeproviders",  {where : { }, select:['nodeid','nodetype' ,'nodename', 'nodegroup'   ]});
+  var ass = await Usergroupconfig.find({where:{usertype: req.body.usertype}, select:['groupid', 'usertype', 'assignmentname', 'nodeid', 'nodetype'  ]});
+   
+  res.json(ass);
+
+},
 
 removefromgroup : async function(req, res, next){
 
