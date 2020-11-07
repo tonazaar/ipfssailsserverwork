@@ -35,7 +35,9 @@ module.exports = {
 		  collection: 'Usergroup',
 		  via : 'usersptr'
 	  },
-    
+    userpersonalconfig: {
+	   model: 'Userpersonalconfig',
+    },
     
     role: {
       type: "string",

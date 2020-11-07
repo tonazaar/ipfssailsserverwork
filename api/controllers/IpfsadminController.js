@@ -149,6 +149,124 @@ createuserconfig : async function(req, res, next){
    res.json(newrec);
 },
 
+
+createpersonaluserconfig : async function(req, res, next){
+
+  if(!req.body.userid) {
+    ResponseService.json(403, res, "Userid does not exist ");
+          return;
+  }
+
+  if(!req.body.usertype) {
+    ResponseService.json(403, res, "usertype not provided ");
+          return;
+  }
+//   ResponseService.json(403, res, "Depreciated , use assignnode");
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+  var userc = await Userpersonalconfig.findOne({userid: userid, usertype:req.body.usertype});
+
+  if(userc) {
+    ResponseService.json(403, res, "Config already exists ");
+          return;
+  }
+
+ var assrec ;
+
+
+
+ var userid = req.body.userid;
+ var usertype = req.body.usertype;
+ var nodetype = req.body.nodetype;
+ if(usertype == 'C1') {
+    assrec = await CreateUserAssignment_C1(userid, usertype);
+    nodetype = 'personalnode';
+ } else {
+    ResponseService.json(403, res, "Unknown usertype " + usertype);
+          return;
+
+ }
+
+
+ if(!assrec) {
+    ResponseService.json(403, res, "No assignement " );
+          return;
+ };
+/* 
+ * User is alloted private node,  public node (shared to be considered later)
+ * User or User groups based access can be present  
+ * In A1, A2 group based access is provided
+ * In C1 no groups present
+ */
+
+  var nodeconfs = await Getnodeto_Use(userid, usertype, nodetype) ;
+
+   if(nodeconfs.length != 1) {
+    ResponseService.json(403, res, "Node not available ");
+          return;
+
+  }
+   var nodeconf = nodeconfs[0];
+
+   if(nodeconf.assignmentname) {
+       ResponseService.json(403, res, "Node is already assigned ");
+       return;
+   }
+
+
+   var useripfsconfig = {
+      userid: userid,
+      personalid: userid,
+      usertype: usertype,
+      assignmentname : assrec.assignmentname,
+      nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig
+     };
+
+  var newrec = await Userpersonalconfig.create({
+        email : user.email,
+        username : user.username,
+        userid : user.userid,
+        personalid : user.userid,
+        usertype: usertype,
+        assignmentname : assrec.assignmentname,
+        assignment : assrec.id,
+        usagelimit : userdefault.usagelimit,
+        nodegroup: nodeconf.nodegroup,
+        nodetype: nodeconf.nodetype,
+	nodeid: nodeconf.nodeid,
+        personalipfsconfig: useripfsconfig,
+	ipfsconfigupdatetime: userdefault.updatedAt,
+         } ).fetch();
+
+   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname ,
+        assignment : assrec.id,
+        usertype: usertype,
+        useraccess : 'enabled'
+  // access control based on assignment and usertype
+   
+   }).fetch();
+
+//   var x = await User.update({ id: user.id}, 'Userconfig').addToCollection(newrec.id);
+   var x = await User.update({id: user.id}).set({userpersonalconfig:  newrec.id});
+//   var y = await Assignment.addToCollection(assrec.id, 'nodeproviders', nodeconf.id);
+
+   res.json(newrec);
+},
+
+
 updateuserconfig : async function(req, res, next){
 
   if(!req.body.userid) {
@@ -734,6 +852,35 @@ getuserconfig : async function(req, res, next){
 
 },
 
+getpersonaluserconfig : async function(req, res, next){
+// One account for each usertype is allowed
+
+  if(!req.body.userid)  {
+    ResponseService.json(403, res, "userid not specified ");
+          return;
+  }
+
+  if(!req.body.usertype)  {
+    ResponseService.json(403, res, "usertype not specified ");
+          return;
+  }
+
+  var usertype = req.body.usertype;
+  var userid = req.body.userid;
+
+  var tmpuserconfig = await GetPersonalUserconfig_Asowner(userid, usertype) ;
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+
+   res.json(tmpuserconfig.personalipfsconfig);
+
+},
+
+
 deleteuserconfig : async function(req, res, next){
 // One account for each usertype is allowed
 
@@ -758,10 +905,42 @@ deleteuserconfig : async function(req, res, next){
   }
 
 
-  await DeleteUserAssignment(userid, tmpuserconfig.assignmentname);
+  await DeleteAssignment(userid, tmpuserconfig.assignmentname);
   await ReleaseNodeAssignment(tmpuserconfig.nodeid, tmpuserconfig.assignmentname, tmpuserconfig.assignment);
 
   var rem = await Userconfig.destroyOne({id: tmpuserconfig.id});
+   res.json(rem);
+
+},
+
+deletepersonaluserconfig : async function(req, res, next){
+// One account for each usertype is allowed
+
+  if(!req.body.userid)  {
+    ResponseService.json(403, res, "userid not specified ");
+          return;
+  }
+
+  if(!req.body.usertype)  {
+    ResponseService.json(403, res, "usertype not specified ");
+          return;
+  }
+
+  var usertype = req.body.usertype;
+  var userid = req.body.userid;
+
+  var tmpuserconfig = await GetPersonalUserconfig_Asowner(userid, usertype) ;
+
+  if(!tmpuserconfig) {
+    ResponseService.json(403, res, "No user config record ");
+          return;
+  }
+
+
+  await DeleteAssignment(userid, tmpuserconfig.assignmentname);
+  await ReleaseNodeAssignment(tmpuserconfig.nodeid, tmpuserconfig.assignmentname, tmpuserconfig.assignment);
+
+  var rem = await Userpersonalconfig.destroyOne({id: tmpuserconfig.id});
    res.json(rem);
 
 },
@@ -987,6 +1166,15 @@ async function GetUserconfig_Asowner(userid, usertype) {
 
 }
 
+async function GetPersonalUserconfig_Asowner(personalid, usertype) {
+
+  var tmpgroupconfig = await Userpersonalconfig.find({where:{personalid: personalid }, limit:1});
+  return tmpgroupconfig[0];
+
+
+}
+
+
 
 
 
@@ -1056,7 +1244,7 @@ async function CreateUserAssignment_A2(userid, usertype) {
    return assrec;
 }
 
-async function DeleteUserAssignment(userid, assign) {
+async function DeleteAssignment(userid, assign) {
 
  var  assrec = await Assignment.destroyOne({
         assignmentname : assign,

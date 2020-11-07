@@ -56,7 +56,7 @@ getgroupipfsconfig : async function(req, res, next){
 
 },
 
-getipfsconfig : async function(req, res, next){
+oldgetipfsconfig : async function(req, res, next){
 
   if(!req.body.userid) {
     ResponseService.json(403, res, "No userid provided ");

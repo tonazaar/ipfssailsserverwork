@@ -455,6 +455,19 @@ getpublicgroups : async function(req, res, next){
 
 },
 
+getpersonalnodes : async function(req, res, next){
+
+   if(req.body.nodetype != 'personalnode') {
+
+    ResponseService.json(403, res, "Nodetype is not public ");
+          return;
+   }
+
+  var recs = await Ipfsprovider.find({nodetype: req.body.nodetype});
+	res.json(recs);
+
+
+},
 
 getpublicnodes : async function(req, res, next){
    if(req.body.nodetype != 'publicnode') {

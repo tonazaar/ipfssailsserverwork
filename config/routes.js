@@ -98,6 +98,10 @@ module.exports.routes = {
   'POST /api/usergroup/getcreatorofgroup': 'UsergroupController.getcreatorofgroup',
 
 
+  'POST /api/ipfsadmin/createpersonaluserconfig': 'IpfsadminController.createpersonaluserconfig',
+  'POST /api/ipfsadmin/getpersonaluserconfig': 'IpfsadminController.getpersonaluserconfig',
+  'POST /api/ipfsadmin/deletepersonaluserconfig': 'IpfsadminController.deletepersonaluserconfig',
+
   'POST /api/usergroupadmin/transmitgroupchange': 'UsergroupController.transmitgroupchange',
   'POST /api/usergroupadmin/updatenodegroup': 'UsergroupController.updatenodegroup',
   'POST /api/ipfsadmin/listusers': 'IpfsadminController.listusers',
@@ -132,6 +136,7 @@ module.exports.routes = {
   'POST /api/nodeoperation/joinnodecluster': 'IpfsproviderController.joinnodecluster',
   'POST /api/nodeoperation/listclusternodes': 'IpfsproviderController.getclusternodes',
   'POST /api/nodeoperation/listprivatenodes': 'IpfsproviderController.getprivatenodes',
+  'POST /api/nodeoperation/listpersonalnodes': 'IpfsproviderController.getpersonalnodes',
   'POST /api/nodeoperation/listpublicnodes': 'IpfsproviderController.getpublicnodes',
   'POST /api/nodeoperation/deletenodeid': 'IpfsproviderController.deletenodeid',
   'POST /api/nodeoperation/getnodedata': 'IpfsproviderController.getnodedata',

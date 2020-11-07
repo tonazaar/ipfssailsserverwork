@@ -19,6 +19,10 @@ module.exports = {
       type: "string",
       required: true,
     },
+    personalid: {
+      type: "string",
+      required: true,
+    },
     assignmentname: {
       type: "string",
     },
@@ -49,12 +53,6 @@ module.exports = {
     ipfsconfigupdatetime : {
       type: "string",
     },
-    usergroupname: {
-      type: "string",
-    },
-    usergroupptr: {
-      model: 'Usergroup',
-    },
     userptr: {
       model: 'User',
     },
@@ -68,7 +66,7 @@ module.exports = {
     tokenassigned: {
       type: "string",
     },
-    useripfsconfig: {
+    personalipfsconfig: {
       type: "json",
     },
     tonwallet: {
