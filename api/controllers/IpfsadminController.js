@@ -968,6 +968,29 @@ getusergroupconfig : async function(req, res, next){
 
 },
 
+getusergroupconfigdefault : async function(req, res, next){
+// One account for each usertype is allowed
+
+  if(!req.body.userid)  {
+    ResponseService.json(403, res, "groupid not specified ");
+          return;
+  }
+
+  var userid = req.body.userid;
+
+  var user = await User.findOne({userid: req.body.userid});
+
+  var tmp= await GetUsergroup_config(user.selectedgroupid) ;
+
+  if(!tmp) {
+    ResponseService.json(403, res, "Group config not found ");
+          return;
+  }
+
+
+   res.json(tmp.groupipfsconfig);
+
+},
 getjoinedgroupconfig : async function(req, res, next){
 // One account for each usertype is allowed
 
