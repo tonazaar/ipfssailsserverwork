@@ -968,6 +968,36 @@ getusergroupconfig : async function(req, res, next){
 
 },
 
+setusergroupconfig : async function(req, res, next){
+// One account for each usertype is allowed
+
+  if(!req.body.groupid)  {
+    ResponseService.json(403, res, "groupid not specified ");
+          return;
+  }
+  if(!req.body.userid)  {
+    ResponseService.json(403, res, "userid not specified ");
+          return;
+  }
+
+  var groupid = req.body.groupid;
+  var userid = req.body.userid;
+
+
+  var tmp= await GetUsergroup_config(groupid) ;
+
+  if(!tmp) {
+    ResponseService.json(403, res, "Group config not found ");
+          return;
+  }
+
+  await SetUsergroupTouser(userid, groupid);
+
+
+   res.json(tmp.groupipfsconfig);
+
+},
+
 getusergroupconfigdefault : async function(req, res, next){
 // One account for each usertype is allowed
 
@@ -1025,6 +1055,51 @@ getjoinedgroupconfig : async function(req, res, next){
     ResponseService.json(403, res, "Group config not found ");
           return;
   }
+
+
+   res.json(tmp.groupipfsconfig);
+
+},
+
+setjoinedgroupconfig : async function(req, res, next){
+// One account for each usertype is allowed
+
+  if(!req.body.groupid)  {
+    ResponseService.json(403, res, "groupid not specified ");
+          return;
+  }
+  if(!req.body.userid)  {
+    ResponseService.json(403, res, "userid not specified ");
+          return;
+  }
+
+  if(!req.body.usertype)  {
+    ResponseService.json(403, res, "usertype not specified ");
+          return;
+  }
+
+ // var user = await User.find({userid: req.body.userid}).populate('memberusergroup', {where : { usertype: req.body.usertype}, select:['groupid','usergroupname', 'usertype', 'assignmentname', 'creatoremail', 'nodegroup' ]})
+
+  var user = await User.find({userid: req.body.userid}).populate('memberusergroup', {where : { usertype: req.body.usertype, groupid: req.body.groupid}, select:['groupid','usergroupname', 'usertype', 'assignmentname', 'creatoremail', 'nodegroup' ]})
+
+  if(user[0].memberusergroup.length != 1){
+	console.log(JSON.stringify(user.memberusergroup));
+    ResponseService.json(403, res, "user not member ");
+          return;
+  }
+
+  var groupid = req.body.groupid;
+  var userid = req.body.userid;
+
+
+  var tmp= await GetUsergroup_config(groupid) ;
+
+  if(!tmp) {
+    ResponseService.json(403, res, "Group config not found ");
+          return;
+  }
+
+  await SetUsergroupTouser(userid, groupid);
 
 
    res.json(tmp.groupipfsconfig);
@@ -1298,6 +1373,11 @@ async function ReleaseNodeAssignment(nodeid, assign, assid) {
    return provrec;
 }
 
+async function  SetUsergroupTouser(userid, groupid) {
+   var provrec = await User.update({ userid: userid}).set({ selectedgroupid : groupid }).fetch();
+   return provrec;
+
+};
 
 async function  CreateGroupAssignment_A2(userg, usertype) {
 
