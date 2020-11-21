@@ -374,8 +374,13 @@ listnodesofgroup : async function(req, res, next){
     ResponseService.json(403, res, "Nodegroup is not set ");
           return;
    }
+   if(!req.body.nodetype ){
 
-  var recs = await Ipfsprovider.find({ nodegroup: req.body.nodegroup });
+    ResponseService.json(403, res, "Nodetype is not set ");
+          return;
+   }
+
+  var recs = await Ipfsprovider.find({ nodegroup: req.body.nodegroup, nodetype: req.body.nodetype });
 
   res.json(recs);
 

@@ -46,8 +46,9 @@ createuserconfig : async function(req, res, next){
     ResponseService.json(403, res, "No user record ");
           return;
   }
+  var userc = await GetUserconfig_Asowner(req.body.userid, req.body.usertype) ;
 
-  var userc = await Userconfig.findOne({userid: userid, usertype:req.body.usertype});
+//  var userc = await Userconfig.findOne({userid: userid, usertype:req.body.usertype});
 
   if(userc) {
     ResponseService.json(403, res, "Config already exists ");
@@ -1312,14 +1313,20 @@ async function GetUserconfig_Asowner(userid, usertype) {
 
   var tmpuserconfig = await Userconfig.findOne({userid: userid,
 	  usertype:usertype});
-  return tmpuserconfig;
+  var tmpuserconfig = await Userconfig.find({where:{userid: userid, usertype: usertype }, limit:1});
+	if(tmpuserconfig.length >=1) {
+  	return tmpuserconfig[0];
+	}
+	else return null;
 
 }
 
 async function GetPersonalUserconfig_Asowner(personalid, usertype) {
 
   var tmpgroupconfig = await Userpersonalconfig.find({where:{personalid: personalid }, limit:1});
+	if(tmpgroupuserconfig.length >=1) {
   return tmpgroupconfig[0];
+		  } else return null;
 
 
 }

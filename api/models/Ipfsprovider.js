@@ -20,9 +20,6 @@ module.exports = {
     purpose: {
       type: "string",
     },
-    assignmentname: {
-      type: "string",
-    },
     nodename: {
       type: "string",
       required: true,
@@ -65,9 +62,6 @@ module.exports = {
     },
     basepath: {
       type: "string",
-    },
-    assignment: {
-      model: 'Assignment',
     },
 
 

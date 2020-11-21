@@ -44,7 +44,7 @@ module.exports = {
       type: "string",  // dedicated or shared
     },
     nodeproviders: {
-              collection: 'Ipfsprovider',
+              collection: 'Ipfsvirtualprovider',
               via : 'assignment'
     },
 
