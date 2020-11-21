@@ -134,8 +134,19 @@ createuserconfig : async function(req, res, next){
 	ipfsconfigupdatetime: userdefault.updatedAt,
          } ).fetch();
 
-   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname ,
+   var provrec = await Ipfsvirtualprovider.create({  assignmentname : assrec.assignmentname ,
+      nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig,
         assignment : assrec.id,
+        ipfsprovider : nodeconf.id,
         usertype: usertype,
         useraccess : 'enabled'
   // access control based on assignment and usertype
@@ -251,10 +262,24 @@ createpersonaluserconfig : async function(req, res, next){
 	ipfsconfigupdatetime: userdefault.updatedAt,
          } ).fetch();
 
-   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname ,
+
+ var provrec = await Ipfsvirtualprovider.create({  assignmentname : assrec.assignmentname ,
+      nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig,
         assignment : assrec.id,
+        ipfsprovider : nodeconf.id,
         usertype: usertype,
         useraccess : 'enabled'
+
+
   // access control based on assignment and usertype
    
    }).fetch();
@@ -372,10 +397,24 @@ updateuserconfig : async function(req, res, next){
 	ipfsconfigupdatetime: userdefault.updatedAt,
          } ).fetch();
 
-   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname ,
+
+  var provrec = await Ipfsvirtualprovider.create({  assignmentname : assrec.assignmentname ,
+      nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig,
         assignment : assrec.id,
+        ipfsprovider : nodeconf.id,
         usertype: usertype,
         useraccess : 'enabled'
+
+
   // access control based on assignment and usertype
    
    }).fetch();
@@ -546,10 +585,23 @@ creategroupconfig : async function(req, res, next){
          } ).fetch();
 
 
-   var provrec = await Ipfsprovider.update({ id: nodeconf.id}).set({ assignmentname : assrec.assignmentname ,
+	
+     var provrec = await Ipfsvirtualprovider.create({  assignmentname : assrec.assignmentname ,
+      nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig,
         assignment : assrec.id,
+        ipfsprovider : nodeconf.id,
         usertype: usertype,
         useraccess : 'enabled'
+
   // access control based on assignment and usertype
    
    }).fetch();
@@ -1282,8 +1334,8 @@ async function Getnodeto_Use(userid, usertype, nodetype) {
 // Not belonging to usergroup can also share. But not implemented
 // As it may complicate
 
-
-  var nodeconfs = await Ipfsprovider.find({where: {assignmentname: '', 
+// to add userslimit
+  var nodeconfs = await Ipfsprovider.find({where: { 
 	  nodetype: nodetype, usertype: usertype },limit: 1} );
 
   return nodeconfs;
@@ -1362,9 +1414,8 @@ async function DeleteUsergroupAssignment(groupid, assign) {
 }
 
 async function ReleaseNodeAssignment(nodeid, assign, assid) {
-   var provrec = await Ipfsprovider.update({ nodeid: nodeid}).set({ assignmentname : '',
-        assignment : null,
-   }).fetch();
+
+   var provrec = await Ipfsvirtualprovider.destroyOne({  assignmentname : assign  });
 
    if(assid) {
    //await Assignment.removeFromCollection(assid, 'nodeproviders', provrec.id);

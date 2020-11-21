@@ -30,12 +30,6 @@ module.exports = {
     usagelimit: {
       type: "string",
     },
-    userslimit: {
-      type: "string",
-    },
-    settinglimit: {
-      type: "string",
-    },
     useraccess: {
       type: "string",
     },
@@ -69,6 +63,10 @@ module.exports = {
     assignment: {
       model: 'Assignment',
     },
+    ipfsprovider: {
+      model: 'Ipfsprovider',
+    },
+
 
 
   },
