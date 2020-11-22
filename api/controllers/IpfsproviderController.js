@@ -352,6 +352,13 @@ getnodedata : async function(req, res, next){
         res.json(recs);
 },
 
+getallnodes : async function(req, res, next){
+        console.log ("In getprivatenodes");
+
+
+  var recs = await Ipfsprovider.find({});
+        res.json(recs);
+},
 
 getprivatenodes : async function(req, res, next){
 	console.log ("In getprivatenodes");

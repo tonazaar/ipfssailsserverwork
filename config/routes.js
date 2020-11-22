@@ -139,6 +139,7 @@ module.exports.routes = {
   'POST /api/nodeoperation/joinnodecluster': 'IpfsproviderController.joinnodecluster',
   'POST /api/nodeoperation/listclusternodes': 'IpfsproviderController.getclusternodes',
   'POST /api/nodeoperation/listprivatenodes': 'IpfsproviderController.getprivatenodes',
+  'POST /api/nodeoperation/listallnodes': 'IpfsproviderController.getallnodes',
   'POST /api/nodeoperation/listpersonalnodes': 'IpfsproviderController.getpersonalnodes',
   'POST /api/nodeoperation/listpublicnodes': 'IpfsproviderController.getpublicnodes',
   'POST /api/nodeoperation/deletenodeid': 'IpfsproviderController.deletenodeid',

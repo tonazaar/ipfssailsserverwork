@@ -318,7 +318,7 @@ updateuserconfig : async function(req, res, next){
           return;
   }
 
-  var userc = await Userconfig.findOne({userid: userid, usertype:req.body.usertype}).populate("assignment");
+  var userc = await GetUserconfig_Asowner(req.body.userid, req.body.usertype) ;
 
   if(!userc) {
     ResponseService.json(403, res, "Config does not exist ");
@@ -1311,9 +1311,7 @@ async function GetUsergroup_config(groupid) {
 
 async function GetUserconfig_Asowner(userid, usertype) {
 
-  var tmpuserconfig = await Userconfig.findOne({userid: userid,
-	  usertype:usertype});
-  var tmpuserconfig = await Userconfig.find({where:{userid: userid, usertype: usertype }, limit:1});
+  var tmpuserconfig = await Userconfig.find({where:{userid: userid, usertype: usertype }, limit:1}).populate("assignment");
 	if(tmpuserconfig.length >=1) {
   	return tmpuserconfig[0];
 	}
@@ -1323,9 +1321,9 @@ async function GetUserconfig_Asowner(userid, usertype) {
 
 async function GetPersonalUserconfig_Asowner(personalid, usertype) {
 
-  var tmpgroupconfig = await Userpersonalconfig.find({where:{personalid: personalid }, limit:1});
-	if(tmpgroupuserconfig.length >=1) {
-  return tmpgroupconfig[0];
+  var tmpconfig = await Userpersonalconfig.find({where:{personalid: personalid }, limit:1}).populate("assignment");
+	if(tmpconfig.length >=1) {
+  return tmpconfig[0];
 		  } else return null;
 
 

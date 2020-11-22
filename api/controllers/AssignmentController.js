@@ -694,8 +694,13 @@ listnodesofassignment : async function(req, res, next){
     ResponseService.json(403, res, "Assignmentname is not provided ");
           return;
    }
+   if(!req.body.c1type ){
 
-  var recs = await Ipfsprovider.find({ assignmentname: req.body.assignmentname });
+    ResponseService.json(403, res, "c1type is not provided ");
+          return;
+   }
+
+  var recs = await Ipfsvirtualprovider.find({ assignmentname: req.body.assignmentname, nodetype: req.body.c1type });
 
   res.json(recs);
 
