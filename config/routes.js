@@ -101,6 +101,7 @@ module.exports.routes = {
   'POST /api/ipfsadmin/createpersonaluserconfig': 'IpfsadminController.createpersonaluserconfig',
   'POST /api/ipfsadmin/getpersonaluserconfig': 'IpfsadminController.getpersonaluserconfig',
   'POST /api/ipfsadmin/deletepersonaluserconfig': 'IpfsadminController.deletepersonaluserconfig',
+  'POST /api/ipfsadmin/updatepersonaluserconfig': 'IpfsadminController.updatepersonaluserconfig',
 
   'POST /api/usergroupadmin/transmitgroupchange': 'UsergroupController.transmitgroupchange',
   'POST /api/usergroupadmin/updatenodegroup': 'UsergroupController.updatenodegroup',
@@ -124,6 +125,7 @@ module.exports.routes = {
   'POST /api/ipfsadmin/updatenodestatus': 'IpfsadminController.updatenodestatus',
   'POST /api/ipfsadmin/updatenodeusage': 'IpfsadminController.updatenodeusage',
   'POST /api/ipfsadmin/updatenodeitem': 'IpfsadminController.updatenodeitem',
+  'POST /api/ipfsadmin/updatevirtualnodeitem': 'IpfsadminController.updatevirtualnodeitem',
 
   'POST /api/tokenuser/gettokenbalance': 'TokenuserController.gettokenbalance',
   'POST /api/tokenuser/updateearnedtoken': 'TokenuserController.updateearnedtoken',
@@ -136,10 +138,12 @@ module.exports.routes = {
 
   'POST /api/nodeoperation/joinnodeprivate': 'IpfsproviderController.joinnodeprivate',
   'POST /api/nodeoperation/joinnodepublic': 'IpfsproviderController.joinnodepublic',
+  'POST /api/nodeoperation/joinnodepersonal': 'IpfsproviderController.joinnodepersonal',
   'POST /api/nodeoperation/joinnodecluster': 'IpfsproviderController.joinnodecluster',
   'POST /api/nodeoperation/listclusternodes': 'IpfsproviderController.getclusternodes',
   'POST /api/nodeoperation/listprivatenodes': 'IpfsproviderController.getprivatenodes',
   'POST /api/nodeoperation/listallnodes': 'IpfsproviderController.getallnodes',
+  'POST /api/nodeoperation/listallvirtualnodes': 'IpfsproviderController.getallvirtualnodes',
   'POST /api/nodeoperation/listpersonalnodes': 'IpfsproviderController.getpersonalnodes',
   'POST /api/nodeoperation/listpublicnodes': 'IpfsproviderController.getpublicnodes',
   'POST /api/nodeoperation/deletenodeid': 'IpfsproviderController.deletenodeid',

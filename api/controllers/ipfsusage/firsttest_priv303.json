@@ -1,0 +1,21 @@
+{
+  "usagelimit": "20000000",
+  "publicgateway": "https://ipfs.io",
+  "localgateway": "http://3.1.100.184:7015",
+  "basepath": "",
+  "ipaddress": "3.1.100.184",
+  "nodetype": "privnet",
+  "nodegroup": "firsttest",
+  "nodeid": "12D3KooWDMtT6M5FiG97HvfFkbvbRbbArS54cWjbYMJr53FEQwdg",
+  "nodename": "priv303",
+  "xconfig": {
+    "Addresses": {
+      "Swarm": [
+        "/ip4/3.1.100.184/tcp/7012",
+        "/ip4/3.1.100.184/tcp/7013/ws"
+      ],
+      "API": "/ip4/3.1.100.184/tcp/7014",
+      "Gateway": "/ip4/3.1.100.184/tcp/7015"
+    }
+  }
+}

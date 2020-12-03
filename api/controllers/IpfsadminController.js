@@ -180,7 +180,10 @@ createpersonaluserconfig : async function(req, res, next){
           return;
   }
 
-  var userc = await Userpersonalconfig.findOne({userid: userid, usertype:req.body.usertype});
+  var userc = await GetPersonalUserconfig_Asowner(req.body.userid, req.body.usertype) ;
+
+   console.log("userc=" + JSON.stringify(userc));
+
 
   if(userc) {
     ResponseService.json(403, res, "Config already exists ");
@@ -397,6 +400,139 @@ updateuserconfig : async function(req, res, next){
         useripfsconfig: useripfsconfig,
 	ipfsconfigupdatetime: userdefault.updatedAt,
          } ).fetch();
+
+
+  var provrec = await Ipfsvirtualprovider.create({  assignmentname : assrec.assignmentname ,
+      nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig,
+        assignment : assrec.id,
+        ipfsprovider : nodeconf.id,
+        usertype: usertype,
+        useraccess : 'enabled'
+
+
+  // access control based on assignment and usertype
+   
+   }).fetch();
+
+
+   res.json(newrec);
+},
+
+updatepersonaluserconfig : async function(req, res, next){
+
+  if(!req.body.userid) {
+    ResponseService.json(403, res, "Userid does not exist ");
+          return;
+  }
+
+  if(!req.body.usertype) {
+    ResponseService.json(403, res, "usertype not provided ");
+          return;
+  }
+
+  if(!req.body.newnodeid) {
+    ResponseService.json(403, res, "newnodeid not provided ");
+          return;
+  }
+
+
+//   ResponseService.json(403, res, "Depreciated , use assignnode");
+  var user = await User.findOne({userid: req.body.userid});
+  if(!user) {
+    ResponseService.json(403, res, "No user record ");
+          return;
+  }
+
+  var userc = await GetPersonalUserconfig_Asowner(req.body.userid, req.body.usertype) ;
+
+  if(!userc) {
+    ResponseService.json(403, res, "Config does not exist ");
+          return;
+  }
+
+  if(!userc.assignment) {
+    ResponseService.json(403, res, "Assignment does not exist ");
+          return;
+  }
+
+  if(userc.nodeid == req.body.newnodeid) {
+    ResponseService.json(403, res, "The same node is already assigned");
+          return;
+  }
+
+  console.log(JSON.stringify(userc));
+
+ var assrec = userc.assignment;
+
+
+ if(!assrec) {
+    ResponseService.json(403, res, "No assignement " );
+          return;
+ };
+
+ var userid = req.body.userid;
+ var usertype = req.body.usertype;
+ var nodetype = req.body.nodetype;
+
+/* 
+ * User is alloted private node,  public node (shared to be considered later)
+ * User or User groups based access can be present  
+ * In A1, A2 group based access is provided
+ * In C1 no groups present
+ */
+
+  await ReleaseNodeAssignment(userc.nodeid, userc.assignmentname, userc.assignment);
+
+   var nodeconfs = await Ipfsprovider.find({ nodeid: req.body.newnodeid});
+
+
+
+   if(nodeconfs.length != 1) {
+    ResponseService.json(403, res, "Node not available ");
+          return;
+
+  }
+   var nodeconf = nodeconfs[0];
+
+   if(nodeconf.assignmentname) {
+       ResponseService.json(403, res, "Node is already assigned ");
+       return;
+   }
+
+
+   var useripfsconfig = {
+      userid: userid,
+      usertype: usertype,
+      assignmentname : assrec.assignmentname,
+      nodetype: nodeconf.nodetype,
+      nodeid: nodeconf.nodeid,
+      nodegroup: nodeconf.nodegroup,
+      nodename: nodeconf.nodename,
+      basepath : nodeconf.basepath,
+      usagelimit: nodeconf.usagelimit,
+      ipaddress: nodeconf.ipaddress,
+      publicgateway: nodeconf.publicgateway,
+      localgateway: nodeconf.localgateway,
+      config: nodeconf.xconfig
+     };
+
+  var newrec = await Userpersonalconfig.update({id:userc.id}).set({
+        nodegroup: nodeconf.nodegroup,
+        nodetype: nodeconf.nodetype,
+	nodeid: nodeconf.nodeid,
+        personalipfsconfig: useripfsconfig,
+	ipfsconfigupdatetime: userdefault.updatedAt,
+         } ).fetch();
+
 
 
   var provrec = await Ipfsvirtualprovider.create({  assignmentname : assrec.assignmentname ,
@@ -709,9 +845,43 @@ updatenodeitem : async function(req, res, next){
 
    var newrec = await Ipfsprovider.update({
         id: nodeconf.id}).set(req.body.nodeitem).fetch();
-        //nodegroup : req.body.nodeitem.nodegroup,
-        //nodetype : req.body.nodeitem.nodetype,
-         //} ).fetch();
+
+   res.json(newrec);
+
+},
+
+updatevirtualnodeitem : async function(req, res, next){
+
+
+  if(!req.body.nodeid ) {
+    ResponseService.json(403, res, "Node id notset ");
+          return;
+   }
+
+  if(!req.body.nodeitem ) {
+    ResponseService.json(403, res, "nodeitem id notset ");
+          return;
+   }
+
+  if(!req.body.nodeitem.assignmentname ) {
+    ResponseService.json(403, res, "assignmentname id notset ");
+          return;
+   }
+
+
+
+
+    var nodeconf = await Ipfsvirtualprovider.findOne({id: req.body.nodeitem.id});
+
+   if(!nodeconf) {
+    ResponseService.json(403, res, "Nodeid does not exist   ");
+          return;
+
+   }
+
+
+   var newrec = await Ipfsvirtualprovider.update({
+        id: nodeconf.id}).set(req.body.nodeitem).fetch();
 
    res.json(newrec);
 
@@ -920,9 +1090,12 @@ getpersonaluserconfig : async function(req, res, next){
 
   var usertype = req.body.usertype;
   var userid = req.body.userid;
+	console.log("userid=" + userid);                            
+	console.log("usertype=" + usertype);                            
 
   var tmpuserconfig = await GetPersonalUserconfig_Asowner(userid, usertype) ;
 
+	console.log("getpersonaluserconfig=" + JSON.stringify(tmpuserconfig));
   if(!tmpuserconfig) {
     ResponseService.json(403, res, "No user config record ");
           return;
@@ -1420,7 +1593,7 @@ async function DeleteUsergroupAssignment(groupid, assign) {
 
 async function ReleaseNodeAssignment(nodeid, assign, assid) {
 
-   var provrec = await Ipfsvirtualprovider.destroyOne({  assignmentname : assign  });
+   var provrec = await Ipfsvirtualprovider.destroy({nodeid: nodeid,   assignmentname : assign  });
 
    if(assid) {
    //await Assignment.removeFromCollection(assid, 'nodeproviders', provrec.id);

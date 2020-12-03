@@ -301,6 +301,91 @@ var jsonData;
 	   }
 },
 
+joinnodepersonal : async function(req, res, next){
+
+   var nodename = req.body.nodename;
+var nodegroup = req.body.nodegroup;
+
+   if(!req.body.nodename) {
+    ResponseService.json(403, res, "Nodename not specified");
+          return;
+   }
+
+   if(!req.body.nodegroup) {
+    ResponseService.json(403, res, "Nodegroup not specified");
+          return;
+   }
+
+
+   if(req.body.nodetype != 'personalnode') {
+
+    ResponseService.json(403, res, "Nodetype is not public ");
+          return;
+   }
+
+var jsonData;
+   try {
+    var fullpath =  path.resolve(__dirname, "./ipfsusage/"+nodegroup+"_"+nodename+".json");
+    console.log(fullpath);
+    jsonData = JSON.parse(fs.readFileSync(fullpath, 'utf-8'));
+   } catch (err) {
+    ResponseService.json(403, res, " Json file "+ nodegroup+"_"+nodename +".json not found" );
+          return;
+   }
+
+   if(!jsonData.xconfig ) {
+
+    ResponseService.json(403, res, "xconfig not specificed");
+          return;
+   }
+
+
+  var recs = await Ipfsprovider.findOne({nodeid: jsonData.nodeid});
+   if(recs) {
+
+	   var newrec = await Ipfsprovider.update({
+               id: recs.id}).set({
+        nodename : req.body.nodename,
+        nodegroup : req.body.nodegroup,
+        nodetype : req.body.nodetype,
+        nodestatus : recs.nodestatus,
+        nodelocation : recs.nodelocation,
+        useraccess : recs.useraccess,
+        usagelimit : jsonData.usagelimit,
+        publicgateway: jsonData.publicgateway,
+        localgateway: jsonData.localgateway,
+        basepath: jsonData.basepath,
+        ipaddress : jsonData.ipaddress,
+        xconfig : jsonData.xconfig,
+         } ).fetch();
+
+   res.json(newrec);
+
+
+  } else {
+ 
+
+  var newrec = await Ipfsprovider.create({
+        nodeid : jsonData.nodeid,
+        nodename : req.body.nodename,
+        nodegroup : req.body.nodegroup,
+        nodetype : req.body.nodetype,
+        nodestatus : 'pending' ,
+        nodelocation : 'remote' ,
+        purpose : 'shared' ,
+        useraccess : 'disabled'  ,
+        usagelimit : jsonData.usagelimit,
+	publicgateway: jsonData.publicgateway,
+        localgateway: jsonData.localgateway,
+        basepath: jsonData.basepath,
+  	ipaddress : jsonData.ipaddress,
+        xconfig : jsonData.xconfig,
+         } ).fetch();
+
+   res.json(newrec);
+	   }
+},
+
 
 deletenodeid : async function(req, res, next){
 
@@ -360,6 +445,13 @@ getallnodes : async function(req, res, next){
         res.json(recs);
 },
 
+getallvirtualnodes : async function(req, res, next){
+        console.log ("In getprivatenodes");
+
+
+  var recs = await Ipfsvirtualprovider.find({});
+        res.json(recs);
+},
 getprivatenodes : async function(req, res, next){
 	console.log ("In getprivatenodes");
 

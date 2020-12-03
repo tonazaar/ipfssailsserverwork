@@ -37,9 +37,9 @@ module.exports.security = {
   cors: {
      allRoutes: true,
      allowOrigins: '*',
-//     allowOrigins: ['http://grandma-bfef5.firebaseapp.com'],
+//     allowOrigins: ['http://localhost:8100', 'http://ipfs-d0630.firebaseapp.com'],
      allowCredentials: false,
-     allowRequestHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+     allowRequestHeaders: 'no-referrer-when-downgrade, Origin, X-Requested-With, Content-Type, Accept, Authorization'
    },
 
 
