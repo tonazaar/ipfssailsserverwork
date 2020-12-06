@@ -68,10 +68,21 @@ module.exports = {
       via: 'userpersonalnodetags'
     } ,
  
-    usertags: {
+    usera1tags: {
       collection: 'user',
-      via: 'usernodetags'
+      via: 'usera1nodetags'
     } ,
+
+    usera2tags: {
+      collection: 'user',
+      via: 'usera2nodetags'
+    } ,
+    userc1tags: {
+      collection: 'user',
+      via: 'userc1nodetags'
+    } ,
+
+
     usergrouptags: {
       collection: 'usergroup',
       via: 'usergroupnodetags'

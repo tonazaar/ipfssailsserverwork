@@ -113,7 +113,7 @@ createuserconfig : async function(req, res, next){
 
   }
    nodeconf = nodeconfs[0];
-   await AddTagnodetouser(nodeconf, user) ;
+   await AddTagnodetouser(nodeconf, user, usertype) ;
 
   }
 
@@ -253,7 +253,7 @@ createpersonaluserconfig : async function(req, res, next){
 
   }
    nodeconf = nodeconfs[0];
-   await AddTagnodetouserpersonal(nodeconf, user) ;
+   await AddTagnodetouserpersonal(nodeconf, user, usertype) ;
 
   }
 
@@ -729,7 +729,7 @@ creategroupconfig : async function(req, res, next){
 
   }
    nodeconf = nodeconfs[0];
-   await AddTagnodetousergroup(nodeconf, userg) ;
+   await AddTagnodetousergroup(nodeconf, userg, usertype) ;
 
   }
 
@@ -909,6 +909,80 @@ updatenodeitem : async function(req, res, next){
         id: nodeconf.id}).set(req.body.nodeitem).fetch();
 
    res.json(newrec);
+
+},
+
+tagusertonode : async function(req, res, next){
+
+
+  if(!req.body.nodeid ) {
+    ResponseService.json(403, res, "Node id notset ");
+          return;
+   }
+
+  if(!req.body.taguserid ) {
+    ResponseService.json(403, res, "taguserid id notset ");
+          return;
+   }
+
+
+
+    var nodeconf = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
+
+   if(!nodeconf) {
+    ResponseService.json(403, res, "Nodeid does not exist   ");
+          return;
+
+   }
+
+    var user = await User.findOne({userid: req.body.taguserid});
+   if(!user) {
+    ResponseService.json(403, res, "user does not exist   ");
+          return;
+
+   }
+
+   var x = await AddTagnodetouser(nodeconf, user, usertype);
+
+   res.json(x);
+
+},
+
+removetagusertonode : async function(req, res, next){
+
+
+  if(!req.body.nodeid ) {
+    ResponseService.json(403, res, "Node id notset ");
+          return;
+   }
+
+  if(!req.body.taguserid ) {
+    ResponseService.json(403, res, "taguserid id notset ");
+          return;
+   }
+
+
+
+    var nodeconf = await Ipfsprovider.findOne({nodeid: req.body.nodeid});
+
+   if(!nodeconf) {
+    ResponseService.json(403, res, "Nodeid does not exist   ");
+          return;
+
+   }
+
+    var user = await User.findOne({userid: req.body.taguserid});
+   if(!user) {
+    ResponseService.json(403, res, "user does not exist   ");
+          return;
+
+   }
+
+
+  var x = await RemoveTagnodetouser(nodeconf, user, usertype);
+
+
+   res.json(x);
 
 },
 
@@ -1709,24 +1783,44 @@ async function  CreateGroupAssignment_A1( userg, usertype) {
 
 }
 
-async function  AddTagnodetouser(node, user) {
+async function  AddTagnodetouser(node, user, usertype) {
+var x, y;
+	if(usertype == 'A1') {
+     x = await User.addToCollection(user.id, 'usera1nodetags', node.id);
+      y = await Ipfsprovider.addToCollection(node.id, 'usera1tags', user.id);
+	}else if(usertype == 'A2') {
+     x = await User.addToCollection(user.id, 'usera2nodetags', node.id);
+      y = await Ipfsprovider.addToCollection(node.id, 'usera2tags', user.id);
 
- var x = await User.addToCollection(user.id, 'usernodetags', node.id);
-  var y = await Ipfsprovider.addToCollection(node.id, 'usertags', user.id);
+	}else if(usertype == 'C1') {
+     x = await User.addToCollection(user.id, 'userc1nodetags', node.id);
+      y = await Ipfsprovider.addToCollection(node.id, 'userc1tags', user.id);
 
+	}
+	return x;
 }
 
-async function  RemoveTagnodetouser(node, user) {
+async function  RemoveTagnodetouser(node, user, usertype) {
+var x, y;
 
- var x = await User.removeFromCollection(user.id, 'usernodetags', node.id);
-  var y = await Ipfsprovider.removeFromCollection(node.id, 'usertags', user.id);
 
+	if(usertype == 'A1') {
+     x = await User.removeFromCollection(user.id, 'usera1nodetags', node.id);
+      y = await Ipfsprovider.removeFromCollection(node.id, 'usera1tags', user.id);
+	}else if(usertype == 'A2') {
+     x = await User.removeFromCollection(user.id, 'usera2nodetags', node.id);
+      y = await Ipfsprovider.removeFromCollection(node.id, 'usera2tags', user.id);
+	}else if(usertype == 'C1') {
+     x = await User.removeFromCollection(user.id, 'userc1nodetags', node.id);
+      y = await Ipfsprovider.removeFromCollection(node.id, 'userc1tags', user.id);
+	}
+	return x;
 }
 
 
 async function  AddTagnodetousergroup(node, userg) {
 
- var x = await Usergroup.addToCollection(userg.id, 'usernodetags', node.id);
+ var x = await Usergroup.addToCollection(userg.id, 'usergroupnodetags', node.id);
   var y = await Ipfsprovider.addToCollection(node.id, 'usergrouptags', userg.id);
 
 }
@@ -1753,14 +1847,31 @@ async function  RemoveTagnodetouserpersonal(node, user) {
 
 async function  GetTaggednodetouser (user, usertype) {
 
- var recs = await User.findOne({ id: user.id  }).populate('usernodetags',
+ var recs ;
+
+ var xx;
+
+ if(usertype == 'A1') {
+	 xx = 'usera1nodetags';
+ }else if( usertype == 'A2') {
+	 xx = 'usera2nodetags';
+ }
+ else if( usertype == 'C1') {
+	 xx = 'userc1nodetags';
+ }
+
+ var recs = await User.findOne({ id: user.id  }).populate( xx,
         {where : { usertype: usertype}} );
 
-  if(recs.usernodetags.length > 0) {
-	  res.json(recs.usernodetags[0]);
-  }else {
-	  return null;
-  }
+ if(usertype == 'A1') {
+	  res.json( recs.usera1nodetags.length > 0 ?  (recs.usera1nodetags[0]): null);
+ }else if( usertype == 'A2') {
+	  res.json( recs.usera2nodetags.length > 0 ?  (recs.usera2nodetags[0]): null);
+ }
+ else if( usertype == 'C1') {
+	  res.json( recs.userc1nodetags.length > 0 ?  (recs.userc1nodetags[0]): null);
+ }
+
 
 }
 

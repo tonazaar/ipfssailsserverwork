@@ -514,11 +514,39 @@ listnodesofuser : async function(req, res, next){
           return;
    }
 
+   var usertype = req.body.usertype ;
 
-  var recs = await User.findOne({ userid: req.body.userid  }).populate('usernodetags',
-	{where : { usertype: req.body.usertype} });
+//  var recs = await User.findOne({ userid: req.body.userid  }).populate('usernodetags',
+//	{where : { usertype: req.body.usertype} });
 
-  res.json(recs.usernodetags);
+//  res.json(recs.usernodetags);
+
+//  var recs ;
+
+ var xx;
+
+ if(usertype == 'A1') {
+         xx = 'usera1nodetags';
+ }else if( usertype == 'A2') {
+         xx = 'usera2nodetags';
+ }
+ else if( usertype == 'C1') {
+         xx = 'userc1nodetags';
+ }
+
+ var recs = await User.findOne({ userid: req.body.userid  }).populate( xx);
+
+ if(usertype == 'A1') {
+          res.json( recs.usera1nodetags); 
+ }else if( usertype == 'A2') {
+          res.json( recs.usera2nodetags); 
+ }
+ else if( usertype == 'C1') {
+          res.json( recs.userc1nodetags); 
+ }
+ 
+
+
 
 },
 

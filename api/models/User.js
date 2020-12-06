@@ -23,9 +23,17 @@ module.exports = {
     selectedgroupid: {
       type: "string",
     },
-    usernodetags: {
+    usera1nodetags: {
       collection: 'Ipfsprovider',
-      via: 'usertags'
+      via: 'usera1tags'
+    } ,
+    usera2nodetags: {
+      collection: 'Ipfsprovider',
+      via: 'usera2tags'
+    } ,
+    userc1nodetags: {
+      collection: 'Ipfsprovider',
+      via: 'userc1tags'
     } ,
     userpersonalnodetags: {
       collection: 'Ipfsprovider',

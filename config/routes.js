@@ -127,6 +127,9 @@ module.exports.routes = {
   'POST /api/ipfsadmin/updatenodeitem': 'IpfsadminController.updatenodeitem',
   'POST /api/ipfsadmin/updatevirtualnodeitem': 'IpfsadminController.updatevirtualnodeitem',
 
+  'POST /api/ipfsadmin/tagusertonode': 'IpfsadminController.tagusertonode',
+  'POST /api/ipfsadmin/removetagusertonode': 'IpfsadminController.removetagusertonode',
+
   'POST /api/tokenuser/gettokenbalance': 'TokenuserController.gettokenbalance',
   'POST /api/tokenuser/updateearnedtoken': 'TokenuserController.updateearnedtoken',
   'POST /api/tokenuser/sendtoken': 'TokenuserController.sendtoken',
