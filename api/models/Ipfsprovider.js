@@ -82,10 +82,20 @@ module.exports = {
       via: 'userc1nodetags'
     } ,
 
-
-    usergrouptags: {
+    usergroupa1tags: {
       collection: 'usergroup',
-      via: 'usergroupnodetags'
+      via: 'usergroupa1nodetags'
+    }
+
+    usergroupa2tags: {
+      collection: 'usergroup',
+      via: 'usergroupa2nodetags'
+    }
+
+
+    usergroupc1tags: {
+      collection: 'usergroup',
+      via: 'usergroupc1nodetags'
     }
 
   },

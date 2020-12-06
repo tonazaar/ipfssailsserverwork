@@ -71,9 +71,17 @@ module.exports = {
                   via : 'memberusergroup'
     },
      
-     usergroupnodetags: {
+     usergroupa1nodetags: {
       collection: 'Ipfsprovider',
-      via: 'usergrouptags'
+      via: 'usergroupa1tags'
+    } ,
+     usergroupa2nodetags: {
+      collection: 'Ipfsprovider',
+      via: 'usergroupa2tags'
+    } ,
+     usergroupc1nodetags: {
+      collection: 'Ipfsprovider',
+      via: 'usergroupc1tags'
     } ,
 
 

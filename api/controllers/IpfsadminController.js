@@ -1784,51 +1784,85 @@ async function  CreateGroupAssignment_A1( userg, usertype) {
 }
 
 async function  AddTagnodetouser(node, user, usertype) {
-var x, y;
-	if(usertype == 'A1') {
-     x = await User.addToCollection(user.id, 'usera1nodetags', node.id);
-      y = await Ipfsprovider.addToCollection(node.id, 'usera1tags', user.id);
-	}else if(usertype == 'A2') {
-     x = await User.addToCollection(user.id, 'usera2nodetags', node.id);
-      y = await Ipfsprovider.addToCollection(node.id, 'usera2tags', user.id);
+var x, y, xx, yy;
+ if(usertype == 'A1') {
+         xx = 'usera1nodetags';
+         yy = 'usera1tags';
+ }else if( usertype == 'A2') {
+         xx = 'usera2nodetags';
+         yy = 'usera2tags';
+ }
+ else if( usertype == 'C1') {
+         xx = 'userc1nodetags';
+         yy = 'userc1tags';
+ }
 
-	}else if(usertype == 'C1') {
-     x = await User.addToCollection(user.id, 'userc1nodetags', node.id);
-      y = await Ipfsprovider.addToCollection(node.id, 'userc1tags', user.id);
-
-	}
+     x = await User.addToCollection(user.id, xx, node.id);
+      y = await Ipfsprovider.addToCollection(node.id, yy,  user.id);
 	return x;
 }
 
 async function  RemoveTagnodetouser(node, user, usertype) {
-var x, y;
+var x, y, xx, yy;
+ if(usertype == 'A1') {
+         xx = 'usera1nodetags';
+         yy = 'usera1tags';
+ }else if( usertype == 'A2') {
+         xx = 'usera2nodetags';
+         yy = 'usera2tags';
+ }
+ else if( usertype == 'C1') {
+         xx = 'userc1nodetags';
+         yy = 'userc1tags';
+ }
 
 
-	if(usertype == 'A1') {
-     x = await User.removeFromCollection(user.id, 'usera1nodetags', node.id);
-      y = await Ipfsprovider.removeFromCollection(node.id, 'usera1tags', user.id);
-	}else if(usertype == 'A2') {
-     x = await User.removeFromCollection(user.id, 'usera2nodetags', node.id);
-      y = await Ipfsprovider.removeFromCollection(node.id, 'usera2tags', user.id);
-	}else if(usertype == 'C1') {
-     x = await User.removeFromCollection(user.id, 'userc1nodetags', node.id);
-      y = await Ipfsprovider.removeFromCollection(node.id, 'userc1tags', user.id);
-	}
+
+     x = await User.removeFromCollection(user.id, xx, node.id);
+      y = await Ipfsprovider.removeFromCollection(node.id, yy ,  user.id);
+
 	return x;
 }
 
 
 async function  AddTagnodetousergroup(node, userg) {
+var x, y, xx, yy;
+ if(usertype == 'A1') {
+         xx = 'usergroupa1nodetags';
+         yy = 'usergroupa1tags';
+ }else if( usertype == 'A2') {
+         xx = 'usergroupa2nodetags';
+         yy = 'usergroupa2tags';
+ }
+ else if( usertype == 'C1') {
+         xx = 'usergroupc1nodetags';
+         yy = 'usergroupc1tags';
+ }
 
- var x = await Usergroup.addToCollection(userg.id, 'usergroupnodetags', node.id);
-  var y = await Ipfsprovider.addToCollection(node.id, 'usergrouptags', userg.id);
+ var x = await Usergroup.addToCollection(userg.id, xx, node.id);
+  var y = await Ipfsprovider.addToCollection(node.id, yy,  userg.id);
 
 }
 
 async function  RemoveTagnodetousergroup(node, userg) {
 
- var x = await Usergroup.removeFromCollection(userg.id, 'usergroupnodetags', node.id);
-  var y = await Ipfsprovider.removeFromCollection(node.id, 'usergrouptags', userg.id);
+var x, y, xx, yy;
+ if(usertype == 'A1') {
+         xx = 'usergroupa1nodetags';
+         yy = 'usergroupa1tags';
+ }else if( usertype == 'A2') {
+         xx = 'usergroupa2nodetags';
+         yy = 'usergroupa2tags';
+ }
+ else if( usertype == 'C1') {
+         xx = 'usergroupc1nodetags';
+         yy = 'usergroupc1tags';
+ }
+
+
+
+ var x = await Usergroup.removeFromCollection(userg.id, xx, node.id);
+  var y = await Ipfsprovider.removeFromCollection(node.id, yy,  userg.id);
 
 }
 async function  AddTagnodetouserpersonal(node, user) {
