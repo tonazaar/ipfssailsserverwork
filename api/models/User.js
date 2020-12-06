@@ -20,7 +20,13 @@ module.exports = {
       type: "string",
       required: true,
     },
-    selectedgroupid: {
+    selectedgroupida1: {
+      type: "string",
+    },
+    selectedgroupida2: {
+      type: "string",
+    },
+    selectedgroupidc1: {
       type: "string",
     },
     usera1nodetags: {

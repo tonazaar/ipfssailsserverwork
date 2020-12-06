@@ -713,7 +713,7 @@ creategroupconfig : async function(req, res, next){
  * In C1 no groups present
  */
 
-   var taggednode =  await GetTaggednodetousergroup( userg.groupid);
+   var taggednode =  await GetTaggednodetousergroup( userg, usertype);
 
    var nodeconf ;
 
@@ -1342,8 +1342,14 @@ setusergroupconfig : async function(req, res, next){
           return;
   }
 
+  if(!req.body.usertype)  {
+    ResponseService.json(403, res, "usertype not specified ");
+          return;
+  }
+
   var groupid = req.body.groupid;
   var userid = req.body.userid;
+  var usertype = req.body.usertype;
 
 
   var tmp= await GetUsergroup_config(groupid) ;
@@ -1353,7 +1359,7 @@ setusergroupconfig : async function(req, res, next){
           return;
   }
 
-  await SetUsergroupTouser(userid, groupid);
+  await SetUsergroupTouser(userid, groupid, usertype);
 
 
    res.json(tmp.groupipfsconfig);
@@ -1368,7 +1374,13 @@ getusergroupconfigdefault : async function(req, res, next){
           return;
   }
 
+  if(!req.body.usertype)  {
+    ResponseService.json(403, res, "usertype not specified ");
+          return;
+  }
+
   var userid = req.body.userid;
+  var usertype = req.body.usertype;
 
   var user = await User.findOne({userid: req.body.userid});
 
@@ -1461,7 +1473,7 @@ setjoinedgroupconfig : async function(req, res, next){
           return;
   }
 
-  await SetUsergroupTouser(userid, groupid);
+  await SetUsergroupTouser(userid, groupid, usertype);
 
 
    res.json(tmp.groupipfsconfig);
@@ -1738,8 +1750,17 @@ async function ReleaseNodeAssignment(nodeid, assign, assid) {
    return provrec;
 }
 
-async function  SetUsergroupTouser(userid, groupid) {
-   var provrec = await User.update({ userid: userid}).set({ selectedgroupid : groupid }).fetch();
+async function  SetUsergroupTouser(userid, groupid, usertype) {
+
+   var provrec ;
+   if( usertype== 'A1') {
+     provrec = await User.update({ userid: userid}).set({ selectedgroupida1 : groupid }).fetch();
+   }else if(usertype == 'A2') {
+
+   provrec = await User.update({ userid: userid}).set({ selectedgroupida2 : groupid }).fetch();
+   }else if(usertype == 'C1') {
+   provrec = await User.update({ userid: userid}).set({ selectedgroupidc1 : groupid }).fetch();
+   }
    return provrec;
 
 };
@@ -1825,7 +1846,7 @@ var x, y, xx, yy;
 }
 
 
-async function  AddTagnodetousergroup(node, userg) {
+async function  AddTagnodetousergroup(node, userg, usertype) {
 var x, y, xx, yy;
  if(usertype == 'A1') {
          xx = 'usergroupa1nodetags';
@@ -1844,7 +1865,7 @@ var x, y, xx, yy;
 
 }
 
-async function  RemoveTagnodetousergroup(node, userg) {
+async function  RemoveTagnodetousergroup(node, userg, usertype) {
 
 var x, y, xx, yy;
  if(usertype == 'A1') {
@@ -1898,12 +1919,12 @@ async function  GetTaggednodetouser (user, usertype) {
         {where : { usertype: usertype}} );
 
  if(usertype == 'A1') {
-	  res.json( recs.usera1nodetags.length > 0 ?  (recs.usera1nodetags[0]): null);
+	  return( recs.usera1nodetags.length > 0 ?  (recs.usera1nodetags[0]): null);
  }else if( usertype == 'A2') {
-	  res.json( recs.usera2nodetags.length > 0 ?  (recs.usera2nodetags[0]): null);
+	  return( recs.usera2nodetags.length > 0 ?  (recs.usera2nodetags[0]): null);
  }
  else if( usertype == 'C1') {
-	  res.json( recs.userc1nodetags.length > 0 ?  (recs.userc1nodetags[0]): null);
+	  return( recs.userc1nodetags.length > 0 ?  (recs.userc1nodetags[0]): null);
  }
 
 
@@ -1911,14 +1932,33 @@ async function  GetTaggednodetouser (user, usertype) {
 
 async function  GetTaggednodetousergroup (userg, usertype) {
 
- var recs = await Usergroup.findOne({ id: userg.id  }).populate('usergroupnodetags',
+var x, y, xx, yy;
+ if(usertype == 'A1') {
+         xx = 'usergroupa1nodetags';
+         yy = 'usergroupa1tags';
+ }else if( usertype == 'A2') {
+         xx = 'usergroupa2nodetags';
+         yy = 'usergroupa2tags';
+ }
+ else if( usertype == 'C1') {
+         xx = 'usergroupc1nodetags';
+         yy = 'usergroupc1tags';
+ }
+
+
+
+ var recs = await Usergroup.findOne({ id: userg.id  }).populate(xx,
         {where : { usertype: usertype}} );
 
-  if(recs.usergroupnodetags.length > 0) {
-	  res.json(recs.usergroupnodetags[0]);
-  }else {
-	  return null;
-  }
+ if(usertype == 'A1') {
+          return( recs.usergroupa1nodetags.length > 0 ?  (recs.usergroupa1nodetags[0]): null);
+ }else if( usertype == 'A2') {
+          return( recs.usergroupa2nodetags.length > 0 ?  (recs.usergroupa2nodetags[0]): null);
+ }
+ else if( usertype == 'C1') {
+          return( recs.usergroupc1nodetags.length > 0 ?  (recs.usergroupc1nodetags[0]): null);
+ }
+
 
 }
 
@@ -1929,7 +1969,7 @@ async function  GetTaggednodetouser (user, usertype) {
         {where : { usertype: usertype}} );
   
   if(recs.userpersonalnodetags.length > 0) {
-          res.json(recs.userpersonalnodetags[0]);
+          return(recs.userpersonalnodetags[0]);
   }else {
           return null;
   }

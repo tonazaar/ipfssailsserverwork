@@ -86,12 +86,12 @@ module.exports = {
       collection: 'usergroup',
       via: 'usergroupa1nodetags'
     }
-
+    ,
     usergroupa2tags: {
       collection: 'usergroup',
       via: 'usergroupa2nodetags'
     }
-
+    ,
 
     usergroupc1tags: {
       collection: 'usergroup',
