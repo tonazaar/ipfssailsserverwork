@@ -485,6 +485,36 @@ listnodesofgroup : async function(req, res, next){
 
 },
 
+listusersofnode : async function(req, res, next){
+
+
+   if(!req.body.nodeid ){
+
+    ResponseService.json(403, res, "Nodeid is not set ");
+          return;
+   }
+
+  var recs = await Ipfsprovider.find({ nodeid: req.body.nodeid  }).populate('usertags');
+
+  res.json(recs[0]);
+
+},
+
+listgroupsofnode : async function(req, res, next){
+
+
+   if(!req.body.nodeid ){
+
+    ResponseService.json(403, res, "Nodeid is not set ");
+          return;
+   }
+
+  var recs = await Ipfsprovider.find({ nodeid: req.body.nodeid  }).populate('grouptags');
+
+  res.json(recs[0]);
+
+},
+
 listmynodes : async function(req, res, next){
 
 

@@ -70,6 +70,11 @@ module.exports = {
                   collection: 'User',
                   via : 'memberusergroup'
     },
+     
+     usergroupnodetags: {
+      collection: 'Ipfsprovider',
+      via: 'usergrouptags'
+    } ,
 
 
   },

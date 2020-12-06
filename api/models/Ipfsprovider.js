@@ -63,7 +63,19 @@ module.exports = {
     basepath: {
       type: "string",
     },
-
+    userpersonaltags: {
+      collection: 'user',
+      via: 'userpersonalnodetags'
+    } ,
+ 
+    usertags: {
+      collection: 'user',
+      via: 'usernodetags'
+    } ,
+    usergrouptags: {
+      collection: 'usergroup',
+      via: 'usergroupnodetags'
+    }
 
   },
 

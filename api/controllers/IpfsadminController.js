@@ -29,6 +29,14 @@ singleuserconfigupdate : async function(req, res, next){
 
 },
 
+/*
+ * already node assigned (1)
+ * use that
+ * when delete, remove the node?
+ * give the same node (2)
+ * just change the nodes (still list both)
+ * backend assigns new node
+ */
 createuserconfig : async function(req, res, next){
 
   if(!req.body.userid) {
@@ -89,6 +97,14 @@ createuserconfig : async function(req, res, next){
  * In C1 no groups present
  */
 
+  var taggednode =  await GetTaggednodetouser( user); 
+
+   var nodeconf ;
+
+  if(taggednode) {
+   nodeconf = taggednode;
+
+  }else {
   var nodeconfs = await Getnodeto_Use(userid, usertype, nodetype) ;
 
    if(nodeconfs.length != 1) {
@@ -96,7 +112,10 @@ createuserconfig : async function(req, res, next){
           return;
 
   }
-   var nodeconf = nodeconfs[0];
+   nodeconf = nodeconfs[0];
+   await AddTagnodetouser(nodeconf, user) ;
+
+  }
 
    if(nodeconf.assignmentname) {
        ResponseService.json(403, res, "Node is already assigned ");
@@ -218,6 +237,27 @@ createpersonaluserconfig : async function(req, res, next){
  * In C1 no groups present
  */
 
+   var taggednode =  await GetTaggednodetouser( user);
+
+   var nodeconf ;
+
+  if(taggednode) {
+   nodeconf = taggednode;
+
+  }else {
+  var nodeconfs = await Getnodeto_Use(userid, usertype, nodetype) ;
+
+   if(nodeconfs.length != 1) {
+    ResponseService.json(403, res, "Node not available ");
+          return;
+
+  }
+   nodeconf = nodeconfs[0];
+   await AddTagnodetouserpersonal(nodeconf, user) ;
+
+  }
+
+	/*
   var nodeconfs = await Getnodeto_Use(userid, usertype, nodetype) ;
 
    if(nodeconfs.length != 1) {
@@ -226,6 +266,7 @@ createpersonaluserconfig : async function(req, res, next){
 
   }
    var nodeconf = nodeconfs[0];
+   */
 
    if(nodeconf.assignmentname) {
        ResponseService.json(403, res, "Node is already assigned ");
@@ -672,6 +713,27 @@ creategroupconfig : async function(req, res, next){
  * In C1 no groups present
  */
 
+   var taggednode =  await GetTaggednodetouser( user);
+
+   var nodeconf ;
+
+  if(taggednode) {
+   nodeconf = taggednode;
+
+  }else {
+  var nodeconfs = await Getnodeto_Use(userg.groupid, usertype, nodetype) ;
+
+   if(nodeconfs.length != 1) {
+    ResponseService.json(403, res, "Node not available ");
+          return;
+
+  }
+   nodeconf = nodeconfs[0];
+   await AddTagnodetousergroup(nodeconf, userg) ;
+
+  }
+
+/*
   var nodeconfs = await Getnodeto_Use(userg.groupid, usertype, nodetype) ;
 
    if(nodeconfs.length != 1) {
@@ -680,7 +742,7 @@ creategroupconfig : async function(req, res, next){
 
   }
    var nodeconf = nodeconfs[0];
-
+*/
    if(nodeconf.assignmentname) {
        ResponseService.json(403, res, "Node is already assigned ");
        return;
@@ -1644,6 +1706,48 @@ async function  CreateGroupAssignment_A1( userg, usertype) {
 
  
    return assrec;
+
+}
+
+async function  AddTagnodetouser(node, user) {
+
+ var x = await User.addToCollection(user.id, 'usernodetags', node.id);
+  var y = await Ipfsprovider.addToCollection(node.id, 'usertags', user.id);
+
+}
+
+async function  RemoveTagnodetouser(node, user) {
+
+ var x = await User.removeFromCollection(user.id, 'usernodetags', node.id);
+  var y = await Ipfsprovider.removeFromCollection(node.id, 'usertags', user.id);
+
+}
+
+
+async function  AddTagnodetousergroup(node, userg) {
+
+ var x = await Usergroup.addToCollection(userg.id, 'usernodetags', node.id);
+  var y = await Ipfsprovider.addToCollection(node.id, 'usergrouptags', userg.id);
+
+}
+
+async function  RemoveTagnodetousergroup(node, userg) {
+
+ var x = await Usergroup.removeFromCollection(userg.id, 'usergroupnodetags', node.id);
+  var y = await Ipfsprovider.removeFromCollection(node.id, 'usergrouptags', userg.id);
+
+}
+async function  AddTagnodetouserpersonal(node, user) {
+
+ var x = await User.addToCollection(user.id, 'userpersonalnodetags', node.id);
+  var y = await Ipfsprovider.addToCollection(node.id, 'userpersonaltags', user.id);
+
+}
+
+async function  RemoveTagnodetouserpersonal(node, user) {
+
+ var x = await User.removeFromCollection(user.id, 'userpersonalnodetags', node.id);
+  var y = await Ipfsprovider.removeFromCollection(node.id, 'userpersonaltags', user.id);
 
 }
 
