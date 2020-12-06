@@ -1452,6 +1452,8 @@ setjoinedgroupconfig : async function(req, res, next){
           return;
   }
 
+  var usertype = req.body.usertype;
+
  // var user = await User.find({userid: req.body.userid}).populate('memberusergroup', {where : { usertype: req.body.usertype}, select:['groupid','usergroupname', 'usertype', 'assignmentname', 'creatoremail', 'nodegroup' ]})
 
   var user = await User.find({userid: req.body.userid}).populate('memberusergroup', {where : { usertype: req.body.usertype, groupid: req.body.groupid}, select:['groupid','usergroupname', 'usertype', 'assignmentname', 'creatoremail', 'nodegroup' ]})
