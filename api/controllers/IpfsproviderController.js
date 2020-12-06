@@ -500,6 +500,51 @@ listusersofnode : async function(req, res, next){
 
 },
 
+listnodesofuser : async function(req, res, next){
+
+
+   if(!req.body.userid ){
+
+    ResponseService.json(403, res, "Userid is not set ");
+          return;
+   }
+
+  var recs = await User.findOne({ userid: req.body.userid  }).populate('usernodetags');
+
+  res.json(recs.usernodetags);
+
+},
+
+listnodesofusergroup : async function(req, res, next){
+
+
+   if(!req.body.userid ){
+
+    ResponseService.json(403, res, "Userid is not set ");
+          return;
+   }
+
+  var recs = await User.findOne({ userid: req.body.userid  }).populate('usergroupnodetags');
+
+  res.json(recs.usergroupnodetags);
+
+},
+
+listnodesofuserpersonal : async function(req, res, next){
+
+
+   if(!req.body.userid ){
+
+    ResponseService.json(403, res, "Userid is not set ");
+          return;
+   }
+
+  var recs = await User.findOne({ userid: req.body.userid  }).populate('userpersonalnodetags');
+
+  res.json(recs.userpersonalnodetags);
+
+},
+
 listgroupsofnode : async function(req, res, next){
 
 

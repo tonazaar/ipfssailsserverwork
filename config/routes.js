@@ -154,5 +154,9 @@ module.exports.routes = {
 
   'POST /api/nodeoperation/listnodesofgroup': 'IpfsproviderController.listnodesofgroup',
 
+  'POST /api/nodeoperation/listnodesofuser': 'IpfsproviderController.listnodesofuser',
+  'POST /api/nodeoperation/listnodesofusergroup': 'IpfsproviderController.listnodesofusergroup',
+  'POST /api/nodeoperation/listnodesofuserpersonal': 'IpfsproviderController.listnodesofuserpersonal',
+
 
 };
