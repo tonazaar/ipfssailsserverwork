@@ -508,8 +508,15 @@ listnodesofuser : async function(req, res, next){
     ResponseService.json(403, res, "Userid is not set ");
           return;
    }
+   if(!req.body.usertype ){
 
-  var recs = await User.findOne({ userid: req.body.userid  }).populate('usernodetags');
+    ResponseService.json(403, res, "usertype is not set ");
+          return;
+   }
+
+
+  var recs = await User.findOne({ userid: req.body.userid  }).populate('usernodetags',
+	{where : { usertype: req.body.usertype} });
 
   res.json(recs.usernodetags);
 
@@ -523,8 +530,15 @@ listnodesofusergroup : async function(req, res, next){
     ResponseService.json(403, res, "Userid is not set ");
           return;
    }
+   if(!req.body.usertype ){
 
-  var recs = await User.findOne({ userid: req.body.userid  }).populate('usergroupnodetags');
+    ResponseService.json(403, res, "usertype is not set ");
+          return;
+   }
+
+
+  var recs = await User.findOne({ userid: req.body.userid  }).populate('usergroupnodetags',
+	{where : { usertype: req.body.usertype}} );
 
   res.json(recs.usergroupnodetags);
 
@@ -538,8 +552,15 @@ listnodesofuserpersonal : async function(req, res, next){
     ResponseService.json(403, res, "Userid is not set ");
           return;
    }
+   if(!req.body.usertype ){
 
-  var recs = await User.findOne({ userid: req.body.userid  }).populate('userpersonalnodetags');
+    ResponseService.json(403, res, "usertype is not set ");
+          return;
+   }
+
+
+  var recs = await User.findOne({ userid: req.body.userid  }).populate('userpersonalnodetags',
+	{where : { usertype: req.body.usertype}} );
 
   res.json(recs.userpersonalnodetags);
 

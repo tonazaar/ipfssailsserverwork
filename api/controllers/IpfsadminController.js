@@ -237,7 +237,7 @@ createpersonaluserconfig : async function(req, res, next){
  * In C1 no groups present
  */
 
-   var taggednode =  await GetTaggednodetouser( user);
+   var taggednode =  await GetTaggednodetouserpersonal( user);
 
    var nodeconf ;
 
@@ -713,7 +713,7 @@ creategroupconfig : async function(req, res, next){
  * In C1 no groups present
  */
 
-   var taggednode =  await GetTaggednodetouser( user);
+   var taggednode =  await GetTaggednodetousergroup( userg.groupid);
 
    var nodeconf ;
 
@@ -1748,6 +1748,46 @@ async function  RemoveTagnodetouserpersonal(node, user) {
 
  var x = await User.removeFromCollection(user.id, 'userpersonalnodetags', node.id);
   var y = await Ipfsprovider.removeFromCollection(node.id, 'userpersonaltags', user.id);
+
+}
+
+async function  GetTaggednodetouser (user, usertype) {
+
+ var recs = await User.findOne({ id: user.id  }).populate('usernodetags',
+        {where : { usertype: usertype}} );
+
+  if(recs.usernodetags.length > 0) {
+	  res.json(recs.usernodetags[0]);
+  }else {
+	  return null;
+  }
+
+}
+
+async function  GetTaggednodetousergroup (userg, usertype) {
+
+ var recs = await Usergroup.findOne({ id: userg.id  }).populate('usergroupnodetags',
+        {where : { usertype: usertype}} );
+
+  if(recs.usergroupnodetags.length > 0) {
+	  res.json(recs.usergroupnodetags[0]);
+  }else {
+	  return null;
+  }
+
+}
+
+
+async function  GetTaggednodetouser (user, usertype) {
+ 
+ var recs = await User.findOne({ id: user.id  }).populate('userpersonalnodetags',
+        {where : { usertype: usertype}} );
+  
+  if(recs.userpersonalnodetags.length > 0) {
+          res.json(recs.userpersonalnodetags[0]);
+  }else {
+          return null;
+  }
 
 }
 
